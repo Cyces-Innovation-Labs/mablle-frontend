@@ -1,0 +1,97 @@
+const PulseRingSpinner = () => {
+    // stroke="#60A5FA"
+
+  return (
+    <svg width="60" height="60" viewBox="0 0 50 50">
+      <circle
+        cx="25"
+        cy="25"
+        r="8"
+        fill="none"
+        stroke=""
+        stroke-width="1"
+        opacity="0"
+        className="stroke-primary"
+      >
+        <animate
+          attributeName="r"
+          from="8"
+          to="20"
+          dur="2s"
+          begin="0s"
+          repeatCount="indefinite"
+        ></animate>
+        <animate
+          attributeName="opacity"
+          from="1"
+          to="0"
+          dur="2s"
+          begin="0s"
+          repeatCount="indefinite"
+        ></animate>
+      </circle>
+      <circle
+        cx="25"
+        cy="25"
+        r="8"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+        opacity="0"
+      >
+        <animate
+          attributeName="r"
+          from="8"
+          to="20"
+          dur="2s"
+          begin="0.6s"
+          repeatCount="indefinite"
+        ></animate>
+        <animate
+          attributeName="opacity"
+          from="1"
+          to="0"
+          dur="2s"
+          begin="0.6s"
+          repeatCount="indefinite"
+        ></animate>
+      </circle>
+      <circle
+        cx="25"
+        cy="25"
+        r="8"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+        opacity="0"
+      >
+        <animate
+          attributeName="r"
+          from="8"
+          to="20"
+          dur="2s"
+          begin="1.2s"
+          repeatCount="indefinite"
+        ></animate>
+        <animate
+          attributeName="opacity"
+          from="1"
+          to="0"
+          dur="2s"
+          begin="1.2s"
+          repeatCount="indefinite"
+        ></animate>
+      </circle>
+      <circle cx="25" cy="25" r="8" fill="currentColor">
+        <animate
+          attributeName="r"
+          values="6;8;6"
+          dur="1s"
+          repeatCount="indefinite"
+        ></animate>
+      </circle>
+    </svg>
+  );
+};
+
+export default PulseRingSpinner;
