@@ -40,7 +40,7 @@ const OTPLogin = () => {
     },
   });
 
-  const { isPending: verifyOtpPending, mutate: verifyOtpMutate } = useMutation({
+  const { mutate: verifyOtpMutate } = useMutation({
     mutationFn: (body: unknown) =>
       makePostRequest(authEndpoints.verifyOtp, body),
     onSuccess: () => {
@@ -72,9 +72,9 @@ const OTPLogin = () => {
     }
   };
 
-  const onError = (res: unknown) => {
-    console.log("ERR", res);
-  };
+  // const onError = (res: unknown) => {
+  //   console.log("ERR", res);
+  // };
 
   const inBetweenChildren = (
     <ResendOTPAndChangeNumberComponent
