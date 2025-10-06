@@ -40,11 +40,13 @@ const UserDetailFormPage = () => {
     },
   });
 
+  const inputArr = usersInputArr(formUtils);
+
   return (
     <AppPageWrapper>
       <AppTitleWithBackButton onBackNavigateTo={USER_PAGE_URL} title="User Detail" />
       <AppForm
-        inputArr={usersInputArr}
+        inputArr={inputArr}
         onSubmit={handleSubmit}
         formUtils={formUtils}
         isLoading={isMetaLoading}

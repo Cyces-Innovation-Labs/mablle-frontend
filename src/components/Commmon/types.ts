@@ -1,4 +1,4 @@
-import type { FieldValues, Path } from "react-hook-form";
+import type { FieldValues, Path, UseFormReturn } from "react-hook-form";
 
 export interface IToolResponse {
   id: number;
@@ -228,6 +228,8 @@ export interface IAppTableWithSearchAndFilter extends IAppTable {
   handleSearch: (value: string) => void;
   searchPlaceholder?: string;
   asideComp?: React.ReactNode;
+  formUtils?: UseFormReturn;
+  filterInputArr?: InputGroup[];
 }
 
 export interface IAppTableAction {

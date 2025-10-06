@@ -1,0 +1,254 @@
+---
+alwaysApply: false
+---
+# Create List Page Rule
+
+Use this rule when creating admin listing pages. Supports both standard patterns and custom Figma designs.
+
+## Standard List Page Pattern
+
+### File Structure
+```typescript
+// src/Pages/ProtectedPaths/[ModuleName]/[ModuleName]ListPage.tsx
+import { useState } from "react";
+import AppLayout from "@/components/layout/MainLayout/AppLayout";
+import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
+import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
+import AppTable from "@/components/Commmon/AppTable/AppTable";
+import AppButton from "@/components/Commmon/AppButton";
+import type { IAppTable } from "@/components/Commmon/types";
+import useGetTableData from "@/hooks/useGetTableData";
+import { useNavigate } from "react-router";
+import { [MODULE]_CREATE_PAGE_URL } from "@/navigation/urls";
+```
+
+### Standard List Page Template
+```typescript
+const [ModuleName]ListPage = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  const {
+    data,
+    isLoading,
+    total,
+    refetch,
+    setPage,
+    page
+  } = useGetTableData({
+    endpoint: "[moduleEndpoints].list",
+    metaEndpoint: "[moduleEndpoints].meta",
+    searchTerm: searchTerm,
+    // Additional query parameters
+  });
+
+  const handleEdit = (id: string) => {
+    navigate(`/module/${id}/edit`);
+  };
+
+  const handleDelete = async (id: string) => {
+    // Implement delete logic
+    refetch();
+  };
+
+  const handleView = (id: string) => {
+    navigate(`/module/${id}`);
+  };
+
+  const tableProps: IAppTable = {
+    headers: {
+      id: "ID",
+      user_data.name: "Name",
+      user_data.email: "Email",
+      status: "Status",
+      created_at: "Created At"
+    },
+    body: data || [],
+    actions: [
+      { label: "View", onClick: handleView },
+      { label: "Edit", onClick: handleEdit },
+      { label: "Delete", onClick: handleDelete }
+    ],
+    selectedRows: true,
+    page: page,
+    setPage: setPage,
+    total: total || 0,
+    isLoading,
+    customValueRender: {
+      status: (value: string) => (
+        <AppBadge variant={value === 'active' ? 'success' : 'secondary'}>
+          {value}
+        </AppBadge>
+      ),
+      created_at: (value: string) => new Date(value).toLocaleDateString()
+    }
+  };
+
+  return (
+    <AppLayout>
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-6">
+          <AppTitleWithBackButton title="[Module Name] Management" />
+          <AppButton 
+            onClick={() => navigate([MODULE]_CREATE_PAGE_URL)}
+            className="bg-primary text-white"
+          >
+            Add New [Module]
+          </AppButton>
+        </div>
+        
+        <AppPageWrapper>
+          {/* Search and Filters */}
+          <div className="mb-4 flex gap-4">
+            <AppSearchInput
+              value={searchTerm}
+              onChange={setSearchTerm}
+              placeholder="Search [module]..."
+            />
+            {/* Add additional filters here */}
+          </div>
+
+          {/* Table */}
+          <AppTable {...tableProps} />
+        </AppPageWrapper>
+      </div>
+    </AppLayout>
+  );
+};
+
+export default [ModuleName]ListPage;
+```
+
+## Custom Figma Design Integration
+
+When a Figma link or screenshot is provided:
+
+### Design Analysis
+1. **Layout Structure** - Identify grid, flex, or custom layouts
+2. **Component Types** - Cards, tables, lists, custom widgets
+3. **Styling Patterns** - Colors, spacing, typography
+4. **Interactive Elements** - Buttons, dropdowns, modals
+5. **Data Visualization** - Charts, graphs, progress bars
+
+### Implementation Strategy
+```typescript
+// Custom components based on Figma design
+const CustomListPage = () => {
+  return (
+    <AppLayout>
+      <div className="p-6">
+        {/* Custom header based on Figma */}
+        <div className="custom-header-styles">
+          {/* Implement exact Figma design */}
+        </div>
+        
+        {/* Custom content area */}
+        <div className="custom-content-layout">
+          {/* Follow Figma layout patterns */}
+          {/* Use existing components where possible */}
+          {/* Create custom components for unique elements */}
+        </div>
+      </div>
+    </AppLayout>
+  );
+};
+```
+
+### Figma Integration Guidelines
+
+#### When Figma Link Provided:
+1. **Analyze Design** - Extract layout, components, and styling
+2. **Component Mapping** - Map Figma elements to existing components
+3. **Custom Components** - Create new components for unique elements
+4. **Responsive Design** - Ensure mobile/tablet compatibility
+5. **Accessibility** - Follow WCAG guidelines
+
+#### Component Priority:
+1. **Use Existing Components First** - [AppTable](mdc:src/components/Commmon/AppTable/AppTable.tsx), [AppForm](mdc:src/components/Commmon/AppForm/AppForm.tsx)
+2. **Extend Existing Components** - Add props for customization
+3. **Create Custom Components** - For unique Figma elements
+4. **Use shadcn/ui Components** - For standard UI elements
+
+#### Styling Approach:
+```typescript
+// TailwindCSS classes based on Figma
+const customStyles = {
+  // Extract exact colors, spacing, typography from Figma
+  header: "bg-[#f8f9fa] border-b border-[#e9ecef]",
+  card: "bg-white rounded-lg shadow-sm border border-[#dee2e6]",
+  button: "bg-[#007bff] hover:bg-[#0056b3] text-white"
+};
+```
+
+## Required Imports for List Pages
+
+### Core Components
+```typescript
+import AppLayout from "@/components/layout/MainLayout/AppLayout";
+import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
+import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
+import AppTable from "@/components/Commmon/AppTable/AppTable";
+import AppButton from "@/components/Commmon/AppButton";
+import AppSearchInput from "@/components/Commmon/AppSearchInput";
+import AppBadge from "@/components/Commmon/AppBadge";
+```
+
+### Hooks and Utils
+```typescript
+import useGetTableData from "@/hooks/useGetTableData";
+import { useNavigate } from "react-router";
+import { [MODULE]_CREATE_PAGE_URL, [MODULE]_EDIT_PAGE_URL } from "@/navigation/urls";
+import type { IAppTable } from "@/components/Commmon/types";
+```
+
+## Implementation Checklist
+
+### Standard List Page:
+- [ ] Create file: `[ModuleName]ListPage.tsx`
+- [ ] Add proper imports
+- [ ] Implement table with [AppTable](mdc:src/components/Commmon/AppTable/AppTable.tsx)
+- [ ] Add search functionality
+- [ ] Add CRUD actions (View, Edit, Delete)
+- [ ] Add create button
+- [ ] Handle loading states
+- [ ] Add proper navigation
+
+### Custom Figma Design:
+- [ ] Analyze Figma design
+- [ ] Map to existing components
+- [ ] Create custom components if needed
+- [ ] Implement exact styling
+- [ ] Ensure responsiveness
+- [ ] Test accessibility
+- [ ] Follow design system
+
+## Common Patterns
+
+### Table Actions
+```typescript
+const actions = [
+  { label: "View", onClick: (id) => navigate(`/module/${id}`) },
+  { label: "Edit", onClick: (id) => navigate(`/module/${id}/edit`) },
+  { label: "Delete", onClick: async (id) => await handleDelete(id) }
+];
+```
+
+### Search and Filters
+```typescript
+const [filters, setFilters] = useState({
+  search: "",
+  status: "",
+  dateRange: ""
+});
+```
+
+### Custom Value Rendering
+```typescript
+const customValueRender = {
+  status: (value) => <AppBadge variant={getStatusVariant(value)}>{value}</AppBadge>,
+  avatar: (value) => <AppAvatar src={value} />,
+  actions: (value, row) => <ActionButtons row={row} />
+};
+```
+
+This rule ensures consistent, high-quality listing pages that can adapt to both standard patterns and custom designs from Figma.

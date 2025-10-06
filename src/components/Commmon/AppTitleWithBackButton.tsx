@@ -23,7 +23,7 @@ const AppTitleWithBackButton = ({
     }
   };
   return (
-    <div className="flex items-center">
+    <div className="flex items-center border-b mb-2">
       {!hideBackButton && (
         <Button
           variant={"ghost"}

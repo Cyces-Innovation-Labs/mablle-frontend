@@ -531,37 +531,7 @@ interface AuthState {
 }
 ```
 
-#### Authentication Input Metadata
-```typescript
-// In src/inputFormsMeta/LoginAndSignUpInputMeta.tsx
-export const loginInputs: InputGroup[] = [
-  {
-    wrapperClassName: "",
-    render: [
-      { name: "email", type: "text", label: "Email", placeholder: "Enter your email" },
-      { name: "password", type: "password", label: "Password", placeholder: "Enter your password" },
-    ],
-  },
-];
-
-export const otpPhoneInputArr = () => [
-  {
-    wrapperClassName: "",
-    render: [
-      { type: "phone", name: "phone_number", label: "Phone number" },
-    ],
-  },
-];
-
-export const otpOtpInputArr = () => [
-  {
-    wrapperClassName: "",
-    render: [
-      { type: "otp", name: "otp", label: "Enter the OTP" },
-    ],
-  },
-];
-```
+#### AuthLayoutForProtectedRoutes handles unauthorized access to protected routes
 
 ### File Structure
 - Keep components in appropriate folders

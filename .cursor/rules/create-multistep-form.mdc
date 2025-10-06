@@ -1,0 +1,613 @@
+---
+description: Create multi-step forms with useMultiStepForm hook, supports Figma designs and complex step flows
+---
+
+# Create Multi-Step Form Rule
+
+Use this rule when creating multi-step forms for admin modules. Inherits all patterns from create-edit-form rule and adds multi-step specific functionality.
+
+## Multi-Step Form Pattern
+
+### File Structure
+```typescript
+// src/Pages/ProtectedPaths/[ModuleName]/[ModuleName]MultiStepForm.tsx
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import useMultiStepForm from "@/hooks/useMultiStepForm";
+import AppForm from "@/components/Commmon/AppForm/AppForm";
+import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
+import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
+import AppStepperHeader from "@/components/Commmon/AppStepperHeader";
+import AppText from "@/components/Commmon/AppText";
+import { useMutation } from "@tanstack/react-query";
+import makePostRequest from "@/api/makePostRequest";
+import { [MODULE]_PAGE_URL } from "@/navigation/urls";
+import StepOne from "./components/StepOne";
+import StepTwo from "./components/StepTwo";
+import StepThree from "./components/StepThree";
+import {
+  defaultValues,
+  stepOneSchema,
+  stepTwoSchema,
+  stepThreeSchema,
+} from "./[ModuleName]FormHelpers";
+```
+
+### Multi-Step Form Template
+```typescript
+const [ModuleName]MultiStepForm = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Step configuration - Define all steps with their schemas and fields
+  const steps = [
+    {
+      schema: stepOneSchema,
+      fields: ["firstName", "lastName", "email"],
+      title: "Basic Information",
+      description: "Enter your personal details",
+    },
+    {
+      schema: stepTwoSchema,
+      fields: ["phone", "address", "city", "zipCode"],
+      title: "Contact Information", 
+      description: "Enter your contact and location details",
+    },
+    {
+      schema: stepThreeSchema,
+      fields: ["country", "gender", "newsletter", "terms"],
+      title: "Additional Information",
+      description: "Complete your profile and preferences",
+    },
+  ];
+
+  const {
+    currentStep,
+    formUtils,
+    goToNextStep,
+    goToPreviousStep,
+    validateCurrentStep,
+    isLastStep,
+    getFinalData,
+    isFirstStep
+  } = useMultiStepForm({
+    steps,
+    defaultValues,
+    onSubmitSuccess: (data) => {
+      toast.success("Form submitted successfully!");
+      console.log("Final form data:", data);
+    },
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: any) => makePostRequest("[moduleEndpoints].create", data),
+    onSuccess: (data) => {
+      toast.success("Form submitted successfully!");
+      formUtils.reset(defaultValues);
+      // Navigate to success page or list page
+    },
+  });
+
+  // Handle form submission
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      const isValid = await validateCurrentStep();
+      if (isValid) {
+        const finalData = getFinalData();
+        mutate(finalData);
+      }
+    } catch (error) {
+      toast.error("Failed to submit form");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Handle next step
+  const handleNext = async () => {
+    const success = await goToNextStep();
+    if (!success) {
+      toast.error("Please fill in all required fields");
+    }
+  };
+
+  // Handle previous step
+  const handlePrevious = () => {
+    goToPreviousStep();
+  };
+
+  // Render current step component
+  const renderCurrentStep = () => {
+    const stepComponents = [StepOne, StepTwo, StepThree];
+    const CurrentStepComponent = stepComponents[currentStep];
+    return <CurrentStepComponent formUtils={formUtils} />;
+  };
+
+  return (
+    <AppPageWrapper>
+      <AppTitleWithBackButton
+        onBackNavigateTo={[MODULE]_PAGE_URL}
+        title="Multi-Step [Module Name]"
+      />
+
+      <div className="mb-4">
+        <AppText className="text-gray-600">
+          Complete all steps to submit your information
+        </AppText>
+      </div>
+
+      {/* Progress indicator */}
+      <div className="mb-4">
+        <AppStepperHeader
+          steps={steps}
+          currentStep={currentStep}
+          variant="default"
+        />
+      </div>
+
+      {/* Form content */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{steps[currentStep].title}</CardTitle>
+              <AppText className="text-gray-600 mt-1">
+                {steps[currentStep].description}
+              </AppText>
+            </div>
+            <Badge variant="outline">
+              Step {currentStep + 1} of {steps.length}
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <AppForm
+            inputArr={[]}
+            formUtils={formUtils}
+            onSubmit={formUtils.handleSubmit(handleSubmit)}
+            isSubmitting={isSubmitting || isPending}
+            primaryButtonText={isLastStep ? "Submit Form" : "Next Step"}
+            secondaryButtonText="Previous"
+            primaryBtnType={isLastStep ? "submit" : "button"}
+            onPrimaryButtonClick={isLastStep ? undefined : handleNext}
+            onSecondaryButtonClick={isFirstStep ? undefined : handlePrevious}
+            secondaryButtonDisabled={isFirstStep}
+          >
+            {renderCurrentStep()}
+          </AppForm>
+        </CardContent>
+      </Card>
+    </AppPageWrapper>
+  );
+};
+
+export default [ModuleName]MultiStepForm;
+```
+
+## Multi-Step Helper File Pattern
+
+### Module Helper File Structure
+```typescript
+// src/Pages/ProtectedPaths/[ModuleName]/[ModuleName]FormHelpers.tsx
+import type { InputGroup } from "@/components/Commmon/types";
+import z from "zod";
+import { CustomComponent } from "./components/CustomComponent";
+
+// 1. Default values for all steps
+export const defaultValues = {
+  // Step 1 fields
+  firstName: "",
+  lastName: "",
+  email: "",
+  // Step 2 fields
+  phone: "",
+  address: "",
+  city: "",
+  zipCode: "",
+  // Step 3 fields
+  country: "",
+  gender: "",
+  newsletter: false,
+  terms: false,
+  // Shared fields
+  arrayField: [],
+};
+
+// 2. Step-specific Zod validation schemas
+export const stepOneSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email format"),
+});
+
+export const stepTwoSchema = z.object({
+  phone: z.string().min(10, "Phone must be at least 10 digits"),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  zipCode: z.string().min(1, "Zip code is required"),
+});
+
+export const stepThreeSchema = z.object({
+  country: z.string().min(1, "Country is required"),
+  gender: z.string().min(1, "Gender is required"),
+  newsletter: z.boolean(),
+  terms: z.boolean().refine(val => val === true, "You must accept the terms"),
+});
+
+// 3. Combined schema for final validation (optional)
+export const completeSchema = z.object({
+  ...stepOneSchema.shape,
+  ...stepTwoSchema.shape,
+  ...stepThreeSchema.shape,
+});
+
+// 4. Data transformation before API call
+export const changeDataBeforeMutate = (body: any) => {
+  return {
+    ...body,
+    // Transform data as needed
+    firstName: body?.firstName?.toLowerCase(),
+    lastName: body?.lastName?.toLowerCase(),
+    meta_data: {
+      created_at: new Date().toISOString(),
+      user_id: getCurrentUserId(),
+    },
+  };
+};
+```
+
+## Step Component Pattern
+
+### Individual Step Components
+```typescript
+// src/Pages/ProtectedPaths/[ModuleName]/components/StepOne.tsx
+import type { UseFormReturn } from 'react-hook-form';
+import AppInput from '@/components/Commmon/AppForm/AppInput';
+import AppText from '@/components/Commmon/AppText';
+
+interface StepOneProps {
+  formUtils?: UseFormReturn;
+}
+
+const StepOne = ({ formUtils }: StepOneProps) => {
+  return (
+    <div className="space-y-4">
+      <AppText 
+        text="Basic Information" 
+        className="text-xl font-semibold mb-4" 
+      />
+      
+      <div className="grid grid-cols-2 gap-4">
+        <AppInput
+          name="firstName"
+          label="First Name"
+          placeholder="Enter your first name"
+          formUtils={formUtils!}
+          required
+        />
+        
+        <AppInput
+          name="lastName"
+          label="Last Name"
+          placeholder="Enter your last name"
+          formUtils={formUtils!}
+          required
+        />
+      </div>
+      
+      <AppInput
+        name="email"
+        label="Email Address"
+        type="email"
+        placeholder="Enter your email"
+        formUtils={formUtils!}
+        required
+      />
+    </div>
+  );
+};
+
+export default StepOne;
+```
+
+### Step Component with Custom Fields
+```typescript
+// src/Pages/ProtectedPaths/[ModuleName]/components/StepTwo.tsx
+import type { UseFormReturn } from 'react-hook-form';
+import AppInput from '@/components/Commmon/AppForm/AppInput';
+import AppSelect from '@/components/Commmon/AppForm/AppSelect';
+import AppText from '@/components/Commmon/AppText';
+import ArrayFieldComponent from './ArrayFieldComponent';
+
+interface StepTwoProps {
+  formUtils?: UseFormReturn;
+}
+
+const StepTwo = ({ formUtils }: StepTwoProps) => {
+  return (
+    <div className="space-y-4">
+      <AppText 
+        text="Contact Information" 
+        className="text-xl font-semibold mb-4" 
+      />
+      
+      <div className="grid grid-cols-2 gap-4">
+        <AppInput
+          name="phone"
+          label="Phone Number"
+          type="phone"
+          placeholder="Enter your phone"
+          formUtils={formUtils!}
+          required
+        />
+        
+        <AppSelect
+          name="country"
+          label="Country"
+          placeholder="Select country"
+          formUtils={formUtils!}
+          options={[
+            { value: "US", label: "United States" },
+            { value: "CA", label: "Canada" },
+            { value: "UK", label: "United Kingdom" },
+          ]}
+          required
+        />
+      </div>
+      
+      <AppInput
+        name="address"
+        label="Address"
+        placeholder="Enter your address"
+        formUtils={formUtils!}
+        required
+      />
+      
+      {/* Custom array field component */}
+      <ArrayFieldComponent
+        formUtils={formUtils!}
+        fieldName="emergencyContacts"
+        label="Emergency Contacts"
+        placeholder="Contact"
+      />
+    </div>
+  );
+};
+
+export default StepTwo;
+```
+
+## Figma Design Integration for Multi-Step
+
+### Multi-Step Design Analysis
+When Figma link or screenshot is provided for multi-step forms:
+
+1. **Step Identification** - Extract all steps and their titles/descriptions
+2. **Field Distribution** - Identify which fields belong to which step
+3. **Progress Indicator** - Analyze step indicator design and layout
+4. **Step Layouts** - Extract layout patterns for each step
+5. **Navigation Elements** - Identify next/previous button styles and placement
+6. **Validation Rules** - Extract step-specific validation requirements
+
+### Implementation Strategy
+```typescript
+// Custom multi-step form based on Figma design
+const CustomMultiStepForm = () => {
+  // Define steps based on Figma analysis
+  const steps = [
+    {
+      schema: customStepOneSchema,
+      fields: ["field1", "field2"],
+      title: "Step 1 Title from Figma",
+      description: "Step 1 description from Figma",
+    },
+    // ... more steps
+  ];
+
+  const {
+    currentStep,
+    formUtils,
+    goToNextStep,
+    goToPreviousStep,
+    validateCurrentStep,
+    isLastStep,
+    getFinalData,
+    isFirstStep
+  } = useMultiStepForm({
+    steps,
+    defaultValues: customDefaultValues,
+    onSubmitSuccess: (data) => {
+      // Handle success
+    },
+  });
+
+  return (
+    <AppPageWrapper>
+      {/* Custom progress indicator based on Figma */}
+      <div className="custom-progress-indicator">
+        <AppStepperHeader
+          steps={steps}
+          currentStep={currentStep}
+          variant="custom" // Custom variant for Figma design
+        />
+      </div>
+
+      {/* Custom step content based on Figma */}
+      <div className="custom-step-content">
+        {/* Render current step with custom styling */}
+      </div>
+    </AppPageWrapper>
+  );
+};
+```
+
+## Advanced Multi-Step Features
+
+### Conditional Step Navigation
+```typescript
+// Skip steps based on user input
+const handleNext = async () => {
+  const currentData = formUtils.getValues();
+  
+  // Skip step 2 if certain condition is met
+  if (currentStep === 0 && currentData.skipStep2) {
+    await goToStep(2); // Skip to step 3
+  } else {
+    const success = await goToNextStep();
+    if (!success) {
+      toast.error("Please fill in all required fields");
+    }
+  }
+};
+```
+
+### Dynamic Step Generation
+```typescript
+// Generate steps dynamically based on user input
+const generateSteps = (userType: string) => {
+  const baseSteps = [
+    {
+      schema: stepOneSchema,
+      fields: ["firstName", "lastName"],
+      title: "Basic Information",
+      description: "Enter your basic details",
+    },
+  ];
+
+  if (userType === "business") {
+    baseSteps.push({
+      schema: businessStepSchema,
+      fields: ["companyName", "businessType"],
+      title: "Business Information",
+      description: "Enter your business details",
+    });
+  }
+
+  return baseSteps;
+};
+```
+
+### Step Data Persistence
+```typescript
+// Save step data to localStorage for recovery
+const saveStepData = (stepIndex: number, data: any) => {
+  localStorage.setItem(`step_${stepIndex}_data`, JSON.stringify(data));
+};
+
+const loadStepData = (stepIndex: number) => {
+  const saved = localStorage.getItem(`step_${stepIndex}_data`);
+  return saved ? JSON.parse(saved) : null;
+};
+```
+
+## Schema Requirements for Multi-Step Forms
+
+### When Creating Multi-Step Forms, Always Ask For:
+
+#### 1. Step Breakdown
+```typescript
+// Ask user to define steps
+const steps = [
+  {
+    title: "Step 1 Title",
+    description: "Step 1 description",
+    fields: ["field1", "field2"],
+    // ... other step config
+  },
+  // ... more steps
+];
+```
+
+#### 2. Step-Specific Schemas
+```typescript
+// Each step needs its own validation schema
+export const stepOneSchema = z.object({
+  field1: z.string().min(1, "Field 1 is required"),
+  field2: z.string().email("Invalid email"),
+});
+
+export const stepTwoSchema = z.object({
+  field3: z.string().min(1, "Field 3 is required"),
+  field4: z.number().min(0, "Field 4 must be positive"),
+});
+```
+
+#### 3. Final Submission Schema
+```typescript
+// Combined schema for final validation
+export const finalSchema = z.object({
+  ...stepOneSchema.shape,
+  ...stepTwoSchema.shape,
+  // ... all step schemas
+});
+```
+
+## Implementation Checklist
+
+### Multi-Step Form Setup:
+- [ ] Create multi-step form component
+- [ ] Define step configuration with schemas and fields
+- [ ] Implement useMultiStepForm hook
+- [ ] Create individual step components
+- [ ] Add progress indicator with AppStepperHeader
+- [ ] Implement step navigation logic
+- [ ] Handle form submission and validation
+- [ ] Add proper error handling and loading states
+
+### Figma Integration:
+- [ ] Analyze Figma design for step breakdown
+- [ ] Extract step titles, descriptions, and field distribution
+- [ ] Implement custom progress indicator if needed
+- [ ] Create step components matching Figma design
+- [ ] Handle custom navigation patterns
+- [ ] Ensure responsive design across steps
+
+### Advanced Features:
+- [ ] Conditional step navigation
+- [ ] Dynamic step generation
+- [ ] Step data persistence
+- [ ] Custom validation rules per step
+- [ ] Step-specific custom components
+
+## Common Patterns
+
+### Step Validation
+```typescript
+// Validate current step before proceeding
+const validateCurrentStep = async (): Promise<boolean> => {
+  const currentStepFields = steps[currentStep]?.fields || [];
+  return await formUtils.trigger(currentStepFields);
+};
+```
+
+### Step Navigation
+```typescript
+// Navigate between steps with validation
+const goToNextStep = async (): Promise<boolean> => {
+  const isValid = await validateCurrentStep();
+  if (isValid) {
+    // Save current step data
+    // Move to next step
+    // Reset form with merged data
+    return true;
+  }
+  return false;
+};
+```
+
+### Final Data Assembly
+```typescript
+// Combine data from all steps
+const getFinalData = () => {
+  const currentData = formUtils.getValues();
+  const savedData = Object.values(stepData).reduce(
+    (acc, step) => ({ ...acc, ...step }),
+    {}
+  );
+  return { ...savedData, ...currentData };
+};
+```
+
+This rule ensures consistent, feature-rich multi-step form creation that can handle complex step flows and custom designs while maintaining the established patterns from the create-edit-form rule.

@@ -1,4 +1,4 @@
-import AppSearchInput from "../AppSearchInput";
+import AppListFilter from "../AppListFilter";
 import type { IAppTableWithSearchAndFilter } from "../types";
 import AppTable from "./AppTable";
 
@@ -11,18 +11,23 @@ const AppTableWithSearchAndFilter = ({
   setPage,
   isLoading,
   handleSearch,
-  searchPlaceholder = "Search Contact",
+  // searchPlaceholder = "Search Contact",
   actions,
   customValueRender,
-  asideComp
+  asideComp,
+  formUtils,
+  filterInputArr,
 }: IAppTableWithSearchAndFilter) => {
   return (
     <div className="flex-1">
       <div className="flex justify-between mb-[13px]">
-        <AppSearchInput handleSearch={handleSearch} placeholder={searchPlaceholder} />
-        <div>
-          {asideComp && asideComp}
-        </div>
+        <AppListFilter
+          handleSearch={handleSearch}
+          formUtils={formUtils}
+          inputArr={filterInputArr}
+        />
+
+        <div>{asideComp && asideComp}</div>
       </div>
       <AppTable
         headers={headers}

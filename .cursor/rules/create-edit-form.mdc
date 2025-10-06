@@ -1,0 +1,493 @@
+---
+description: Create Edit/Create forms with useCrud hook, supports Figma designs and custom components
+---
+
+# Create Edit/Create Form Rule
+
+Use this rule when creating form pages for admin modules. Supports both standard forms and custom Figma designs with complex field types.
+
+## Standard Form Pattern
+
+### File Structure
+```typescript
+// src/Pages/ProtectedPaths/[ModuleName]/[ModuleName]FormPage.tsx
+import { useParams } from "react-router";
+import AppLayout from "@/components/layout/MainLayout/AppLayout";
+import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
+import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
+import AppForm from "@/components/Commmon/AppForm/AppForm";
+import useCrud from "@/hooks/useCrud";
+import { useNavigate } from "react-router";
+import { 
+  [moduleName]DefaultValues,
+  [moduleName]Schema, 
+  [moduleName]InputArr,
+  [moduleName]ChangeDataBeforeMutate 
+} from "./[ModuleName]FormHelpers";
+import { [MODULE]_PAGE_URL } from "@/navigation/urls";
+```
+
+### Standard Form Template
+```typescript
+const [ModuleName]FormPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const isEdit = !!id;
+
+  const { handleSubmit, formUtils, isMetaLoading, isSubmitting } = useCrud({
+    submitEndpoint: isEdit 
+      ? `[moduleEndpoints].update/${id}` 
+      : "[moduleEndpoints].create",
+    metaEndpoint: "[moduleEndpoints].meta",
+    detailEndpoint: isEdit ? `[moduleEndpoints].detail/${id}` : "",
+    defaultValues: [moduleName]DefaultValues,
+    schema: [moduleName]Schema,
+    changeDataBeforeMutate: [moduleName]ChangeDataBeforeMutate,
+    isCreate: !isEdit,
+    onSubmitSuccess: (res) => {
+      navigate([MODULE]_PAGE_URL);
+    },
+    onMetaAndDetailFetchSuccess: ({ data, formUtils }) => {
+      if (data && isEdit) {
+        // Pre-fill form with existing data
+        formUtils.reset(data);
+      }
+    }
+  });
+
+  return (
+    <AppLayout>
+      <div className="p-6">
+        <AppTitleWithBackButton 
+          title={isEdit ? "Edit [Module Name]" : "Create [Module Name]"} 
+        />
+        <AppPageWrapper>
+          <AppForm
+            inputArr={[moduleName]InputArr(formUtils)}
+            onSubmit={handleSubmit}
+            formUtils={formUtils}
+            isLoading={isMetaLoading}
+            isSubmitting={isSubmitting}
+          />
+        </AppPageWrapper>
+      </div>
+    </AppLayout>
+  );
+};
+
+export default [ModuleName]FormPage;
+```
+
+## Helper File Pattern
+
+### Module Helper File Structure
+```typescript
+// src/Pages/ProtectedPaths/[ModuleName]/[ModuleName]FormHelpers.tsx
+import type { InputGroup } from "@/components/Commmon/types";
+import z from "zod";
+import { CustomComponent } from "./components/CustomComponent";
+
+// 1. Default values for forms
+export const [moduleName]DefaultValues = {
+  field1: "",
+  field2: "",
+  arrayField: [],
+  // ... other fields
+};
+
+// 2. Zod validation schema
+export const [moduleName]Schema = z.object({
+  field1: z.string().min(1, "Field1 is required"),
+  field2: z.string().email("Invalid email"),
+  arrayField: z.array(z.object({
+    name: z.string().min(1),
+    value: z.string().min(1),
+  })),
+  // ... other validations
+});
+
+// 3. Form input configuration
+export const [moduleName]InputArr = (formUtils: any): InputGroup[] => [
+  {
+    wrapperClassName: "grid grid-cols-2 gap-4",
+    render: [
+      {
+        name: "field1",
+        type: "text",
+        label: "Field 1 Label",
+        placeholder: "Enter field 1",
+        required: true,
+      },
+      {
+        name: "field2",
+        type: "email",
+        label: "Field 2 Label",
+        placeholder: "Enter field 2",
+        required: true,
+      },
+    ],
+  },
+  {
+    wrapperClassName: "",
+    render: [
+      {
+        name: "customField",
+        type: "custom-comp",
+        customComp: <CustomComponent formUtils={formUtils} />,
+      },
+    ],
+  },
+];
+
+// 4. Data transformation before API call
+export const [moduleName]ChangeDataBeforeMutate = (body: any) => {
+  return {
+    ...body,
+    // Transform data as needed
+    field1: body?.field1?.toLowerCase(),
+    meta_data: {
+      // Additional metadata
+    },
+  };
+};
+```
+
+## Custom Component Pattern
+
+### Array Field Component (Following SuggestedMsgComp Pattern)
+```typescript
+// src/Pages/ProtectedPaths/[ModuleName]/components/ArrayFieldComponent.tsx
+import AppInput from "@/components/Commmon/AppForm/AppInput";
+import AppText from "@/components/Commmon/AppText";
+import { Button } from "@/components/ui/button";
+import { Plus, X } from "lucide-react";
+import { useFieldArray } from "react-hook-form";
+
+const ArrayFieldComponent = ({ formUtils, fieldName, label, placeholder }: {
+  formUtils: any;
+  fieldName: string;
+  label: string;
+  placeholder: string;
+}) => {
+  const { fields, append, remove } = useFieldArray({
+    control: formUtils.control,
+    name: fieldName,
+  });
+
+  const handleAddItem = () => {
+    append({
+      name: "",
+      value: "",
+    });
+  };
+
+  const value = formUtils.watch(fieldName);
+
+  return (
+    <div className="border-t mt-2 pt-2">
+      <div className="flex gap-2 items-center pb-3">
+        <AppText
+          text={label}
+          className="text-text-secondary text-sm font-medium"
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        {fields?.map((field, index) => (
+          <div className="flex gap-2 items-center" key={field.id}>
+            <div className="flex-1 relative">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="relative">
+                  <AppInput
+                    formUtils={formUtils}
+                    name={`${fieldName}.${index}.name`}
+                    placeholder={`${placeholder} name...`}
+                    className="flex-1"
+                    maxLength={50}
+                  />
+                </div>
+                <div>
+                  <AppInput
+                    formUtils={formUtils}
+                    name={`${fieldName}.${index}.value`}
+                    placeholder={`${placeholder} value...`}
+                    className="flex-1"
+                    maxLength={50}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              onClick={() => remove(index)}
+              variant="outline"
+              className="!py-[20px] self-start"
+            >
+              <X />
+            </Button>
+          </div>
+        ))}
+      </div>
+      
+      <Button
+        type="button"
+        onClick={handleAddItem}
+        variant="outline"
+      >
+        <Plus /> Add {label}
+      </Button>
+    </div>
+  );
+};
+
+export default ArrayFieldComponent;
+```
+
+### Custom Component Integration
+```typescript
+// In helper file
+import ArrayFieldComponent from "./components/ArrayFieldComponent";
+
+export const [moduleName]InputArr = (formUtils: any): InputGroup[] => [
+  {
+    wrapperClassName: "",
+    render: [
+      {
+        name: "arrayField",
+        type: "custom-comp",
+        customComp: (
+          <ArrayFieldComponent
+            formUtils={formUtils}
+            fieldName="arrayField"
+            label="Array Items"
+            placeholder="Item"
+          />
+        ),
+      },
+    ],
+  },
+];
+```
+
+## Figma Design Integration
+
+### Design Analysis Process
+When Figma link or screenshot is provided:
+
+1. **Field Identification** - Extract all input fields, labels, and types
+2. **Layout Analysis** - Identify grid layouts, spacing, and grouping
+3. **Custom Components** - Identify non-standard fields that need custom components
+4. **Validation Rules** - Extract required fields and validation patterns
+5. **Conditional Logic** - Identify fields that show/hide based on other values
+
+### Implementation Strategy
+```typescript
+// Custom form based on Figma design
+const CustomFormPage = () => {
+  const { handleSubmit, formUtils, isMetaLoading, isSubmitting } = useCrud({
+    submitEndpoint: "[moduleEndpoints].create",
+    metaEndpoint: "[moduleEndpoints].meta",
+    detailEndpoint: "",
+    defaultValues: customDefaultValues,
+    schema: customSchema,
+    changeDataBeforeMutate: customDataTransform,
+    isCreate: true,
+    onSubmitSuccess: (res) => {
+      navigate([MODULE]_PAGE_URL);
+    }
+  });
+
+  return (
+    <AppLayout>
+      <div className="p-6">
+        <AppTitleWithBackButton title="Custom Form" />
+        <AppPageWrapper>
+          {/* Custom layout based on Figma */}
+          <div className="custom-form-layout">
+            <AppForm
+              inputArr={customInputArr(formUtils)}
+              onSubmit={handleSubmit}
+              formUtils={formUtils}
+              isLoading={isMetaLoading}
+              isSubmitting={isSubmitting}
+            />
+          </div>
+        </AppPageWrapper>
+      </div>
+    </AppLayout>
+  );
+};
+```
+
+## Schema Requirements
+
+### When Creating Forms, Always Ask For:
+
+#### 1. Meta Endpoint Schema
+```typescript
+// Ask user for sample meta endpoint response
+// Example:
+{
+  "data": {
+    "statuses": ["active", "inactive"],
+    "categories": [
+      { "id": 1, "name": "Category 1" },
+      { "id": 2, "name": "Category 2" }
+    ],
+    "permissions": ["read", "write", "admin"]
+  }
+}
+```
+
+#### 2. Submit Endpoint Schema
+```typescript
+// Ask user for expected submit payload
+// Example:
+{
+  "name": "string",
+  "email": "string",
+  "status": "active|inactive",
+  "category_id": "number",
+  "permissions": ["string"],
+  "meta_data": {
+    "custom_field": "string"
+  }
+}
+```
+
+### Chrome MCP Integration
+When user requests Chrome MCP usage:
+1. **Network Tab Analysis** - Capture API requests and responses
+2. **Console Log Analysis** - Extract data structures from console.log
+3. **Schema Extraction** - Build TypeScript interfaces from captured data
+4. **Validation Rules** - Extract validation patterns from API responses
+
+## Advanced Field Types
+
+### Conditional Fields
+```typescript
+// In helper file
+export const [moduleName]InputArr = (formUtils: any): InputGroup[] => {
+  const watchField = formUtils.watch("fieldName");
+  
+  return [
+    {
+      wrapperClassName: "grid grid-cols-2 gap-4",
+      render: [
+        {
+          name: "field1",
+          type: "select",
+          label: "Field 1",
+          options: [
+            { value: "option1", label: "Option 1" },
+            { value: "option2", label: "Option 2" },
+          ],
+        },
+        // Conditional field
+        ...(watchField === "option1" ? [{
+          name: "conditionalField",
+          type: "text",
+          label: "Conditional Field",
+          placeholder: "Enter value",
+        }] : []),
+      ],
+    },
+  ];
+};
+```
+
+### File Upload Fields
+```typescript
+{
+  name: "fileField",
+  type: "file",
+  label: "Upload File",
+  accept: "image/*,.pdf",
+  multiple: false,
+}
+```
+
+### Date/Time Fields
+```typescript
+{
+  name: "dateField",
+  type: "date",
+  label: "Select Date",
+  required: true,
+}
+```
+
+### Phone Fields
+```typescript
+{
+  name: "phoneField",
+  type: "phone",
+  label: "Phone Number",
+  required: true,
+}
+```
+
+## Implementation Checklist
+
+### Standard Form:
+- [ ] Create form page component
+- [ ] Create helper file with all configurations
+- [ ] Implement useCrud hook integration
+- [ ] Add proper navigation and routing
+- [ ] Handle create/edit modes
+- [ ] Add loading and error states
+
+### Custom Figma Design:
+- [ ] Analyze Figma design/screenshot
+- [ ] Extract field types and layout
+- [ ] Create custom components if needed
+- [ ] Implement conditional logic
+- [ ] Match exact styling and spacing
+- [ ] Test responsive design
+
+### Schema Integration:
+- [ ] Request meta endpoint schema
+- [ ] Request submit endpoint schema
+- [ ] Use Chrome MCP if requested
+- [ ] Build proper TypeScript interfaces
+- [ ] Implement data transformation
+
+### Advanced Features:
+- [ ] Array field components
+- [ ] Conditional field rendering
+- [ ] Custom validation rules
+- [ ] File upload handling
+- [ ] Multi-step form preparation
+
+## Common Patterns
+
+### Form Validation
+```typescript
+export const [moduleName]Schema = z.object({
+  email: z.string().email("Invalid email format"),
+  phone: z.string().min(10, "Phone must be at least 10 digits"),
+  arrayField: z.array(z.object({
+    name: z.string().min(1, "Name is required"),
+    value: z.string().min(1, "Value is required"),
+  })).min(1, "At least one item required"),
+});
+```
+
+### Data Transformation
+```typescript
+export const [moduleName]ChangeDataBeforeMutate = (body: any) => {
+  return {
+    ...body,
+    // Transform arrays
+    arrayField: body.arrayField?.filter(item => item.name && item.value),
+    // Add metadata
+    meta_data: {
+      created_at: new Date().toISOString(),
+      user_id: getCurrentUserId(),
+    },
+  };
+};
+```
+
+This rule ensures consistent, feature-rich form creation that can handle complex designs and requirements while maintaining the established patterns.

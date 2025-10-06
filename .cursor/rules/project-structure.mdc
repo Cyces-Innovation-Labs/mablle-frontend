@@ -1,0 +1,152 @@
+---
+alwaysApply: true
+description: Admin boilerplate project structure and development guidelines
+---
+
+# Admin Boilerplate Project Structure Guide
+
+This is a React + TypeScript admin boilerplate using:
+- React 19 + TypeScript + Vite
+- TailwindCSS + Radix UI (shadcn/ui)
+- React Query + Zustand for state management
+- React Hook Form + Zod validation
+- React Router for navigation
+
+## Core Directory Structure
+
+### Key Directories
+- `src/components/Commmon/` - Reusable components (note: typo in folder name)
+- `src/components/layout/` - Layout components
+- `src/components/ui/` - shadcn/ui components
+- `src/api/` - API layer with axios
+- `src/hooks/` - Custom hooks
+- `src/store/` - Zustand stores
+- `src/routes/` - Route definitions
+- `src/Pages/` - Page components
+- `src/navigation/` - URL constants
+- `src/utils/` - Utility functions
+
+## Naming Conventions
+
+### Files & Components
+- Components: PascalCase (e.g., `AppForm.tsx`, `AppTable.tsx`)
+- Hooks: camelCase starting with 'use' (e.g., `useCrud.tsx`)
+- Pages: PascalCase (e.g., `LoginPage.tsx`)
+- API files: camelCase (e.g., `makeGetRequest.ts`)
+- Types: PascalCase with 'I' prefix for interfaces (e.g., `IAppTable`)
+
+### Props & Variables
+- Props: camelCase (e.g., `inputArr`, `formUtils`)
+- State: camelCase (e.g., `isLoading`, `selectedRows`)
+- Constants: SCREAMING_SNAKE_CASE (e.g., `USER_PAGE_URL`)
+
+## Key Components Reference
+
+### Form System
+- [AppForm.tsx](mdc:src/components/Commmon/AppForm/AppForm.tsx) - Main form wrapper
+- [AppInputRenderer.tsx](mdc:src/components/Commmon/AppForm/AppInputRenderer.tsx) - Input renderer
+- [types.ts](mdc:src/components/Commmon/types.ts) - Type definitions
+
+### Table System
+- [AppTable.tsx](mdc:src/components/Commmon/AppTable/AppTable.tsx) - Main table component
+- [AppTableBody.tsx](mdc:src/components/Commmon/AppTable/AppTableBody.tsx) - Table body
+- [AppTableHeaders.tsx](mdc:src/components/Commmon/AppTable/AppTableHeaders.tsx) - Table headers
+
+### CRUD Operations
+- [useCrud.tsx](mdc:src/hooks/useCrud.tsx) - CRUD operations hook
+- [useGetTableData.tsx](mdc:src/hooks/useGetTableData.tsx) - Table data fetching
+
+### API Layer
+- [endpoints.ts](mdc:src/api/endpoints/endpoints.ts) - API endpoints
+- [makeGetRequest.ts](mdc:src/api/makeGetRequest.ts) - GET requests
+- [makePostRequest.ts](mdc:src/api/makePostRequest.ts) - POST requests
+- [makePutRequest.ts](mdc:src/api/makePutRequest.ts) - PUT requests
+- [makeDeleteRequest.ts](mdc:src/api/makeDeleteRequest.ts) - DELETE requests
+
+
+### Authentication
+- [authStore.ts](mdc:src/store/authStore.ts) - Authentication state
+- [LoginPage.tsx](mdc:src/Pages/AuthPages/LoginPage.tsx) - Main login page
+- [LoginComp.tsx](mdc:src/Pages/AuthPages/components/LoginComp.tsx) - Password login
+- [OTPLogin.tsx](mdc:src/Pages/AuthPages/components/OTPLogin/OTPLogin.tsx) - OTP login
+
+### Layout System
+- [AppLayout.tsx](mdc:src/components/layout/MainLayout/AppLayout.tsx) - Main layout
+- [AppSidebar.tsx](mdc:src/components/layout/MainLayout/AppSidebar.tsx) - Sidebar
+
+### Form Metadata
+- [LoginAndSignUpInputMeta.tsx](mdc:src/inputFormsMeta/LoginAndSignUpInputMeta.tsx) - Auth form configs
+- [UsersFormHelpers.tsx](mdc:src/Pages/ProtectedPaths/Users/UsersFormHelpers.tsx) - User form helpers
+
+## Development Workflow
+
+### Before starting any feature:
+1. Check existing components in `src/components/Commmon/`
+2. Use existing hooks in `src/hooks/`
+3. Follow API patterns in `src/api/`
+4. Use existing UI components from `src/components/ui/`
+
+### Code Quality Standards:
+- Always use TypeScript with proper types
+- Follow existing naming conventions
+- Use existing patterns before creating new ones
+- Handle errors consistently with `handleApiError` from `@/lib/common-funnctions`
+- Use React Query for server state
+- Use Zustand for client state
+
+## Common Patterns
+
+### Typical Admin Module Structure
+Every admin module consists of:
+
+1. **Listing Page** - Shows data in a table with pagination, search, and actions
+2. **Form Page** - Single component handling both Create and Edit operations (URLs differ)
+3. **Detail Page** (Optional) - View-only page for detailed information
+
+#### Module File Structure
+```typescript
+src/Pages/ProtectedPaths/[ModuleName]/
+├── [ModuleName]ListPage.tsx           // Listing page with AppTable
+├── [ModuleName]FormPage.tsx           // Create/Edit form (shared component)
+├── [ModuleName]DetailPage.tsx         // Detail view (optional)
+└── [ModuleName]FormHelpers.tsx        // Form metadata and validation
+```
+
+#### URL Pattern
+```typescript
+// In src/navigation/urls.tsx
+export const [MODULE]_PAGE_URL = `/module`;
+export const [MODULE]_CREATE_PAGE_URL = `/module/create`;
+export const [MODULE]_EDIT_PAGE_URL = `/module/:id/edit`;
+export const [MODULE]_DETAIL_PAGE_URL = `/module/:id`;
+```
+
+#### Form Page Pattern (Create/Edit Shared)
+```typescript
+// [ModuleName]FormPage.tsx - Handles both create and edit
+const [ModuleName]FormPage = () => {
+  const { id } = useParams();
+  const isEdit = !!id;
+  
+  // Use same form component for both create and edit
+  // Form automatically populates with existing data when editing
+};
+```
+
+### Module Helper Files
+Every module MUST have a helper file following this pattern:
+```typescript
+// src/Pages/ProtectedPaths/[ModuleName]/[ModuleName]FormHelpers.tsx
+export const [moduleName]DefaultValues = { /* default values */ };
+export const [moduleName]Schema = z.object({ /* zod schema */ });
+export const [moduleName]InputArr: InputGroup[] = [ /* form inputs */ ];
+export const [moduleName]ChangeDataBeforeMutate = (body: any) => { /* transform data */ };
+```
+
+### Authentication Options
+Choose either Password-based OR OTP-based login methods:
+- Password: Use [LoginComp.tsx](mdc:src/Pages/AuthPages/components/LoginComp.tsx)
+- OTP: Use [OTPLogin.tsx](mdc:src/Pages/AuthPages/components/OTPLogin/OTPLogin.tsx)
+- Both: Show both options on [LoginPage.tsx](mdc:src/Pages/AuthPages/LoginPage.tsx)
+
+This setup dramatically speeds up development by providing consistent patterns and reusable components for common admin panel features.

@@ -1,0 +1,252 @@
+---
+description: Create detail pages with modular architecture, supports Figma designs and complex layouts
+---
+
+# Create Detail Page Rule
+
+Use this rule when creating detail pages for admin modules. Focuses on modular architecture, component-first thinking, and iterative development.
+
+## Core Principles
+
+1. **Modular Architecture**: Break detail pages into logical, reusable components (max 150 lines per file)
+2. **Data Flow Pattern**: Props flow top-down; lift state to nearest common ancestor
+3. **Component-First Thinking**: Map similar UI patterns to shared components before creating new ones
+4. **Iterative Development**: Build one section at a time; confirm structure before proceeding
+
+## Analysis Phase (ALWAYS START HERE)
+
+Before writing ANY code, analyze the design and output:
+
+### 1. Layout Structure
+- Identify the grid/flex container hierarchy
+- List all major sections (header, tabs, cards, sidebars)
+- Note responsive breakpoints needed (least priority)
+
+### 2. Component Mapping
+- Group similar UI patterns (e.g., stat cards, info rows, action buttons)
+- Identify reusable components from existing codebase
+- List custom components needed with single responsibilities
+
+### 3. Data Schema
+- Define TypeScript interfaces for the page data
+- Note optional vs required fields
+- Plan loading/error states
+
+### 4. Ask smart questions
+- Ask user for a sample API response if possible else have a dummy data
+- Always ask before making big changes in the code
+
+## Detail Page Structure Pattern
+
+### File Structure
+```typescript
+// src/Pages/ProtectedPaths/[ModuleName]/
+├── [ModuleName]DetailPage.tsx           // Main orchestrator (data fetching + layout)
+├── components/
+│   ├── [ModuleName]Header.tsx           // User info + stats
+│   ├── [ModuleName]Tabs.tsx             // Tab navigation
+│   ├── [ModuleName]Summary.tsx          // Content sections
+│   ├── [ModuleName]CallHistory.tsx      // Call history tab
+│   ├── [ModuleName]Reminders.tsx        // Reminders tab
+│   ├── [ModuleName]Notes.tsx            // Notes tab
+│   └── shared/
+│       ├── StatCard.tsx                 // Reusable stat display
+│       ├── InfoRow.tsx                  // Label-value pairs
+│       ├── SentimentCard.tsx            // Sentiment display
+│       └── FollowUpCard.tsx             // Follow-up scheduling
+```
+
+### Main Detail Page Template
+```typescript
+// src/Pages/ProtectedPaths/[ModuleName]/[ModuleName]DetailPage.tsx
+import { useParams } from "react-router";
+import { useState } from "react";
+import AppLayout from "@/components/layout/MainLayout/AppLayout";
+import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
+import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
+import { useQuery } from "@tanstack/react-query";
+import makeGetRequest from "@/api/makeGetRequest";
+import { [MODULE]_PAGE_URL } from "@/navigation/urls";
+import { [ModuleName]Header } from "./components/[ModuleName]Header";
+import { [ModuleName]Tabs } from "./components/[ModuleName]Tabs";
+import { [ModuleName]Summary } from "./components/[ModuleName]Summary";
+import { [ModuleName]CallHistory } from "./components/[ModuleName]CallHistory";
+import { [ModuleName]Reminders } from "./components/[ModuleName]Reminders";
+import { [ModuleName]Notes } from "./components/[ModuleName]Notes";
+
+const [ModuleName]DetailPage = () => {
+  const { id } = useParams();
+  const [activeTab, setActiveTab] = useState("summary");
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["[moduleName]Detail", id],
+    queryFn: () => makeGetRequest(`[moduleEndpoints].detail/${id}`),
+    enabled: !!id,
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading data</div>;
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "summary":
+        return <[ModuleName]Summary data={data} />;
+      case "callHistory":
+        return <[ModuleName]CallHistory userId={id} />;
+      case "reminders":
+        return <[ModuleName]Reminders userId={id} />;
+      case "notes":
+        return <[ModuleName]Notes userId={id} />;
+      default:
+        return <[ModuleName]Summary data={data} />;
+    }
+  };
+
+  return (
+    <AppLayout>
+      <div className="p-6">
+        <AppTitleWithBackButton 
+          title="[Module Name] Details"
+          onBackNavigateTo={[MODULE]_PAGE_URL}
+        />
+        
+        <AppPageWrapper>
+          {/* Header Section */}
+          <[ModuleName]Header 
+            user={data.user} 
+            stats={data.stats} 
+          />
+
+          {/* Tabs Section */}
+          <[ModuleName]Tabs 
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
+
+          {/* Tab Content */}
+          <div className="mt-6">
+            {renderTabContent()}
+          </div>
+        </AppPageWrapper>
+      </div>
+    </AppLayout>
+  );
+};
+
+export default [ModuleName]DetailPage;
+```
+
+## Component Generation Rules
+
+### Component Size Limits
+- Presentational components: max 150 lines
+- Container components: max 150 lines
+- Page files: max 200 lines (orchestration only)
+- If exceeded: refactor into sub-components immediately
+
+### Naming Conventions
+- Components: PascalCase, domain-prefixed (UserProfileHeader, CallHistoryTab)
+- Props interfaces: ComponentNameProps
+- Avoid generic names (Details, Info, Card) - be specific (SentimentCard, CallDurationStat)
+
+
+### Tab Navigation Component
+When encountering custom tab navigation, ask whether it should be a state-based tab or a URL-based(path) tab:
+If state use -> AppStateBasedTabs
+If path use -> AppTabs
+
+## Figma Design Integration
+
+### Design Analysis Process
+When Figma link or screenshot is provided:
+
+1. **Layout Analysis** - Extract grid/flex patterns and spacing
+2. **Component Identification** - Map UI elements to component types
+3. **Color Extraction** - Match to existing design system
+4. **Typography Mapping** - Use existing text components
+5. **Interactive Elements** - Identify buttons, tabs, and form controls
+
+### Sample Figma Implementation Strategy
+```typescript
+// Custom detail page based on Figma design
+const CustomDetailPage = () => {
+  return (
+    <AppLayout>
+      <div className="p-6">
+        {/* Custom header based on Figma */}
+        <div className="custom-header-layout">
+          <CustomHeaderComponent />
+        </div>
+        
+        {/* Custom stats section */}
+        <div className="custom-stats-grid">
+          <CustomStatCards />
+        </div>
+        
+        {/* Custom tab system */}
+        <div className="custom-tab-system">
+          <CustomTabNavigation />
+        </div>
+      </div>
+    </AppLayout>
+  );
+};
+```
+
+## Data Fetching Pattern
+
+### API Integration
+```typescript
+// Use React Query for data fetching
+const { data, isLoading, error } = useQuery({
+  queryKey: ["[moduleName]Detail", id],
+  queryFn: () => makeGetRequest(`[moduleEndpoints].detail/${id}`),
+  enabled: !!id,
+});
+
+// Handle loading and error states
+if (isLoading) return <SkeletonDetailPage />;
+if (error) return <ErrorState error={error} />;
+```
+
+## Questions to ALWAYS Ask
+
+Before generating code:
+1. "This page has [X sections]. Should I create them as separate components?"
+2. "I see [pattern]. Can we reuse an existing component or create a shared one?"
+3. "Should this data come from server props or client fetch?"
+4. "Do tabs persist in URL or local state?"
+5. "Should I generate this component first, or would you prefer to see the structure?"
+
+After showing a component:
+6. "Does this structure work? Should I proceed to [next section]?"
+
+## Implementation Checklist
+
+### Detail Page Setup:
+- [ ] Create main detail page component
+- [ ] Define TypeScript interfaces for data
+- [ ] Implement data fetching with React Query
+- [ ] Create header component with user info and stats
+- [ ] Build tab navigation system
+- [ ] Create individual tab content components
+- [ ] Add shared components (StatCard, InfoRow, etc.)
+- [ ] Handle loading and error states
+
+### Figma Integration:
+- [ ] Analyze Figma design for layout structure
+- [ ] Extract component patterns and create reusable components
+- [ ] Match colors and typography to design system
+- [ ] Implement responsive design
+- [ ] Test interactive elements
+
+### Code Quality:
+- [ ] Each file under line limits
+- [ ] TypeScript interfaces defined
+- [ ] Existing components used where applicable
+- [ ] No duplicate UI patterns
+- [ ] Data flows from top component
+- [ ] Responsive classes included
+- [ ] Accessibility attributes added
+
+This rule ensures consistent, modular detail page creation that can handle complex layouts and custom designs while maintaining the established patterns.

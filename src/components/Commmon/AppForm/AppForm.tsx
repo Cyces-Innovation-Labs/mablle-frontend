@@ -23,8 +23,13 @@ interface AppFormProps {
   fieldsCount?: number;
   skeletonWrapperClassName?: string;
   noDefaultButtons?: boolean;
-  handleCancel?: () => void;
+  onSecondaryButtonClick?: () => void;
   isSubmitting?: boolean;
+  primaryButtonText?: string;
+  secondaryButtonText?: string;
+  primaryBtnType?: "submit" | "button";
+  onPrimaryButtonClick?: () => void;
+  secondaryButtonDisabled?: boolean
 }
 
 const AppForm = ({
@@ -40,8 +45,13 @@ const AppForm = ({
   fieldsCount = 2,
   skeletonWrapperClassName,
   noDefaultButtons = false,
-  handleCancel,
+  onSecondaryButtonClick,
   isSubmitting = false,
+  primaryButtonText = "Submit",
+  secondaryButtonText = "Cancel",
+  primaryBtnType = "submit",
+  onPrimaryButtonClick,
+  secondaryButtonDisabled,
 }: AppFormProps) => {
   if (isLoading)
     return (
@@ -69,12 +79,13 @@ const AppForm = ({
             <div className="flex justify-end gap-2 mt-4">
               <Button
                 type="button"
-                onClick={() => handleCancel?.()}
+                onClick={() => onSecondaryButtonClick?.()}
                 variant="outline"
+                disabled={secondaryButtonDisabled}
               >
-                Cancel
+                {secondaryButtonText}
               </Button>
-              <Button type="submit" loading={isSubmitting}>Submit</Button>
+              <Button onClick={onPrimaryButtonClick} type={primaryBtnType} loading={isSubmitting}>{primaryButtonText}</Button>
             </div>
           )}
         </form>
