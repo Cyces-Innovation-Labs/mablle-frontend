@@ -5,51 +5,50 @@ import { Button } from "@/components/ui/button";
 import { loginInputs } from "@/inputFormsMeta/LoginAndSignUpInputMeta";
 import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
-import Cookies from "js-cookie";
-import useAppStore from "@/store/authStore";
 import { useNavigate } from "react-router";
-import { USER_PAGE_URL } from "@/navigation/urls";
-import AppLink from "@/components/Commmon/AppLink";
+// import AppLink from "@/components/Commmon/AppLink";
+import useAuth from "@/hooks/AuthHooks/useAuth";
+import { useMutation } from "@tanstack/react-query";
+import makePostRequest from "@/api/makePostRequest";
+import { authEndpoints } from "@/api/endpoints/endpoints";
+import { toast } from "sonner";
+import { handleApiError } from "@/lib/common-funnctions";
+import { MAKE_DASHBOARD_URL } from "@/navigation/make-url";
 
-function LoginComp({ className }: React.ComponentProps<"form">) {
+function PasswordLogin({ className }: React.ComponentProps<"form">) {
   const navigate = useNavigate();
-  const { setUserData } = useAppStore();
   const formUtils = useForm({
     defaultValues: {
       email: "",
       password: "",
     },
   });
+  const { handleLoginSuccess } = useAuth();
 
-  const handleUserDataSetInCookieAndGlobalState = (val: {
-    email: string;
-    password: string;
-  }) => {
-    const userDataObj = {
-      email: val?.email,
-      first_name: "Jai",
-      last_name: "Balayya",
-      uuid: "29384",
-      id: 4343,
-      user_type: "user",
-      teams: [
-        {
-          id: 132,
-          uuid: "293841",
-          identity: "Jai Balayya",
-          owner: true,
-        },
-      ],
-      full_name: "Jai Balayya",
-    };
-    Cookies.set("user_data", JSON.stringify(userDataObj), { expires: 30 });
-    setUserData(userDataObj);
+  // Login Mutation
+  const { mutate: loginMutation, isPending } = useMutation({
+    mutationFn: (data: {
+      email: string;
+      password: string;
+      user_type: string;
+    }) => makePostRequest(authEndpoints.login, data),
+    onSuccess: (response) => {
+      handleLoginSuccess(response);
+      navigate(MAKE_DASHBOARD_URL);
+      toast.success("Login successful");
+    },
+    onError: (error) => {
+      handleApiError(error, formUtils.setError, true);
+    },
+  });
+
+  const onSubmit = (data: { email: string; password: string }) => {
+    loginMutation({ ...data, user_type: "user" });
   };
 
   const handleSubmit = (val: { email: string; password: string }) => {
     console.log(val);
-    handleUserDataSetInCookieAndGlobalState(val);
-    navigate(USER_PAGE_URL);
+    onSubmit(val)
   };
 
   return (
@@ -71,6 +70,8 @@ function LoginComp({ className }: React.ComponentProps<"form">) {
             formUtils={formUtils}
             inputArr={loginInputs}
             onSubmit={handleSubmit}
+            isLoading={isPending}
+            noDefaultButtons
           >
             <Button type="submit" className="w-full mt-4">
               Login
@@ -83,7 +84,7 @@ function LoginComp({ className }: React.ComponentProps<"form">) {
             </span>
           </div> */}
         </div>
-        <div className="text-center text-sm mt-4">
+        {/* <div className="text-center text-sm mt-4">
           Don&apos;t have an account?{" "}
           <AppLink
             to="/signup"
@@ -91,17 +92,17 @@ function LoginComp({ className }: React.ComponentProps<"form">) {
           >
             Sign up
           </AppLink>
-        </div>
-        <div className="text-center text-sm mt-2">
+        </div> */}
+        {/* <div className="text-center text-sm mt-2">
           <AppLink
             to="/reset-password"
             className=" text-muted-foreground text-[12px] hover:text-primary hover:font-medium"
           >
             Forgot your password?
           </AppLink>
-        </div>
+        </div> */}
       </div>
     </div>
   );
 }
-export default LoginComp;
+export default PasswordLogin;

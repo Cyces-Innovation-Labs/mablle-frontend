@@ -1,5 +1,5 @@
 import AppImage from "@/components/Commmon/AppImage";
-import LoginComp from "./components/LoginComp";
+import PasswordLogin from "./components/PasswordLogin";
 import OTPLogin from "./components/OTPLogin/OTPLogin";
 
 export default function LoginPage() {
@@ -15,7 +15,7 @@ export default function LoginPage() {
       </div>
       <div className="flex flex-1 items-center justify-center">
         <div className={`w-full max-w-[380px]`}>
-           <LoginComp />
+           <PasswordLogin />
            <OTPLogin />
         </div>
       </div>

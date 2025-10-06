@@ -11,4 +11,5 @@ export const authEndpoints = {
 
   sendOtp: "/api/send-otp",
   verifyOtp: "/api/verify-otp",
+  logout: "/api/logout",
 }

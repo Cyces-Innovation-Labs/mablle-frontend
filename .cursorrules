@@ -1,0 +1,571 @@
+# Admin Boilerplate Cursor Rules
+# Automate 1 day work to 1 hour with these comprehensive rules
+
+## PROJECT OVERVIEW
+This is a React + TypeScript admin boilerplate using:
+- React 19 + TypeScript + Vite
+- TailwindCSS + Radix UI (shadcn/ui)
+- React Query + Zustand for state management
+- React Hook Form + Zod validation
+- React Router for navigation
+
+## FOLDER STRUCTURE PATTERNS
+
+### Core Directories
+- `src/components/Commmon/` - Reusable components (note: typo in folder name)
+- `src/components/layout/` - Layout components
+- `src/components/ui/` - shadcn/ui components
+- `src/api/` - API layer with axios
+- `src/hooks/` - Custom hooks
+- `src/store/` - Zustand stores
+- `src/routes/` - Route definitions
+- `src/Pages/` - Page components
+- `src/navigation/` - URL constants
+- `src/utils/` - Utility functions
+
+## NAMING CONVENTIONS
+
+### Files & Components
+- Components: PascalCase (e.g., `AppForm.tsx`, `AppTable.tsx`)
+- Hooks: camelCase starting with 'use' (e.g., `useCrud.tsx`)
+- Pages: PascalCase (e.g., `LoginPage.tsx`)
+- API files: camelCase (e.g., `makeGetRequest.ts`)
+- Types: PascalCase with 'I' prefix for interfaces (e.g., `IAppTable`)
+
+### Props & Variables
+- Props: camelCase (e.g., `inputArr`, `formUtils`)
+- State: camelCase (e.g., `isLoading`, `selectedRows`)
+- Constants: SCREAMING_SNAKE_CASE (e.g., `USER_PAGE_URL`)
+
+## COMPONENT CREATION PATTERNS
+
+### When creating new components, follow these patterns:
+
+#### 1. Form Components
+```typescript
+// Use AppForm + AppInputRenderer pattern
+import AppForm from "@/components/Commmon/AppForm/AppForm";
+import AppInputRenderer from "@/components/Commmon/AppForm/AppInputRenderer";
+import type { InputGroup } from "@/components/Commmon/types";
+```
+
+#### 2. Table Components
+```typescript
+// Use AppTable pattern
+import AppTable from "@/components/Commmon/AppTable/AppTable";
+import type { IAppTable } from "@/components/Commmon/types";
+```
+
+#### 3. CRUD Operations
+```typescript
+// Use useCrud hook
+import useCrud from "@/hooks/useCrud";
+import { zodResolver } from "@hookform/resolvers/zod";
+```
+
+#### 4. API Integration
+```typescript
+// Use existing API patterns
+import makeGetRequest from "@/api/makeGetRequest";
+import makePostRequest from "@/api/makePostRequest";
+import { endpoints } from "@/api/endpoints/endpoints";
+```
+
+## API PATTERNS
+
+### Endpoints Structure
+```typescript
+// In src/api/endpoints/endpoints.ts
+export const moduleEndpoints = {
+  list: `/module/list`,
+  create: `/module/create`,
+  update: `/module/update`,
+  delete: `/module/delete`,
+  detail: `/module/detail/:id`
+}
+```
+
+### API Functions
+- Use existing patterns: `makeGetRequest`, `makePostRequest`, `makePutRequest`, `makeDeleteRequest`
+- Always handle errors with `handleApiError` from `@/lib/common-funnctions`
+- Use React Query for caching and state management
+
+## FORM PATTERNS
+
+### Module Helper Files Pattern
+**CRITICAL**: Every module MUST have a helper file following this pattern:
+
+```typescript
+// src/Pages/ProtectedPaths/[ModuleName]/[ModuleName]FormHelpers.tsx
+import type { InputGroup } from "@/components/Commmon/types";
+import z from "zod";
+
+// 1. Default values for forms
+export const [moduleName]DefaultValues = {
+  field1: "",
+  field2: "",
+  // ... other fields
+};
+
+// 2. Zod validation schema
+export const [moduleName]Schema = z.object({
+  field1: z.string().min(1, "Field1 is required"),
+  field2: z.string().email("Invalid email"),
+  // ... other validations
+});
+
+// 3. Form input configuration
+export const [moduleName]InputArr: InputGroup[] = [
+  {
+    wrapperClassName: "grid grid-cols-2 gap-4",
+    render: [
+    {
+      name: "fieldName",
+      type: "input", // input, select, textarea, file, date, phone, etc.
+      label: "Field Label",
+      placeholder: "Enter value",
+      required: true,
+      options: [], // for select fields
+      validation: zod.string().min(1, "Required")
+     },
+    ],
+  },
+];
+
+// 4. Data transformation before API call (optional)
+export const [moduleName]ChangeDataBeforeMutate = (body: any) => {
+  return {
+    ...body,
+    // Transform data as needed
+    field1: body?.field1?.toLowerCase(),
+    meta_data: {
+      // Additional metadata
+    },
+  };
+};
+```
+
+### Form Usage Pattern
+```typescript
+// In your component, import from helper file
+import { 
+  [moduleName]DefaultValues,
+  [moduleName]Schema, 
+  [moduleName]InputArr,
+  [moduleName]ChangeDataBeforeMutate 
+} from "./[ModuleName]FormHelpers";
+
+// Use in useCrud hook
+const { handleSubmit, formUtils, isMetaLoading, isSubmitting } = useCrud({
+  submitEndpoint: endpoints.create,
+  metaEndpoint: endpoints.meta,
+  detailEndpoint: endpoints.detail,
+  defaultValues: [moduleName]DefaultValues,
+  schema: [moduleName]Schema,
+  changeDataBeforeMutate: [moduleName]ChangeDataBeforeMutate,
+  isCreate: true,
+  onSubmitSuccess: (res) => {
+    // Handle success
+  }
+});
+```
+
+### Form Validation
+- Always use Zod schemas from helper files
+- Integrate with React Hook Form via zodResolver
+- Use AppForm component for consistent UI
+- Import all form-related data from module helper files
+
+## TABLE PATTERNS
+
+### Table Structure
+```typescript
+const tableProps: IAppTable = {
+  headers: {
+    id: "ID",
+    name: "Name",
+    email: "Email"
+  },
+  body: data,
+  actions: [
+    { label: "Edit", onClick: handleEdit },
+    { label: "Delete", onClick: handleDelete }
+  ],
+  selectedRows: true,
+  page: currentPage,
+  setPage: setCurrentPage,
+  total: totalCount,
+  isLoading: loading
+};
+```
+
+## ROUTING PATTERNS
+
+### Route Definition
+```typescript
+// In src/routes/protectedRoutes.tsx
+export const protectedRoutes = () => [
+  {
+    path: "/module",
+    element: <ModuleListPage />,
+    children: [
+      {
+        path: ":id",
+        element: <ModuleDetailPage />
+      }
+    ]
+  }
+];
+```
+
+### URL Constants
+```typescript
+// In src/navigation/urls.tsx
+export const MODULE_PAGE_URL = `/module`;
+export const MODULE_DETAIL_PAGE_URL = `/module/:id`;
+```
+
+## STATE MANAGEMENT
+
+### Zustand Store Pattern
+```typescript
+import { create } from "zustand";
+
+interface ModuleState {
+  // state properties
+  setData: (data: any) => void;
+  clearData: () => void;
+}
+
+const useModuleStore = create<ModuleState>((set) => ({
+  // implementation
+}));
+```
+
+### React Query Usage
+```typescript
+const { data, isLoading, error } = useQuery({
+  queryKey: ["module", id],
+  queryFn: () => makeGetRequest(endpoint),
+  enabled: !!id
+});
+```
+
+## LAYOUT PATTERNS
+
+### Page Structure
+```typescript
+// Use AppLayout for protected pages
+import AppLayout from "@/components/layout/MainLayout/AppLayout";
+
+// Page wrapper pattern
+<div className="p-6">
+  <AppTitleWithBackButton title="Page Title" />
+  <AppPageWrapper>
+    {/* Page content */}
+  </AppPageWrapper>
+</div>
+```
+
+## COMMON COMPONENTS USAGE
+
+### Available Components
+- `AppForm` - Form wrapper with validation
+- `AppTable` - Data table with pagination
+- `AppModal` - Modal dialogs
+- `AppSpinner` - Loading indicators
+- `AppButton` - Styled buttons
+- `AppInput` - Form inputs
+- `AppSelect` - Dropdown selects
+- `AppDatePicker` - Date inputs
+- `AppFileUpload` - File upload
+- `AppTooltip` - Tooltips
+- `AppBadge` - Status badges
+
+## ERROR HANDLING
+
+### API Errors
+```typescript
+import { handleApiError } from "@/lib/common-funnctions";
+import { toast } from "sonner";
+
+// In mutation onError
+onError: (error) => {
+  handleApiError(error);
+  toast.error("Operation failed");
+}
+```
+
+### Form Validation
+```typescript
+// Use Zod schemas
+const schema = z.object({
+  field: z.string().min(1, "Field is required")
+});
+```
+
+## STYLING GUIDELINES
+
+### TailwindCSS Classes
+- Use existing design system classes
+- Follow shadcn/ui patterns
+- Use CSS variables for theming: `bg-root-background`, `text-primary`, etc.
+- Responsive design: `sm:`, `md:`, `lg:`, `xl:` prefixes
+
+### Component Styling
+```typescript
+// Use className props for customization
+<Component className="custom-class" />
+```
+
+## FILE GENERATION TEMPLATES
+
+### New Page Component
+```typescript
+import { useState } from "react";
+import AppLayout from "@/components/layout/MainLayout/AppLayout";
+import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
+import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
+
+const NewPage = () => {
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <AppLayout>
+      <div className="p-6">
+        <AppTitleWithBackButton title="Page Title" />
+        <AppPageWrapper>
+          {/* Page content */}
+        </AppPageWrapper>
+      </div>
+    </AppLayout>
+  );
+};
+
+export default NewPage;
+```
+
+### New Form Component with Helper File
+```typescript
+// Step 1: Create ModuleFormHelpers.tsx first
+// src/Pages/ProtectedPaths/[ModuleName]/[ModuleName]FormHelpers.tsx
+import type { InputGroup } from "@/components/Commmon/types";
+import z from "zod";
+
+export const [moduleName]DefaultValues = {
+  // Define default values
+};
+
+export const [moduleName]Schema = z.object({
+  // Define validation schema
+});
+
+export const [moduleName]InputArr: InputGroup[] = [
+  // Define form inputs
+];
+
+export const [moduleName]ChangeDataBeforeMutate = (body: any) => {
+  // Define data transformation if needed
+  return body;
+};
+
+// Step 2: Create the form component
+import { useCrud } from "@/hooks/useCrud";
+import AppForm from "@/components/Commmon/AppForm/AppForm";
+import { 
+  [moduleName]DefaultValues,
+  [moduleName]Schema, 
+  [moduleName]InputArr,
+  [moduleName]ChangeDataBeforeMutate 
+} from "./[ModuleName]FormHelpers";
+
+const [ModuleName]Form = () => {
+  const { handleSubmit, formUtils, isMetaLoading, isSubmitting } = useCrud({
+    submitEndpoint: endpoints.create,
+    metaEndpoint: endpoints.meta,
+    detailEndpoint: endpoints.detail,
+    defaultValues: [moduleName]DefaultValues,
+    schema: [moduleName]Schema,
+    changeDataBeforeMutate: [moduleName]ChangeDataBeforeMutate,
+    isCreate: true,
+    onSubmitSuccess: (res) => {
+      // Handle success
+    }
+  });
+
+  return (
+    <AppForm
+      inputArr={[moduleName]InputArr}
+      onSubmit={handleSubmit}
+      formUtils={formUtils}
+      isLoading={isMetaLoading}
+      isSubmitting={isSubmitting}
+    />
+  );
+};
+
+export default [ModuleName]Form;
+```
+
+## AUTOMATION COMMANDS
+
+### When user asks for:
+1. **"Create a new page"** → Generate page component with layout
+2. **"Create a form"** → Generate form with AppForm pattern + helper file
+3. **"Create a table"** → Generate table with AppTable pattern
+4. **"Create CRUD operations"** → Generate full CRUD with useCrud hook + helper file
+5. **"Add API endpoint"** → Add to endpoints.ts and create request functions
+6. **"Create new component"** → Follow component patterns with proper types
+7. **"Add route"** → Add to routes and navigation URLs
+8. **"Create a module"** → Generate complete module with helper file, forms, tables, and CRUD
+9. **"Create auth pages"** → Generate login/signup/forgot password pages (choose password OR OTP method)
+10. **"Add OTP authentication"** → Generate OTP-based login with 2-step verification flow
+11. **"Add password authentication"** → Generate password-based login with email/password
+
+## DEVELOPMENT WORKFLOW
+
+### Before starting any feature:
+1. Check existing components in `src/components/Commmon/`
+2. Use existing hooks in `src/hooks/`
+3. Follow API patterns in `src/api/`
+4. Use existing UI components from `src/components/ui/`
+
+### Code Quality:
+- Always use TypeScript with proper types
+- Follow existing naming conventions
+- Use existing patterns before creating new ones
+- Handle errors consistently
+- Use React Query for server state
+- Use Zustand for client state
+
+## COMMON TASKS AUTOMATION
+
+### CRUD Operations
+- List page with AppTable
+- Create/Edit forms with AppForm
+- useCrud hook for API integration
+- **Module helper file with all form metadata**
+- Consistent error handling
+- Loading states with skeletons
+
+### Module Creation Workflow
+1. Create module folder: `src/Pages/ProtectedPaths/[ModuleName]/`
+2. Create helper file: `[ModuleName]FormHelpers.tsx` with:
+   - Default values
+   - Zod schema
+   - Input configuration
+   - Data transformation function
+3. Create form component importing from helper
+4. Create table component
+5. Create list page
+6. Add API endpoints
+7. Add routes and navigation URLs
+
+### Authentication Patterns
+- Use authStore for state management
+- Token handling in axios interceptors
+- Protected routes pattern
+- **Dual Authentication Options**: Choose either Password-based OR OTP-based login methods
+
+#### Authentication Components Structure
+```typescript
+// Authentication pages structure
+src/Pages/AuthPages/
+├── LoginPage.tsx                    // Main auth page with both options available
+├── components/
+│   ├── PasswordLogin.tsx               // Password-based login option
+│   └── OTPLogin/
+│       ├── OTPLogin.tsx            // OTP-based login option with 2-step flow
+│       ├── AppOTP.tsx              // OTP input component
+│       ├── AppOTPComp.tsx          // OTP display component
+│       ├── otpInputMeta.tsx        // OTP form metadata
+│       └── ResendOTPAndChangeNumberComponent.tsx
+└── inputFormsMeta/
+    └── LoginAndSignUpInputMeta.tsx // All auth form configurations
+```
+
+#### Authentication Endpoints
+```typescript
+// In src/api/endpoints/endpoints.ts
+export const authEndpoints = {
+  login: "/api/login",           // Password login
+  signup: "/api/signup",         // User registration
+  refresh: "/api/refresh",       // Token refresh
+  sendOtp: "/api/send-otp",      // Send OTP to phone
+  verifyOtp: "/api/verify-otp",  // Verify OTP code
+  forgotPassword: "/api/forgot-password",    // Password reset request
+  resetPassword: "/api/reset-password",      // Password reset confirm
+};
+```
+
+#### Authentication Form Patterns
+The user can choose either OTP or Password based authentication
+```
+
+#### Authentication Implementation Options
+```typescript
+// Choose ONE authentication method per project/client:
+
+// Method 1: Password-based only
+// Use PasswordLogin.tsx with email/password fields
+
+// Method 2: OTP-based only  
+// Use OTPLogin.tsx with phone/OTP verification
+
+// Method 3: Both options available (current setup)
+// Show both PasswordLogin and OTPLogin components on LoginPage
+```
+
+#### Auth Store Pattern
+```typescript
+// In src/store/authStore.ts
+interface AuthState {
+  refreshToken: string;
+  accessToken: string;
+  userData: IUserData | null;
+  setTokens: (data: { refreshToken: string; accessToken: string }) => void;
+  setUserData: (data: IUserData) => void;
+  clearAuth: () => void;
+  isLogoutModalOpen: boolean;
+  setIsLogoutModalOpen: (data: boolean) => void;
+}
+```
+
+#### Authentication Input Metadata
+```typescript
+// In src/inputFormsMeta/LoginAndSignUpInputMeta.tsx
+export const loginInputs: InputGroup[] = [
+  {
+    wrapperClassName: "",
+    render: [
+      { name: "email", type: "text", label: "Email", placeholder: "Enter your email" },
+      { name: "password", type: "password", label: "Password", placeholder: "Enter your password" },
+    ],
+  },
+];
+
+export const otpPhoneInputArr = () => [
+  {
+    wrapperClassName: "",
+    render: [
+      { type: "phone", name: "phone_number", label: "Phone number" },
+    ],
+  },
+];
+
+export const otpOtpInputArr = () => [
+  {
+    wrapperClassName: "",
+    render: [
+      { type: "otp", name: "otp", label: "Enter the OTP" },
+    ],
+  },
+];
+```
+
+### File Structure
+- Keep components in appropriate folders
+- Use barrel exports (index.tsx) when needed
+- Follow existing import patterns
+
+This setup will dramatically speed up development by providing consistent patterns and reusable components for common admin panel features.

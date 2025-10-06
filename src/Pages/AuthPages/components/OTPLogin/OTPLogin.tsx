@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { USER_DETAIL_FORM_PAGE_URL } from "@/navigation/urls";
 import { toast } from "sonner";
 import makePostRequest from "@/api/makePostRequest";
 import { authEndpoints } from "@/api/endpoints/endpoints";
@@ -13,6 +12,9 @@ import { cn } from "@/lib/utils";
 import AppText from "@/components/Commmon/AppText";
 import { Button } from "@/components/ui/button";
 import type { InputGroup } from "@/components/Commmon/types";
+import useAuth from "@/hooks/AuthHooks/useAuth";
+import { MAKE_DASHBOARD_URL } from "@/navigation/make-url";
+import { handleApiError } from "@/lib/common-funnctions";
 
 const OTPLogin = () => {
   const [step, setStep] = useState(1);
@@ -24,6 +26,7 @@ const OTPLogin = () => {
       otp: "",
     },
   });
+  const { handleLoginSuccess } = useAuth();
 
   const inputFields = otpPhoneInputArr();
   const otpInputFields = otpOtpInputArr();
@@ -36,20 +39,21 @@ const OTPLogin = () => {
       formUtils?.setValue("otp", "");
     },
     onError: (err) => {
-      console.log("Error", err);
+      handleApiError(err);
     },
   });
 
-  const { mutate: verifyOtpMutate } = useMutation({
+  const { mutate: verifyOtpMutate, isPending: verifyOtpPending } = useMutation({
     mutationFn: (body: unknown) =>
       makePostRequest(authEndpoints.verifyOtp, body),
-    onSuccess: () => {
+    onSuccess: (res: any) => {
       // handle success here
-      navigate(USER_DETAIL_FORM_PAGE_URL);
+      handleLoginSuccess(res);
+      navigate(MAKE_DASHBOARD_URL);
       toast.success("Login Successfull");
     },
     onError: (err) => {
-      console.log("Error", err);
+      handleApiError(err);
     },
   });
 
@@ -71,10 +75,6 @@ const OTPLogin = () => {
       }
     }
   };
-
-  // const onError = (res: unknown) => {
-  //   console.log("ERR", res);
-  // };
 
   const inBetweenChildren = (
     <ResendOTPAndChangeNumberComponent
@@ -102,6 +102,7 @@ const OTPLogin = () => {
           inputArr={inputFields as InputGroup[]}
           onSubmit={onSuccess}
           formUtils={formUtils}
+          noDefaultButtons
         >
           <Button loading={sendOtpPending} className="w-full mt-2">
             Send OTP
@@ -112,9 +113,10 @@ const OTPLogin = () => {
           inputArr={otpInputFields as InputGroup[]}
           onSubmit={onSuccess}
           formUtils={formUtils}
+          noDefaultButtons
         >
           {inBetweenChildren}
-          <Button className="w-full mt-2">Submit</Button>
+          <Button loading={verifyOtpPending} className="w-full mt-2">Submit</Button>
         </AppForm>
       )}
     </div>

@@ -55,6 +55,7 @@ export function NavProfileComp({
   });
 
   const handleLogout = () => {
+    // if logout requires API call use the handleLogout function from the useAuth hook
     clearTokenAndUserData()
     window.location.href = LOGIN_PAGE_URL;
   }
