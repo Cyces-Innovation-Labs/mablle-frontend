@@ -20,7 +20,7 @@ const AppTableHeaders = ({
         {addIndex && <TableHead className="text-[#64748B] px-[10px]">S.No</TableHead>}
         {!!selectedRows && <TableHead className="px-[10px]"></TableHead>}
         {headersToMap.map((header, ind) => (
-          <TableHead className="p-[17px] text-[#64748B] font-[600]" key={header?.toString() + `${ind}`}>
+          <TableHead className="p-[17px] py-3 text-[#64748B] font-[600]" key={header?.toString() + `${ind}`}>
             {header}
           </TableHead>
         ))}

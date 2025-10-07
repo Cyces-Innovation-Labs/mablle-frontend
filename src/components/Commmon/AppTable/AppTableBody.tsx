@@ -78,7 +78,7 @@ const AppTableBody = ({
           )}
           {keysToAccessObjects?.map((key, ind) => (
             <TableCell
-            className="p-[17px]"
+            className="p-[17px] py-3 text-[13px]"
             key={key + `${ind}`}>
               {getRowValueFromHeader(row, key)}
             </TableCell>

@@ -10,40 +10,97 @@ const handleApiError = (
   showToastForGeneralError = true // Optional parameter, true by default
 ) => {
   let errorResponse = error?.response?.data;
+  
   if (errorResponse && errorResponse.data) {
     // Case 1: General error (e.g., "Invalid Password")
     if (typeof errorResponse.data.error === "string") {
       if (showToastForGeneralError) {
         toast.error(errorResponse.data.error);
       }
+      return;
     }
-    // Case 2: Field-specific errors (e.g., email, password)
-    else {
-      for (const fieldName in errorResponse.data) {
-        if (Array.isArray(errorResponse.data[fieldName])) {
-          if (setError) {
-            // Assuming the first error message is sufficient for the field
-            setError(fieldName, {
-              type: "server",
-              message: errorResponse.data[fieldName][0],
-            });
+    
+    // Helper function to get the first error message from nested structure
+    const getFirstError = (errors: any): string | null => {
+      for (const fieldName in errors) {
+        const fieldError = errors[fieldName];
+        
+        // If it's an array of strings, return the first message
+        if (Array.isArray(fieldError) && typeof fieldError[0] === "string") {
+          return `${fieldName}: ${fieldError[0]}`;
+        }
+        
+        // If it's an array of objects, recursively search
+        if (Array.isArray(fieldError)) {
+          for (const item of fieldError) {
+            if (item && typeof item === "object") {
+              const nestedError = getFirstError(item);
+              if (nestedError) return nestedError;
+            }
           }
         }
+        
+        // If it's a nested object, recursively search
+        if (typeof fieldError === "object" && fieldError !== null && !Array.isArray(fieldError)) {
+          const nestedError = getFirstError(fieldError);
+          if (nestedError) return nestedError;
+        }
+      }
+      return null;
+    };
+    
+    // Case 2: If setError is provided, set field-specific errors
+    if (setError) {
+      const setNestedErrors = (errors: any, parentPath = "") => {
+        for (const fieldName in errors) {
+          const currentPath = parentPath ? `${parentPath}.${fieldName}` : fieldName;
+          const fieldError = errors[fieldName];
+          
+          // Handle array of strings (error messages)
+          if (Array.isArray(fieldError) && typeof fieldError[0] === "string") {
+            setError(currentPath, {
+              type: "server",
+              message: fieldError[0],
+            },{shouldFocus: true});
+          } 
+          // Handle array of objects (nested array errors)
+          else if (Array.isArray(fieldError)) {
+            fieldError.forEach((item: any, index: number) => {
+              if (item && typeof item === "object" && Object.keys(item).length > 0) {
+                setNestedErrors(item, `${currentPath}.${index}`);
+              }
+            });
+          }
+          // Handle nested objects recursively
+          else if (typeof fieldError === "object" && fieldError !== null) {
+            setNestedErrors(fieldError, currentPath);
+          }
+        }
+      };
+      
+      setNestedErrors(errorResponse.data);
+    } 
+    // Case 3: If no setError, show toast with first error found
+    else {
+      const firstError = getFirstError(errorResponse.data);
+      if (firstError && showToastForGeneralError) {
+        toast.error(firstError);
       }
     }
-  } else {
-    // Fallback for unexpected error structures
+  } 
+  // Fallback for unexpected error structures
+  else {
     if (showToastForGeneralError) {
-      if(errorResponse?.detail){
-        toast.error(errorResponse?.detail);
-      }else {
+      if (errorResponse?.detail) {
+        toast.error(errorResponse.detail);
+      } else {
         toast.error("An unexpected error occurred.");
       }
-      
-      
     }
   }
 };
+
+
 
 function formatBytes(bytes: number, opts: { mode?: "IEC" | "SI", decimals?: number } = {}) {
   const { mode = "IEC", decimals = 2 } = opts;
@@ -101,5 +158,12 @@ const milliToHumanize = (timestamp: number) =>{
   return  date.toLocaleString("en-IN", options).replace(",", "");
 }
 
+const mutatePhone = (phone: string, removeCountryCode = false) => {
+  if (removeCountryCode) {
+    return phone.slice(3);
+  }
+  return `+91${phone}`;
+}
 
-export { getFileNameFromUrl, handleApiError, formatBytes, getPlainTextWithMentions, convertToUSD, milliToHumanize };
+
+export { getFileNameFromUrl, handleApiError, formatBytes, getPlainTextWithMentions, convertToUSD, milliToHumanize, mutatePhone };

@@ -47,7 +47,7 @@ const AppListFilter: React.FC<NewRowFormProps> = ({
 
   return (
     <div className={`${className} flex md:flex-row flex-col w-full gap-[20px]`}>
-      {(
+      {handleSearch && (
         <div className="flex-shrink-0 min-w-[280px] max-w-[400px]">
           <AppSearchInput
             handleSearch={(v) => {
@@ -61,32 +61,36 @@ const AppListFilter: React.FC<NewRowFormProps> = ({
           />
         </div>
       )}
-      <AppForm
-      noDefaultButtons
-        inputArr={inputArr ?? []}
-        //@ts-expect-error TODO
-        formUtils={formUtils && formUtils}
-        className={className}
-        formClassName={`flex flex-col w-full md:flex-row space-x-4 md:items-center ${
-          formClassName ?? ""
-        }`}
-        formWrapperClassName={formWrapperClassName}
-        skeletonWrapperClassName={skeletonWrapperClassName}
-        isLoading={isLoading}
-        fieldsCount={fieldsCount}
-        onSubmit={() => {
-          console.log("data");
-        }}
-      ></AppForm>
-      {inputArr && !isMobile ? (
-        <button
-          type="button"
-          className="text-[14px] whitespace-nowrap cursor-pointer text-primary underline px-[10px] py-[11px]"
-          onClick={handleClearFilters}
-        >
-          Clear Filters
-        </button>
-      ) : null}
+      {inputArr?.length && (
+        <>
+          <AppForm
+            noDefaultButtons
+            inputArr={inputArr ?? []}
+            //@ts-expect-error TODO
+            formUtils={formUtils && formUtils}
+            className={className}
+            formClassName={`flex flex-col w-full md:flex-row space-x-4 md:items-center ${
+              formClassName ?? ""
+            }`}
+            formWrapperClassName={formWrapperClassName}
+            skeletonWrapperClassName={skeletonWrapperClassName}
+            isLoading={isLoading}
+            fieldsCount={fieldsCount}
+            onSubmit={() => {
+              console.log("data");
+            }}
+          ></AppForm>
+          {inputArr && !isMobile ? (
+            <button
+              type="button"
+              className="text-[14px] whitespace-nowrap cursor-pointer text-primary underline px-[10px] py-[11px]"
+              onClick={handleClearFilters}
+            >
+              Clear Filters
+            </button>
+          ) : null}
+        </>
+      )}
     </div>
   );
 };

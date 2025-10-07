@@ -1,0 +1,85 @@
+---
+alwaysApply: true
+---
+
+# Always Use Existing Components Rule
+
+## Critical Component Usage Guidelines
+
+### NEVER Create Custom Components When Existing Ones Exist
+- **ALWAYS check existing components first** before creating new ones
+- **ALWAYS use `AppOTP`** for OTP inputs instead of custom HTML inputs
+- **ALWAYS use `AppText`** for all text/typography instead of native HTML elements
+- **ALWAYS use shadcn/ui components** for buttons, forms, and UI elements
+
+### Component Reference List
+
+#### Form Components
+- [AppOTP.tsx](mdc:src/Pages/AuthPages/components/OTPLogin/AppOTP.tsx) - Use for OTP inputs (Better to access it via AppForm)
+- [AppForm.tsx](mdc:src/components/Commmon/AppForm/AppForm.tsx) - Use for all forms
+- [AppInput.tsx](mdc:src/components/Commmon/AppForm/AppInput.tsx) - Use for text inputs
+- [AppSelect.tsx](mdc:src/components/Commmon/AppForm/AppSelect.tsx) - Use for dropdowns
+
+#### UI Components
+- [AppText.tsx](mdc:src/components/Commmon/AppText.tsx) - Use for ALL text/typography
+- [Button.tsx](mdc:src/components/ui/button.tsx) - Use for all buttons
+- [AppTable.tsx](mdc:src/components/Commmon/AppTable/AppTable.tsx) - Use for data tables
+
+#### Layout Components
+- [AppLayout.tsx](mdc:src/components/layout/MainLayout/AppLayout.tsx) - Use for page layouts
+- [AppPageWrapper.tsx](mdc:src/components/Commmon/AppPageWrapper.tsx) - Use for page containers
+
+### Examples of Correct Usage
+
+#### ✅ CORRECT - Using Existing Components
+```typescript
+import AppOTP from "./AppOTP";
+import AppText from "@/components/Commmon/AppText";
+import { Button } from "@/components/ui/button";
+
+
+// Text Elements
+<AppText type="h1" className="text-2xl font-bold">Title</AppText>
+<AppText type="p" className="text-gray-600">Description</AppText>
+
+// Buttons
+<Button variant="default">Click Me</Button>
+```
+
+#### ❌ INCORRECT - Creating Custom Components
+```typescript
+// DON'T create custom OTP inputs
+<div className="flex gap-4">
+  {[0,1,2,3].map(index => (
+    <input key={index} type="text" maxLength={1} />
+  ))}
+</div>
+
+// DON'T use native HTML elements for text
+<h1>Title</h1>
+<p>Description</p>
+
+// DON'T create custom buttons
+<button className="custom-button">Click Me</button>
+```
+
+### Before Creating Any New Component
+1. **Search existing components** in `src/components/Commmon/`
+2. **Check shadcn/ui components** in `src/components/ui/`
+3. **Look for similar functionality** in existing codebase
+4. **Ask if existing component can be extended** instead of creating new one
+
+### File Locations to Check First
+- `src/components/Commmon/` - Custom reusable components
+- `src/components/ui/` - shadcn/ui components
+- `src/components/layout/` - Layout components
+- `src/Pages/ProtectedPaths/` - Existing page patterns
+
+### Benefits of Using Existing Components
+- **Consistency**: Maintains design system consistency
+- **Maintainability**: Easier to maintain and update
+- **Accessibility**: Existing components have accessibility built-in
+- **Performance**: Optimized and tested components
+- **Development Speed**: Faster development with proven components
+
+This rule ensures the codebase remains maintainable and consistent while leveraging the existing component library.

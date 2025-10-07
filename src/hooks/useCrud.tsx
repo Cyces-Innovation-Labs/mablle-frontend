@@ -8,7 +8,7 @@ import {
   useQuery,
   type UseQueryOptions,
 } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -47,6 +47,11 @@ const useCrud = ({
   onMetaAndDetailFetchError?: (res: any) => void;
   changeDataBeforeMutate?: (body: any) => any;
 }) => {
+  // Using a manual state to handle the loading state for the prefill data (since select isnt prefilled properly)
+  const [prefillIsLoading, setPrefillIsLoading] = useState(
+    isCreate ? false : true
+  );
+
   const {
     data: metaData,
     isLoading: isLoadingMeta,
@@ -96,9 +101,11 @@ const useCrud = ({
       !isLoadingMeta &&
       !isLoadingDetail
     ) {
-      onMetaAndDetailFetchSuccess?.(obj);
+      onMetaAndDetailFetchSuccess?.({ data: obj, formUtils });
+      setPrefillIsLoading(false);
     } else if (isFetchedMeta && metaData?.data && !isLoadingMeta) {
-      onMetaAndDetailFetchSuccess?.(obj);
+      onMetaAndDetailFetchSuccess?.({ data: obj, formUtils });
+      setPrefillIsLoading(false);
     }
   }, [
     detailData,
@@ -124,15 +131,17 @@ const useCrud = ({
     onSuccess: (res: any) => {
       if (onSubmitSuccess) onSubmitSuccess?.(res);
       else {
-        toast.success(isCreate ? "Data submitted successfully" : "Data updated successfully");
+        toast.success(
+          isCreate ? "Data submitted successfully" : "Data updated successfully"
+        );
       }
     },
     onError: (res: any) => {
-      if(onSubmitError) onSubmitError?.(res);
+      if (onSubmitError) onSubmitError?.(res);
       else {
-        handleApiError(res)
+        console.log("res", res);
+        handleApiError(res, formUtils.setError);
       }
-      onSubmitError?.(res);
     },
   });
 
@@ -143,7 +152,14 @@ const useCrud = ({
     mutate(dataToMutate);
   };
 
-  return { handleSubmit, formUtils, isMetaLoading: isLoadingMeta || isLoadingDetail, isSubmitting };
+  return {
+    handleSubmit,
+    formUtils,
+    isMetaLoading: isLoadingMeta || isLoadingDetail,
+    isSubmitting,
+    metaData,
+    prefillIsLoading,
+  };
 };
 
 export default useCrud;

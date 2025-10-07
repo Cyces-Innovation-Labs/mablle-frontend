@@ -1,25 +1,25 @@
 import AppImage from "@/components/Commmon/AppImage";
-import PasswordLogin from "./components/PasswordLogin";
 import OTPLogin from "./components/OTPLogin/OTPLogin";
 
 export default function LoginPage() {
   return (
-    <div className="grid min-h-svh">
-    <div className="flex flex-col gap-4 p-6 md:p-10">
-      <div className="flex justify-center gap-2 md:justify-start">
-        <div className="flex items-center gap-2">
-          <div className="w-full max-w-[100px]">
-            <AppImage src={""} />
-          </div>
+    <div className="min-h-screen relative flex items-center justify-center bg-screen-backgrond">
+      {/* Background with purple gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#821a52] via-[#6b1441] to-[#4a0f2d] opacity-90 "></div>
+      <div className="absolute inset-0 bg-white opacity-95 bg-screen-background"></div>
+      
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center gap-6 w-full max-w-[596px] px-4">
+        {/* Marzi Logo - Smaller */}
+        <div className="w-[200px] h-[100px] flex items-center justify-center">
+          <AppImage src={"/logo.png"} className="w-full object-contain" />
         </div>
-      </div>
-      <div className="flex flex-1 items-center justify-center">
-        <div className={`w-full max-w-[380px]`}>
-           <PasswordLogin />
-           <OTPLogin />
+        
+        {/* Authentication Component - Smaller */}
+        <div className="w-full max-w-[480px]">
+          <OTPLogin />
         </div>
       </div>
     </div>
-  </div>
   );
 }

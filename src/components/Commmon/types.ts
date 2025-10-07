@@ -32,14 +32,6 @@ export interface IUploadedFile {
   uuid: string;
   id: string;
   file: string;
-  size?: string;
-  status?: string;
-  team_id?: string;
-  total_chars?: string;
-  chatbot_id?: string;
-  extension?: string;
-  file_name?: string;
-  file_id?: string;
 }
 
 export interface IWebsiteLink {
@@ -96,12 +88,14 @@ export type InputConfig = {
   customOnChange?: (value: string, options: any) => void;
   labelClassName?: string;
   inputClassName?: string;
+  onInputChange?: (value: string) => void;
 };
 
 export type InputGroup = {
   wrapperClassName?: string;
   render: InputConfig[];
   subTitle?: string;
+  outerWrapperClassName?: string;
 };
 
 

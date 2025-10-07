@@ -57,7 +57,7 @@ This is a React + TypeScript admin boilerplate using:
 - [useGetTableData.tsx](mdc:src/hooks/useGetTableData.tsx) - Table data fetching
 
 ### API Layer
-- [endpoints.ts](mdc:src/api/endpoints/endpoints.ts) - API endpoints
+- [endpoints.ts](mdc:src/api/endpoints/endpoints.ts) - **CRITICAL: ALL API endpoints MUST be defined here**
 - [makeGetRequest.ts](mdc:src/api/makeGetRequest.ts) - GET requests
 - [makePostRequest.ts](mdc:src/api/makePostRequest.ts) - POST requests
 - [makePutRequest.ts](mdc:src/api/makePutRequest.ts) - PUT requests
@@ -94,6 +94,57 @@ This is a React + TypeScript admin boilerplate using:
 - Use React Query for server state
 - Use Zustand for client state
 
+### API Endpoint Usage Rules
+
+#### CRITICAL: Always Use Endpoints from endpoints.ts
+
+**NEVER hardcode API endpoints directly in components or hooks.** Always import and use endpoints from [endpoints.ts](mdc:src/api/endpoints/endpoints.ts).
+
+#### Correct Usage Pattern:
+```typescript
+// ✅ CORRECT - Import endpoints from endpoints.ts
+import { userEndpoints, authEndpoints } from "@/api/endpoints/endpoints";
+
+// Use in components/hooks
+const { data } = useGetTableData({
+  endpoint: userEndpoints.list,
+  metaEndpoint: userEndpoints.meta,
+  filters: { /* filters */ }
+});
+
+// Use in API calls
+const response = await makePostRequest(userEndpoints.create, payload);
+```
+
+#### Incorrect Usage:
+```typescript
+// ❌ WRONG - Never hardcode endpoints
+const { data } = useGetTableData({
+  endpoint: "api/admin-panel/user/list/", // ❌ Hardcoded
+  metaEndpoint: "api/admin-panel/user/list/table-meta/", // ❌ Hardcoded
+});
+```
+
+#### Adding New Endpoints:
+```typescript
+// In src/api/endpoints/endpoints.ts
+export const [moduleName]Endpoints = {
+  list: "/api/[module]/list/",
+  meta: "/api/[module]/list/table-meta/",
+  create: "/api/[module]/create/",
+  update: "/api/[module]/update/",
+  delete: "/api/[module]/delete/",
+  detail: "/api/[module]/detail/:id",
+};
+```
+
+#### Benefits:
+- **Centralized Management**: All endpoints in one place
+- **Easy Updates**: Change URLs without touching components
+- **Type Safety**: Better TypeScript support
+- **Consistency**: Standardized endpoint structure
+- **Maintainability**: Easier to manage and update
+
 ## Common Patterns
 
 ### Typical Admin Module Structure
@@ -102,6 +153,44 @@ Every admin module consists of:
 1. **Listing Page** - Shows data in a table with pagination, search, and actions
 2. **Form Page** - Single component handling both Create and Edit operations (URLs differ)
 3. **Detail Page** (Optional) - View-only page for detailed information
+
+#### 1. Typography Components
+```typescript
+// ALWAYS use AppText for all text/typography elements
+import AppText from "@/components/Commmon/AppText";
+
+// Usage examples:
+<AppText type="h1" className="text-2xl font-bold">Heading</AppText>
+<AppText type="p" className="text-gray-600">Paragraph text</AppText>
+<AppText type="span" className="text-sm">Small text</AppText>
+<AppText text="Dynamic text" truncate={50} />
+<AppText textStroke>Text with stroke</AppText>
+
+// NEVER use native HTML elements for text:
+// ❌ <h1>Heading</h1>
+// ❌ <p>Paragraph</p>
+// ❌ <span>Text</span>
+// ✅ <AppText type="h1">Heading</AppText>
+// ✅ <AppText type="p">Paragraph</AppText>
+// ✅ <AppText type="span">Text</AppText>
+```
+
+#### Button Component
+
+```typescript
+// ALWAYS use Button component for all buttons
+import { Button } from "@/components/ui/button";
+
+// Usage examples:
+<Button variant="default">Default</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="link">Link</Button>
+<Button variant="secondary">Secondary</Button>
+<Button variant="base_primary">Base Primary</Button>
+<Button variant="blueButton">Blue Button</Button>
+<Button variant="greyButton">Grey Button</Button>
+```
 
 #### Module File Structure
 ```typescript

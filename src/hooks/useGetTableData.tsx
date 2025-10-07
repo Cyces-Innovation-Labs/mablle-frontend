@@ -1,6 +1,6 @@
 import makeGetRequest from "@/api/makeGetRequest";
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDebounce } from "./useDebounce";
 
 const useGetTableData = ({
@@ -18,9 +18,12 @@ const useGetTableData = ({
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
 
+  const memoizedFilters = useMemo(() => (filters), [JSON.stringify(filters)]);
+
   const { data: metaData, isLoading: isLoadingMeta } = useQuery({
     queryKey: ["metaData", metaEndpoint],
     queryFn: () => makeGetRequest(metaEndpoint),
+    retry: 2,
     ...queryFunc,
   });
 
@@ -31,13 +34,14 @@ const useGetTableData = ({
     refetch,
   } = useQuery({
     queryKey: ["tableData", endpoint],
-    queryFn: () => makeGetRequest(endpoint, { ...filters, page, search }),
+    queryFn: () => makeGetRequest(endpoint, { ...filters, page, search: debouncedSearch }),
+    retry: 2,
     ...queryFunc,
   });
 
   useEffect(() => {
     refetch();
-  }, [filters, page, debouncedSearch]);
+  }, [ page, debouncedSearch, memoizedFilters]);
 
   return {
     metaData,

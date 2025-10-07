@@ -34,11 +34,19 @@ const [ModuleName]FormPage = () => {
   const navigate = useNavigate();
   const isEdit = !!id;
 
-  const { handleSubmit, formUtils, isMetaLoading, isSubmitting } = useCrud({
+  const { 
+    handleSubmit, 
+    formUtils, 
+    isMetaLoading, 
+    isSubmitting,
+    metaData // Get metaData from useCrud to pass to inputArr
+  } = useCrud({
     submitEndpoint: isEdit 
       ? `[moduleEndpoints].update/${id}` 
       : "[moduleEndpoints].create",
-    metaEndpoint: "[moduleEndpoints].meta",
+    metaEndpoint: isEdit 
+      ? "[moduleEndpoints].updateMeta(id)" 
+      : "[moduleEndpoints].createMeta",
     detailEndpoint: isEdit ? `[moduleEndpoints].detail/${id}` : "",
     defaultValues: [moduleName]DefaultValues,
     schema: [moduleName]Schema,
@@ -48,12 +56,12 @@ const [ModuleName]FormPage = () => {
       navigate([MODULE]_PAGE_URL);
     },
     onMetaAndDetailFetchSuccess: ({ data, formUtils }) => {
-      if (data && isEdit) {
-        // Pre-fill form with existing data
         formUtils.reset(data);
-      }
     }
   });
+
+  // Pass metaData to inputArr for dynamic options
+  const inputArr = [moduleName]InputArr(formUtils, metaData);
 
   return (
     <AppLayout>
@@ -63,7 +71,7 @@ const [ModuleName]FormPage = () => {
         />
         <AppPageWrapper>
           <AppForm
-            inputArr={[moduleName]InputArr(formUtils)}
+            inputArr={inputArr}
             onSubmit={handleSubmit}
             formUtils={formUtils}
             isLoading={isMetaLoading}
@@ -107,8 +115,14 @@ export const [moduleName]Schema = z.object({
 });
 
 // 3. Form input configuration
-export const [moduleName]InputArr = (formUtils: any): InputGroup[] => [
+// IMPORTANT: Accept metaData as second parameter for dynamic options
+export const [moduleName]InputArr = (formUtils: any, metaData?: any): InputGroup[] => [
   {
+    // subTitle: "Section Title" - Optional section title
+    // outerWrapperClassName: Wraps the entire section including subTitle
+    // wrapperClassName: Wraps only the form fields (render array)
+    subTitle: "Basic Information",
+    outerWrapperClassName: "border border-gray-200 rounded-lg p-6 bg-white shadow-sm",
     wrapperClassName: "grid grid-cols-2 gap-4",
     render: [
       {
@@ -116,30 +130,35 @@ export const [moduleName]InputArr = (formUtils: any): InputGroup[] => [
         type: "text",
         label: "Field 1 Label",
         placeholder: "Enter field 1",
-        required: true,
       },
       {
         name: "field2",
-        type: "email",
+        type: "select",
         label: "Field 2 Label",
-        placeholder: "Enter field 2",
-        required: true,
+        placeholder: "Select field 2",
+        // Use metaData for dynamic options
+        options: metaData?.meta?.field2_options?.map((item: any) => ({
+          value: item.id,
+          label: item.identity,
+        })) || [],
       },
     ],
   },
   {
+    subTitle: "Custom Section",
+    outerWrapperClassName: "border border-gray-200 rounded-lg p-6 bg-white shadow-sm",
     wrapperClassName: "",
     render: [
       {
         name: "customField",
         type: "custom-comp",
-        customComp: <CustomComponent formUtils={formUtils} />,
+        customComp: <CustomComponent formUtils={formUtils} metaData={metaData} />,
       },
     ],
   },
 ];
 
-// 4. Data transformation before API call
+// 4. Data transformation before API call (SUBMIT)
 export const [moduleName]ChangeDataBeforeMutate = (body: any) => {
   return {
     ...body,
@@ -148,6 +167,29 @@ export const [moduleName]ChangeDataBeforeMutate = (body: any) => {
     meta_data: {
       // Additional metadata
     },
+  };
+};
+
+// 5. Data transformation before form prefill (EDIT MODE - formUtils.reset)
+export const [moduleName]ChangeDataBeforePrefill = (data: any) => {
+  // Helper: Array → String
+  const arrayToString = (arr: string[] | undefined): string => {
+    if (!arr || arr.length === 0) return "";
+    return arr.join(", ");
+  };
+
+  return {
+    // Transform backend data to match form field structure
+    field1: data?.field1 || "",
+    field2: data?.field2 || "",
+    // Array → String (for text inputs)
+    arrayField: arrayToString(data?.arrayField),
+    // Flatten nested (user_details.field → field)
+    nestedField: data?.nested?.field || "",
+    // Number → String (for input fields)
+    numberField: data?.numberField?.toString() || "",
+    // Extract ID from object
+    objectField: data?.objectField?.id || "",
   };
 };
 ```
@@ -285,8 +327,8 @@ When Figma link or screenshot is provided:
 ```typescript
 // Custom form based on Figma design
 const CustomFormPage = () => {
-  const { handleSubmit, formUtils, isMetaLoading, isSubmitting } = useCrud({
-    submitEndpoint: "[moduleEndpoints].create",
+  const { handleSubmit, formUtils, isMetaLoading, isSubmitting, isPrefillLoading } = useCrud({
+    submitEndpoint: "[moduleEndpoints].cud", // mostly cud endpoint for create and update
     metaEndpoint: "[moduleEndpoints].meta",
     detailEndpoint: "",
     defaultValues: customDefaultValues,
@@ -309,7 +351,7 @@ const CustomFormPage = () => {
               inputArr={customInputArr(formUtils)}
               onSubmit={handleSubmit}
               formUtils={formUtils}
-              isLoading={isMetaLoading}
+              isLoading={isMetaLoading || isPrefillLoading}
               isSubmitting={isSubmitting}
             />
           </div>
@@ -325,31 +367,342 @@ const CustomFormPage = () => {
 ### When Creating Forms, Always Ask For:
 
 #### 1. Meta Endpoint Schema
+The meta endpoint provides dynamic options for select fields and initial data for edit mode.
+
+**Standard Meta Response Structure:**
 ```typescript
-// Ask user for sample meta endpoint response
-// Example:
+// Sample meta endpoint response
 {
   "data": {
-    "statuses": ["active", "inactive"],
-    "categories": [
-      { "id": 1, "name": "Category 1" },
-      { "id": 2, "name": "Category 2" }
+    "meta": {
+      "gender": [
+        {
+          "id": "male",
+          "identity": "Male"
+        },
+        {
+          "id": "female",
+          "identity": "Female"
+        }
+      ],
+      "relationship": [
+        {
+          "id": "mother",
+          "identity": "Mother"
+        },
+        {
+          "id": "father",
+          "identity": "Father"
+        }
+      ],
+      "date_type": [
+        {
+          "id": "birthday",
+          "identity": "Birthday"
+        },
+        {
+          "id": "anniversary",
+          "identity": "Anniversary"
+        }
+      ]
+    },
+    "initial": {
+      // Initial data for edit mode (only present when id is passed)
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john@example.com",
+      "gender": "male",
+      "family_members": [
+        {
+          "name": "Jane Doe",
+          "relationship": "wife",
+          "date_of_birth": "1990-01-01"
+        }
+      ]
+    }
+  },
+  "status": "success",
+  "status_code": 200,
+  "action_code": "DO_NOTHING"
+}
+```
+
+**How to Use Meta Data:**
+
+1. **Dynamic Options**: Extract options from `data.meta` for select fields
+```typescript
+// In helper file - use meta data for select options
+export const [moduleName]InputArr = (formUtils: any, metaData?: any): InputGroup[] => [
+  {
+    wrapperClassName: "",
+    render: [
+      {
+        name: "gender",
+        type: "select",
+        label: "Gender",
+        placeholder: "Select gender",
+        options: metaData?.meta?.gender?.map((item: any) => ({
+          value: item.id,
+          label: item.identity,
+        })) || [],
+      },
+      {
+        name: "relationship",
+        type: "select",
+        label: "Relationship",
+        placeholder: "Select relationship",
+        options: metaData?.meta?.relationship?.map((item: any) => ({
+          value: item.id,
+          label: item.identity,
+        })) || [],
+      },
     ],
-    "permissions": ["read", "write", "admin"]
+  },
+];
+```
+
+2. **Initial Data Handling (Form Prefill for Edit Mode)**
+
+**CRITICAL WORKFLOW:**
+When implementing edit mode form prefill:
+1. **Ask user for the detail or meta API response sample**
+2. **Analyze backend data structure vs frontend form structure**
+3. **Create `[moduleName]ChangeDataBeforePrefill` function in helper file**
+4. **Transform backend data to match React Hook Form (RHF) field structure**
+5. **Use transformation in `onMetaAndDetailFetchSuccess` with `formUtils.reset()`**
+
+**Why Transform Before Prefill?**
+Backend API response structure often differs from frontend form field structure:
+
+**Implementation Pattern:**
+
+```typescript
+// Step 1: In helper file - Create transformation function
+export const [moduleName]ChangeDataBeforePrefill = (data: any) => {
+  return {
+    // Transform backend data to match form field structure
+  };
+};
+
+// Step 2: In form component - Use transformation with formUtils.reset()
+// Option 1: Using initial data from meta endpoint
+const { formUtils, handleSubmit, isMetaLoading, isSubmitting } = useCrud({
+  submitEndpoint: userEndpoints.create,
+  metaEndpoint: isCreate ? userEndpoints.createMeta : userEndpoints.updateMeta(id),
+  detailEndpoint: "", // If any
+  isCreate: isCreate,
+  onMetaAndDetailFetchSuccess: ({ data, formUtils }) => {
+    if (data?.initial && !isCreate) {
+      // Transform backend data to form structure
+      const transformedData = [moduleName]ChangeDataBeforePrefill(data.initial);
+      formUtils.reset(transformedData); // Prefill form
+    }
+  },
+  // ... other config
+});
+
+// Option 2: Using separate detail endpoint
+const { formUtils, handleSubmit, isMetaLoading, isSubmitting } = useCrud({
+  submitEndpoint: userEndpoints.create,
+  metaEndpoint: userEndpoints.createMeta,
+  detailEndpoint: isCreate ? "" : userEndpoints.detail(id),
+  isCreate: isCreate,
+  onMetaAndDetailFetchSuccess: ({ data, formUtils }) => {
+    if (data && !isCreate) {
+      // Transform backend data to form structure
+      const transformedData = [moduleName]ChangeDataBeforePrefill(data);
+      formUtils.reset(transformedData); // Prefill form
+    }
+  },
+  // ... other config
+});
+```
+
+**Common Meta Patterns:**
+```typescript
+// Simple array of strings
+{
+  "statuses": ["active", "inactive", "pending"]
+}
+
+// Array of objects with id/identity
+{
+  "categories": [
+    { "id": "cat1", "identity": "Category 1" },
+    { "id": "cat2", "identity": "Category 2" }
+  ]
+}
+
+// Array of objects with id/name
+{
+  "regions": [
+    { "id": 1, "name": "Region 1" },
+    { "id": 2, "name": "Region 2" }
+  ]
+}
+
+// Nested meta data
+{
+  "permissions": {
+    "read": ["view", "list"],
+    "write": ["create", "update", "delete"]
   }
 }
 ```
 
+**Real-World Example: User Form with Meta Data**
+```typescript
+// UserDetailFormPage.tsx
+const UserDetailFormPage = () => {
+  const { userId } = useParams();
+  const navigate = useNavigate();
+  const isCreate = userId === "create";
+  
+  const { formUtils, handleSubmit, isMetaLoading, isSubmitting, metaData } = useCrud({
+    submitEndpoint: userEndpoints.create,
+    metaEndpoint: isCreate 
+      ? userEndpoints.createMeta 
+      : userEndpoints.updateMeta(userId || ''),
+    detailEndpoint: isCreate ? "" : userEndpoints.detail(userId || ''),
+    isCreate: isCreate,
+    onMetaAndDetailFetchSuccess: ({ data, formUtils }) => {
+      if (data?.initial && !isCreate) {
+        formUtils.reset(data.initial);
+      }
+    },
+    defaultValues: usersDefaultValues,
+    schema: usersSchema,
+    changeDataBeforeMutate: userChangeDataBeforeMutate,
+    onSubmitSuccess: () => {
+      navigate(USER_PAGE_URL);
+    },
+  });
+
+  // Pass metaData to inputArr for dynamic select options
+  const inputArr = usersInputArr(formUtils, metaData?.data);
+
+  return (
+    <AppPageWrapper>
+      <AppTitleWithBackButton 
+        onBackNavigateTo={USER_PAGE_URL} 
+        title={isCreate ? "Create User" : "Edit User"} 
+      />
+      <AppForm
+        inputArr={inputArr}
+        onSubmit={handleSubmit}
+        formUtils={formUtils}
+        isLoading={isMetaLoading}
+        isSubmitting={isSubmitting}
+      />
+    </AppPageWrapper>
+  );
+};
+
+// UsersFormHelpers.tsx
+export const usersInputArr = (formUtils: any, metaData?: any): InputGroup[] => [
+  {
+    subTitle: "Basic Information",
+    outerWrapperClassName: "border border-gray-200 rounded-lg p-6 bg-white shadow-sm",
+    wrapperClassName: "grid grid-cols-2 gap-4",
+    render: [
+      {
+        name: "gender",
+        type: "select",
+        label: "Gender",
+        placeholder: "Select gender",
+        // Map meta data to select options
+        options: metaData?.meta?.gender?.map((item: any) => ({
+          value: item.id,
+          label: item.identity,
+        })) || [],
+      },
+    ],
+  },
+  {
+    wrapperClassName: "border border-gray-200 rounded-lg p-6 bg-white shadow-sm",
+    render: [
+      {
+        name: "family_members",
+        type: "custom-comp",
+        // Pass metaData to custom component for relationship options
+        customComp: (
+          <FamilyMembersComponent 
+            formUtils={formUtils} 
+            metaData={metaData} 
+          />
+        ),
+      },
+    ],
+  },
+];
+
+// FamilyMembersComponent.tsx
+const FamilyMembersComponent = ({ 
+  formUtils, 
+  metaData 
+}: { 
+  formUtils: any; 
+  metaData?: any; 
+}) => {
+  const { fields, append, remove } = useFieldArray({
+    control: formUtils.control,
+    name: "family_members",
+  });
+
+  // Extract relationship options from metaData
+  const relationshipOptions = metaData?.meta?.relationship?.map((item: any) => ({
+    value: item.id,
+    label: item.identity,
+  })) || [];
+
+  return (
+    <div>
+      {fields.map((field, index) => (
+        <div key={field.id}>
+          <AppSelect
+            formUtils={formUtils}
+            name={`family_members.${index}.relationship`}
+            label="Relationship"
+            options={relationshipOptions}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
+```
+
 #### 2. Submit Endpoint Schema
+**CRITICAL**: When provided, check whether the backend keys match the frontend form keys. If not, change the FE form keys to match the backend keys.
+
 ```typescript
 // Ask user for expected submit payload
 // Example:
 {
-  "name": "string",
+  "first_name": "string",
+  "last_name": "string",
   "email": "string",
-  "status": "active|inactive",
-  "category_id": "number",
-  "permissions": ["string"],
+  "phone_number": "string",
+  "gender": "male|female|others",
+  "region": "string",
+  "profile_picture": {
+    "id": "number",
+    "file": "string"
+  },
+  "family_members": [
+    {
+      "name": "string",
+      "relationship": "mother|father|son|daughter",
+      "date_of_birth": "YYYY-MM-DD"
+    }
+  ],
+  "important_dates": [
+    {
+      "type": "birthday|anniversary",
+      "person_name": "string",
+      "date": "YYYY-MM-DD"
+    }
+  ],
   "meta_data": {
     "custom_field": "string"
   }
@@ -427,6 +780,65 @@ export const [moduleName]InputArr = (formUtils: any): InputGroup[] => {
   required: true,
 }
 ```
+
+## CRITICAL MISTAKES TO AVOID
+
+### ❌ NEVER Create Useless Custom Components
+**DO NOT create custom-comp types that don't do anything functional.**
+
+```typescript
+// ❌ WRONG - Useless custom component
+{
+  name: "section_header",
+  type: "custom-comp",
+  customComp: (
+    <div>
+      <h3>Section Title</h3>
+    </div>
+  ),
+}
+
+// ✅ CORRECT - Use subTitle property
+{
+  subTitle: "Section Title",
+  wrapperClassName: "border rounded-lg p-6",
+  render: [/* actual form fields */]
+}
+```
+
+### ❌ NEVER Place Custom Components Inline
+**Always create separate component files for custom functionality.**
+
+```typescript
+// ❌ WRONG - Inline custom component
+{
+  name: "custom_field",
+  type: "custom-comp",
+  customComp: <div>........</div>,
+}
+
+// ✅ CORRECT - Create separate component file
+// src/Pages/ProtectedPaths/[ModuleName]/components/CustomFieldComponent.tsx
+import CustomFieldComponent from "./components/CustomFieldComponent";
+
+{
+  name: "custom_field",
+  type: "custom-comp",
+  customComp: <CustomFieldComponent formUtils={formUtils} />,
+}
+```
+
+### ❌ ALWAYS Ask Questions About Complex Functionality
+**Before implementing any custom component, ASK the user:**
+
+1. **File Upload**: How should file upload work? What file types? Size limits?
+2. **Dynamic Arrays**: How should add/remove work? Any validation?
+3. **Conditional Fields**: What triggers show/hide? Any dependencies?
+4. **Custom Validation**: Any special validation rules?
+5. **API Integration**: How should data be structured for API calls?
+
+### ❌ NEVER Assume Functionality
+**If you don't understand how something should work, ASK the user first.**
 
 ## Implementation Checklist
 
