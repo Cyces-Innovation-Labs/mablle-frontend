@@ -36,6 +36,10 @@ Before writing ANY code, analyze the design and output:
 - Ask user for a sample API response if possible else have a dummy data
 - Always ask before making big changes in the code
 
+### 5. Once all setup, ask user whether he wants to re-itrate the components one by one
+- If yes, then ask user for the component name he wants to re-iterate, ask what he wants make better in that component
+- If no, then proceed to the next step
+
 ## Detail Page Structure Pattern
 
 ### File Structure
@@ -59,9 +63,8 @@ Before writing ANY code, analyze the design and output:
 ### Main Detail Page Template
 ```typescript
 // src/Pages/ProtectedPaths/[ModuleName]/[ModuleName]DetailPage.tsx
-import { useParams } from "react-router";
+import { Outlet, useParams } from "react-router";
 import { useState } from "react";
-import AppLayout from "@/components/layout/MainLayout/AppLayout";
 import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
 import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
 import { useQuery } from "@tanstack/react-query";
@@ -73,6 +76,7 @@ import { [ModuleName]Summary } from "./components/[ModuleName]Summary";
 import { [ModuleName]CallHistory } from "./components/[ModuleName]CallHistory";
 import { [ModuleName]Reminders } from "./components/[ModuleName]Reminders";
 import { [ModuleName]Notes } from "./components/[ModuleName]Notes";
+import AppTabs from "@/components/Commmon/AppTabs";
 
 const [ModuleName]DetailPage = () => {
   const { id } = useParams();
@@ -103,33 +107,30 @@ const [ModuleName]DetailPage = () => {
   };
 
   return (
-    <AppLayout>
-      <div className="p-6">
+    <AppPageWrapper>
+    <div>
         <AppTitleWithBackButton 
           title="[Module Name] Details"
           onBackNavigateTo={[MODULE]_PAGE_URL}
         />
         
-        <AppPageWrapper>
           {/* Header Section */}
           <[ModuleName]Header 
             user={data.user} 
             stats={data.stats} 
           />
 
-          {/* Tabs Section */}
-          <[ModuleName]Tabs 
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
+          {/* other Section */}
+          <[ModuleName][CustomSectionName] 
           />
 
-          {/* Tab Content */}
+          {/* Tab Content (URL path based tabs) */}
           <div className="mt-6">
-            {renderTabContent()}
+          <AppTabs tabList={tabList} />
+            <Outlet />
           </div>
-        </AppPageWrapper>
       </div>
-    </AppLayout>
+    </AppPageWrapper>
   );
 };
 
@@ -171,7 +172,7 @@ When Figma link or screenshot is provided:
 // Custom detail page based on Figma design
 const CustomDetailPage = () => {
   return (
-    <AppLayout>
+    <AppPageWrapper>
       <div className="p-6">
         {/* Custom header based on Figma */}
         <div className="custom-header-layout">
@@ -188,7 +189,7 @@ const CustomDetailPage = () => {
           <CustomTabNavigation />
         </div>
       </div>
-    </AppLayout>
+    </AppPageWrapper>
   );
 };
 ```
@@ -200,7 +201,7 @@ const CustomDetailPage = () => {
 // Use React Query for data fetching
 const { data, isLoading, error } = useQuery({
   queryKey: ["[moduleName]Detail", id],
-  queryFn: () => makeGetRequest(`[moduleEndpoints].detail/${id}`),
+  queryFn: () => makeGetRequest(`[moduleEndpoints].detail(id || "")`),
   enabled: !!id,
 });
 

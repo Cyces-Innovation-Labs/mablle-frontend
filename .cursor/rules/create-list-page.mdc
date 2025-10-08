@@ -224,8 +224,8 @@ When a Figma link or screenshot is provided:
 // Custom components based on Figma design
 const CustomListPage = () => {
   return (
-    <AppLayout>
-      <div className="p-6">
+    <AppPageWrapper>
+      <div>
         {/* Custom header based on Figma */}
         <div className="custom-header-styles">
           {/* Implement exact Figma design */}
@@ -238,7 +238,7 @@ const CustomListPage = () => {
           {/* Create custom components for unique elements */}
         </div>
       </div>
-    </AppLayout>
+    </AppPageWrapper>
   );
 };
 ```

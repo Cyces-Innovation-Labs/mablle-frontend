@@ -1,0 +1,361 @@
+---
+description: AppModal and WarningModal usage patterns with useDisclosure hook
+globs: *.tsx,*.ts
+---
+
+# AppModal and WarningModal Usage Rule
+
+Use this rule when implementing modals in the application. Focuses on proper modal patterns, useDisclosure integration, and consistent warning modal usage.
+
+## Core Components Available
+
+### AppModal
+- **File**: [AppModal.tsx](mdc:src/components/Commmon/AppModal.tsx)
+- **Purpose**: General purpose modal for forms, content display, confirmations
+- **Features**: Customizable size, footer, close button, description
+
+### WarningModal  
+- **File**: [AppModal.tsx](mdc:src/components/Commmon/AppModal.tsx) (exported component)
+- **Purpose**: Specifically for warning/confirmation actions (delete, destructive operations)
+- **Features**: Built-in confirm/cancel buttons, loading state, destructive styling
+
+## useDisclosure Hook Integration
+
+### Import Pattern
+```typescript
+import { useDisclosure } from "@/hooks/useDisclosure";
+import AppModal from "@/components/Commmon/AppModal";
+import { WarningModal } from "@/components/Commmon/AppModal";
+```
+
+### Basic Usage Pattern
+```typescript
+const MyComponent = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <>
+      <Button onClick={onOpen}>Open Modal</Button>
+      
+      <AppModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Modal Title"
+        description="Modal description"
+      >
+        {/* Modal content */}
+      </AppModal>
+    </>
+  );
+};
+```
+
+## Modal Type Selection Rules
+
+### Use AppModal for:
+- ✅ Form inputs and data entry
+- ✅ Content display (details, information)
+- ✅ Multi-step processes
+- ✅ Custom layouts with complex content
+- ✅ Non-destructive actions
+
+### Use WarningModal for:
+- ✅ Delete confirmations
+- ✅ Destructive actions (remove, archive, deactivate)
+- ✅ Data loss warnings
+- ✅ Permission-sensitive operations
+- ✅ Any action that cannot be easily undone
+
+## Implementation Patterns
+
+### 1. General AppModal Pattern
+```typescript
+import { useDisclosure } from "@/hooks/useDisclosure";
+import AppModal from "@/components/Commmon/AppModal";
+import { Button } from "@/components/ui/button";
+
+const UserProfile = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleSave = () => {
+    // Save logic
+    onClose();
+  };
+
+  return (
+    <>
+      <Button onClick={onOpen}>Edit Profile</Button>
+      
+      <AppModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Edit User Profile"
+        description="Update user information below"
+        size="lg"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <Button variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button onClick={handleSave}>
+              Save Changes
+            </Button>
+          </div>
+        }
+      >
+        {/* Form content */}
+        <div className="space-y-4">
+          <input placeholder="Name" />
+          <input placeholder="Email" />
+        </div>
+      </AppModal>
+    </>
+  );
+};
+```
+
+### 2. WarningModal Pattern (DELETE/DESTRUCTIVE)
+```typescript
+import { useDisclosure } from "@/hooks/useDisclosure";
+import { WarningModal } from "@/components/Commmon/AppModal";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+
+const UserList = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [userIdToDelete, setUserIdToDelete] = useState<string | null>(null);
+
+  
+  const { mutate, isPending: isSubmitting } = useMutation({
+    mutationFn: (body: unknown) => makeDeleteRequest(submitEndpoint, body),
+    onSuccess: (res: any) => {
+    onClose();
+    },
+    onError: (res: any) => {
+      console.log("res", res);
+    },
+  });
+
+  const handleDeleteClick = (userId: string) => {
+    setUserIdToDelete(userId);
+    onOpen();
+  };
+
+  const handleConfirmDelete = async () => {
+    mutate({...})
+  };
+
+  return (
+    <>
+      <Button 
+        variant="destructive" 
+        onClick={() => handleDeleteClick(user.id)}
+      >
+        Delete User
+      </Button>
+      
+      <WarningModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Delete User"
+        description={
+          <div>
+            <p>Are you sure you want to delete this user?</p>
+            <p className="text-sm text-gray-600 mt-2">
+              This action cannot be undone and will permanently remove all user data.
+            </p>
+          </div>
+        }
+        confirmText="Delete User"
+        cancelText="Cancel"
+        onConfirm={handleConfirmDelete}
+        isLoading={isDeleting}
+        size="sm"
+      />
+    </>
+  );
+};
+```
+
+### 3. Multiple Modals Pattern
+```typescript
+const UserManagement = () => {
+  // Multiple useDisclosure hooks for different modals
+  const editModal = useDisclosure();
+  const deleteModal = useDisclosure();
+  const viewModal = useDisclosure();
+
+  return (
+    <>
+      {/* Edit Modal */}
+      <AppModal
+        isOpen={editModal.isOpen}
+        onClose={editModal.onClose}
+        title="Edit User"
+      >
+        {/* Edit form */}
+      </AppModal>
+
+      {/* Delete Warning Modal */}
+      <WarningModal
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.onClose}
+        title="Delete User"
+        description="This action cannot be undone"
+        onConfirm={() => {
+          // Delete logic
+          deleteModal.onClose();
+        }}
+      />
+
+      {/* View Modal */}
+      <AppModal
+        isOpen={viewModal.isOpen}
+        onClose={viewModal.onClose}
+        title="User Details"
+      >
+        {/* View content */}
+      </AppModal>
+    </>
+  );
+};
+```
+
+## Size Guidelines
+
+### AppModal Sizes
+- `sm`: Simple confirmations, small forms (1-2 fields)
+- `md`: Standard forms, content display (3-5 fields)
+- `lg`: Complex forms, multi-step processes (6+ fields)
+- `xl`: Large data tables, detailed views
+- `full`: Full-screen modals, complex workflows
+
+### WarningModal Sizes
+- `sm`: Simple yes/no confirmations (default)
+- `md`: Detailed warnings with additional context
+- `lg`: Complex destructive actions with multiple steps
+
+## Best Practices
+
+### 1. Always Use useDisclosure
+```typescript
+// ✅ CORRECT
+const { isOpen, onOpen, onClose } = useDisclosure();
+
+// ❌ WRONG - Don't use useState directly
+const [isOpen, setIsOpen] = useState(false);
+```
+
+### 2. Proper Loading States
+```typescript
+// ✅ CORRECT - Use isLoading in WarningModal
+<WarningModal
+  isLoading={isDeleting}
+  onConfirm={handleDelete}
+/>
+
+// ✅ CORRECT - Disable buttons in AppModal footer
+<Button disabled={isSubmitting} onClick={handleSave}>
+  {isSubmitting ? "Saving..." : "Save"}
+</Button>
+```
+
+### 3. Consistent Button Patterns
+```typescript
+// AppModal footer pattern
+footer={
+  <div className="flex gap-3 justify-end">
+    <Button variant="outline" onClick={onClose}>
+      Cancel
+    </Button>
+    <Button onClick={handleAction}>
+      Confirm
+    </Button>
+  </div>
+}
+```
+
+### 4. Descriptive Titles and Descriptions
+```typescript
+// ✅ CORRECT - Clear and specific
+title="Delete User Account"
+description="This will permanently delete the user and all associated data"
+
+// ❌ WRONG - Vague and unclear  
+title="Confirm"
+description="Are you sure?"
+```
+
+## Common Use Cases
+
+### Delete Confirmations
+```typescript
+<WarningModal
+  isOpen={isOpen}
+  onClose={onClose}
+  title="Delete Item"
+  description={`Are you sure you want to delete "${itemName}"? This action cannot be undone.`}
+  confirmText="Delete"
+  onConfirm={handleDelete}
+  isLoading={isDeleting}
+/>
+```
+
+### Form Modals
+```typescript
+<AppModal
+  isOpen={isOpen}
+  onClose={onClose}
+  title="Create New User"
+  description="Fill in the user details below"
+  size="lg"
+  footer={/* Custom footer with form actions */}
+>
+  {/* Form component */}
+</AppModal>
+```
+
+### Information Display
+```typescript
+<AppModal
+  isOpen={isOpen}
+  onClose={onClose}
+  title="User Details"
+  size="md"
+  showCloseButton={true}
+>
+  {/* Read-only information display */}
+</AppModal>
+```
+
+## Error Handling
+
+### WarningModal with Error States
+```typescript
+const [error, setError] = useState<string | null>(null);
+
+const handleDelete = async () => {
+  try {
+    setError(null);
+    await deleteUser();
+    onClose();
+  } catch (err) {
+    setError("Failed to delete user. Please try again.");
+  }
+};
+
+<WarningModal
+  isOpen={isOpen}
+  onClose={onClose}
+  title="Delete User"
+  description={
+    <div>
+      <p>Are you sure you want to delete this user?</p>
+      {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+    </div>
+  }
+  onConfirm={handleDelete}
+/>
+```
+
+This rule ensures consistent modal usage across the application with proper patterns for both general modals and warning/confirmation dialogs.

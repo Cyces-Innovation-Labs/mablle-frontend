@@ -64,12 +64,11 @@ const [ModuleName]FormPage = () => {
   const inputArr = [moduleName]InputArr(formUtils, metaData);
 
   return (
-    <AppLayout>
-      <div className="p-6">
+    <AppPageWrapper>
+      <div>
         <AppTitleWithBackButton 
           title={isEdit ? "Edit [Module Name]" : "Create [Module Name]"} 
         />
-        <AppPageWrapper>
           <AppForm
             inputArr={inputArr}
             onSubmit={handleSubmit}
@@ -77,9 +76,8 @@ const [ModuleName]FormPage = () => {
             isLoading={isMetaLoading}
             isSubmitting={isSubmitting}
           />
-        </AppPageWrapper>
       </div>
-    </AppLayout>
+    </AppPageWrapper>
   );
 };
 
@@ -341,10 +339,9 @@ const CustomFormPage = () => {
   });
 
   return (
-    <AppLayout>
-      <div className="p-6">
+    <AppPageWrapper>
+      <div>
         <AppTitleWithBackButton title="Custom Form" />
-        <AppPageWrapper>
           {/* Custom layout based on Figma */}
           <div className="custom-form-layout">
             <AppForm
@@ -355,9 +352,8 @@ const CustomFormPage = () => {
               isSubmitting={isSubmitting}
             />
           </div>
-        </AppPageWrapper>
       </div>
-    </AppLayout>
+    </AppPageWrapper>
   );
 };
 ```
