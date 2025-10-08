@@ -1,8 +1,11 @@
 # Admin Boilerplate Cursor Rules
+
 # Automate 1 day work to 1 hour with these comprehensive rules
 
 ## PROJECT OVERVIEW
+
 This is a React + TypeScript admin boilerplate using:
+
 - React 19 + TypeScript + Vite
 - TailwindCSS + Radix UI (shadcn/ui)
 - React Query + Zustand for state management
@@ -12,6 +15,7 @@ This is a React + TypeScript admin boilerplate using:
 ## FOLDER STRUCTURE PATTERNS
 
 ### Core Directories
+
 - `src/components/Commmon/` - Reusable components (note: typo in folder name)
 - `src/components/layout/` - Layout components
 - `src/components/ui/` - shadcn/ui components
@@ -26,6 +30,7 @@ This is a React + TypeScript admin boilerplate using:
 ## NAMING CONVENTIONS
 
 ### Files & Components
+
 - Components: PascalCase (e.g., `AppForm.tsx`, `AppTable.tsx`)
 - Hooks: camelCase starting with 'use' (e.g., `useCrud.tsx`)
 - Pages: PascalCase (e.g., `LoginPage.tsx`)
@@ -33,6 +38,7 @@ This is a React + TypeScript admin boilerplate using:
 - Types: PascalCase with 'I' prefix for interfaces (e.g., `IAppTable`)
 
 ### Props & Variables
+
 - Props: camelCase (e.g., `inputArr`, `formUtils`)
 - State: camelCase (e.g., `isLoading`, `selectedRows`)
 - Constants: SCREAMING_SNAKE_CASE (e.g., `USER_PAGE_URL`)
@@ -42,6 +48,7 @@ This is a React + TypeScript admin boilerplate using:
 ### When creating new components, follow these patterns:
 
 #### 1. Form Components
+
 ```typescript
 // Use AppForm + AppInputRenderer pattern
 import AppForm from "@/components/Commmon/AppForm/AppForm";
@@ -50,6 +57,7 @@ import type { InputGroup } from "@/components/Commmon/types";
 ```
 
 #### 2. Table Components
+
 ```typescript
 // Use AppTable pattern
 import AppTable from "@/components/Commmon/AppTable/AppTable";
@@ -57,6 +65,7 @@ import type { IAppTable } from "@/components/Commmon/types";
 ```
 
 #### 3. CRUD Operations
+
 ```typescript
 // Use useCrud hook
 import useCrud from "@/hooks/useCrud";
@@ -64,6 +73,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 ```
 
 #### 4. API Integration
+
 ```typescript
 // Use existing API patterns
 import makeGetRequest from "@/api/makeGetRequest";
@@ -74,6 +84,7 @@ import { endpoints } from "@/api/endpoints/endpoints";
 ## API PATTERNS
 
 ### Endpoints Structure
+
 ```typescript
 // In src/api/endpoints/endpoints.ts
 export const moduleEndpoints = {
@@ -81,11 +92,12 @@ export const moduleEndpoints = {
   create: `/module/create`,
   update: `/module/update`,
   delete: `/module/delete`,
-  detail: `/module/detail/:id`
-}
+  detail: `/module/detail/:id`,
+};
 ```
 
 ### API Functions
+
 - Use existing patterns: `makeGetRequest`, `makePostRequest`, `makePutRequest`, `makeDeleteRequest`
 - Always handle errors with `handleApiError` from `@/lib/common-funnctions`
 - Use React Query for caching and state management
@@ -93,6 +105,7 @@ export const moduleEndpoints = {
 ## FORM PATTERNS
 
 ### Module Helper Files Pattern
+
 **CRITICAL**: Every module MUST have a helper file following this pattern:
 
 ```typescript
@@ -146,13 +159,14 @@ export const [moduleName]ChangeDataBeforeMutate = (body: any) => {
 ```
 
 ### Form Usage Pattern
+
 ```typescript
 // In your component, import from helper file
-import { 
+import {
   [moduleName]DefaultValues,
-  [moduleName]Schema, 
+  [moduleName]Schema,
   [moduleName]InputArr,
-  [moduleName]ChangeDataBeforeMutate 
+  [moduleName]ChangeDataBeforeMutate
 } from "./[ModuleName]FormHelpers";
 
 // Use in useCrud hook
@@ -171,6 +185,7 @@ const { handleSubmit, formUtils, isMetaLoading, isSubmitting } = useCrud({
 ```
 
 ### Form Validation
+
 - Always use Zod schemas from helper files
 - Integrate with React Hook Form via zodResolver
 - Use AppForm component for consistent UI
@@ -179,29 +194,31 @@ const { handleSubmit, formUtils, isMetaLoading, isSubmitting } = useCrud({
 ## TABLE PATTERNS
 
 ### Table Structure
+
 ```typescript
 const tableProps: IAppTable = {
   headers: {
     id: "ID",
     name: "Name",
-    email: "Email"
+    email: "Email",
   },
   body: data,
   actions: [
     { label: "Edit", onClick: handleEdit },
-    { label: "Delete", onClick: handleDelete }
+    { label: "Delete", onClick: handleDelete },
   ],
   selectedRows: true,
   page: currentPage,
   setPage: setCurrentPage,
   total: totalCount,
-  isLoading: loading
+  isLoading: loading,
 };
 ```
 
 ## ROUTING PATTERNS
 
 ### Route Definition
+
 ```typescript
 // In src/routes/protectedRoutes.tsx
 export const protectedRoutes = () => [
@@ -211,14 +228,15 @@ export const protectedRoutes = () => [
     children: [
       {
         path: ":id",
-        element: <ModuleDetailPage />
-      }
-    ]
-  }
+        element: <ModuleDetailPage />,
+      },
+    ],
+  },
 ];
 ```
 
 ### URL Constants
+
 ```typescript
 // In src/navigation/urls.tsx
 export const MODULE_PAGE_URL = `/module`;
@@ -228,6 +246,7 @@ export const MODULE_DETAIL_PAGE_URL = `/module/:id`;
 ## STATE MANAGEMENT
 
 ### Zustand Store Pattern
+
 ```typescript
 import { create } from "zustand";
 
@@ -243,33 +262,32 @@ const useModuleStore = create<ModuleState>((set) => ({
 ```
 
 ### React Query Usage
+
 ```typescript
 const { data, isLoading, error } = useQuery({
   queryKey: ["module", id],
   queryFn: () => makeGetRequest(endpoint),
-  enabled: !!id
+  enabled: !!id,
 });
 ```
 
 ## LAYOUT PATTERNS
 
 ### Page Structure
+
 ```typescript
-// Use AppLayout for protected pages
-import AppLayout from "@/components/layout/MainLayout/AppLayout";
 
 // Page wrapper pattern
 <div className="p-6">
   <AppTitleWithBackButton title="Page Title" />
-  <AppPageWrapper>
-    {/* Page content */}
-  </AppPageWrapper>
-</div>
+  <AppPageWrapper>{/* Page content */}</AppPageWrapper>
+</div>;
 ```
 
 ## COMMON COMPONENTS USAGE
 
 ### Available Components
+
 - `AppForm` - Form wrapper with validation
 - `AppTable` - Data table with pagination
 - `AppModal` - Modal dialogs
@@ -285,6 +303,7 @@ import AppLayout from "@/components/layout/MainLayout/AppLayout";
 ## ERROR HANDLING
 
 ### API Errors
+
 ```typescript
 import { handleApiError } from "@/lib/common-funnctions";
 import { toast } from "sonner";
@@ -293,26 +312,29 @@ import { toast } from "sonner";
 onError: (error) => {
   handleApiError(error);
   toast.error("Operation failed");
-}
+};
 ```
 
 ### Form Validation
+
 ```typescript
 // Use Zod schemas
 const schema = z.object({
-  field: z.string().min(1, "Field is required")
+  field: z.string().min(1, "Field is required"),
 });
 ```
 
 ## STYLING GUIDELINES
 
 ### TailwindCSS Classes
+
 - Use existing design system classes
 - Follow shadcn/ui patterns
 - Use CSS variables for theming: `bg-root-background`, `text-primary`, etc.
 - Responsive design: `sm:`, `md:`, `lg:`, `xl:` prefixes
 
 ### Component Styling
+
 ```typescript
 // Use className props for customization
 <Component className="custom-class" />
@@ -321,9 +343,9 @@ const schema = z.object({
 ## FILE GENERATION TEMPLATES
 
 ### New Page Component
+
 ```typescript
 import { useState } from "react";
-import AppLayout from "@/components/layout/MainLayout/AppLayout";
 import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
 import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
 
@@ -331,14 +353,10 @@ const NewPage = () => {
   const [loading, setLoading] = useState(false);
 
   return (
-    <AppLayout>
-      <div className="p-6">
-        <AppTitleWithBackButton title="Page Title" />
-        <AppPageWrapper>
-          {/* Page content */}
-        </AppPageWrapper>
-      </div>
-    </AppLayout>
+    <AppPageWrapper>
+      <AppTitleWithBackButton title="Page Title" />
+      {/* Page content */}
+    </AppPageWrapper>
   );
 };
 
@@ -346,6 +364,7 @@ export default NewPage;
 ```
 
 ### New Form Component with Helper File
+
 ```typescript
 // Step 1: Create ModuleFormHelpers.tsx first
 // src/Pages/ProtectedPaths/[ModuleName]/[ModuleName]FormHelpers.tsx
@@ -372,11 +391,11 @@ export const [moduleName]ChangeDataBeforeMutate = (body: any) => {
 // Step 2: Create the form component
 import { useCrud } from "@/hooks/useCrud";
 import AppForm from "@/components/Commmon/AppForm/AppForm";
-import { 
+import {
   [moduleName]DefaultValues,
-  [moduleName]Schema, 
+  [moduleName]Schema,
   [moduleName]InputArr,
-  [moduleName]ChangeDataBeforeMutate 
+  [moduleName]ChangeDataBeforeMutate
 } from "./[ModuleName]FormHelpers";
 
 const [ModuleName]Form = () => {
@@ -410,6 +429,7 @@ export default [ModuleName]Form;
 ## AUTOMATION COMMANDS
 
 ### When user asks for:
+
 1. **"Create a new page"** → Generate page component with layout
 2. **"Create a form"** → Generate form with AppForm pattern + helper file
 3. **"Create a table"** → Generate table with AppTable pattern
@@ -425,12 +445,14 @@ export default [ModuleName]Form;
 ## DEVELOPMENT WORKFLOW
 
 ### Before starting any feature:
+
 1. Check existing components in `src/components/Commmon/`
 2. Use existing hooks in `src/hooks/`
 3. Follow API patterns in `src/api/`
 4. Use existing UI components from `src/components/ui/`
 
 ### Code Quality:
+
 - Always use TypeScript with proper types
 - Follow existing naming conventions
 - Use existing patterns before creating new ones
@@ -441,6 +463,7 @@ export default [ModuleName]Form;
 ## COMMON TASKS AUTOMATION
 
 ### CRUD Operations
+
 - List page with AppTable
 - Create/Edit forms with AppForm
 - useCrud hook for API integration
@@ -449,6 +472,7 @@ export default [ModuleName]Form;
 - Loading states with skeletons
 
 ### Module Creation Workflow
+
 1. Create module folder: `src/Pages/ProtectedPaths/[ModuleName]/`
 2. Create helper file: `[ModuleName]FormHelpers.tsx` with:
    - Default values
@@ -462,12 +486,14 @@ export default [ModuleName]Form;
 7. Add routes and navigation URLs
 
 ### Authentication Patterns
+
 - Use authStore for state management
 - Token handling in axios interceptors
 - Protected routes pattern
 - **Dual Authentication Options**: Choose either Password-based OR OTP-based login methods
 
 #### Authentication Components Structure
+
 ```typescript
 // Authentication pages structure
 src/Pages/AuthPages/
@@ -485,22 +511,25 @@ src/Pages/AuthPages/
 ```
 
 #### Authentication Endpoints
+
 ```typescript
 // In src/api/endpoints/endpoints.ts
 export const authEndpoints = {
-  login: "/api/login",           // Password login
-  signup: "/api/signup",         // User registration
-  refresh: "/api/refresh",       // Token refresh
-  sendOtp: "/api/send-otp",      // Send OTP to phone
-  verifyOtp: "/api/verify-otp",  // Verify OTP code
-  forgotPassword: "/api/forgot-password",    // Password reset request
-  resetPassword: "/api/reset-password",      // Password reset confirm
+  login: "/api/login", // Password login
+  signup: "/api/signup", // User registration
+  refresh: "/api/refresh", // Token refresh
+  sendOtp: "/api/send-otp", // Send OTP to phone
+  verifyOtp: "/api/verify-otp", // Verify OTP code
+  forgotPassword: "/api/forgot-password", // Password reset request
+  resetPassword: "/api/reset-password", // Password reset confirm
 };
 ```
 
 #### Authentication Form Patterns
+
 The user can choose either OTP or Password based authentication
-```
+
+````
 
 #### Authentication Implementation Options
 ```typescript
@@ -509,14 +538,15 @@ The user can choose either OTP or Password based authentication
 // Method 1: Password-based only
 // Use PasswordLogin.tsx with email/password fields
 
-// Method 2: OTP-based only  
+// Method 2: OTP-based only
 // Use OTPLogin.tsx with phone/OTP verification
 
 // Method 3: Both options available (current setup)
 // Show both PasswordLogin and OTPLogin components on LoginPage
-```
+````
 
 #### Auth Store Pattern
+
 ```typescript
 // In src/store/authStore.ts
 interface AuthState {
@@ -534,6 +564,7 @@ interface AuthState {
 #### AuthLayoutForProtectedRoutes handles unauthorized access to protected routes
 
 ### File Structure
+
 - Keep components in appropriate folders
 - Use barrel exports (index.tsx) when needed
 - Follow existing import patterns

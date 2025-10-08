@@ -53,7 +53,7 @@ const AppFileUpload = ({
   selectedIds,
   customOnRemove,
   listIsLoading,
-  maxFileSize
+  maxFileSize,
 }: AppFileUploadProps) => {
   const { control, setValue } = formUtils;
   const {
@@ -63,8 +63,8 @@ const AppFileUpload = ({
   const [uploadProgress, setUploadProgress] = useState(0);
   const { isUploading, handleUpload } = useUploadToStorage({
     endpoint: endpoint || "",
-    uploadState: (data: IUploadedFile[]) => {
-      setValue(name, [...(value || []), ...data], { shouldValidate: true });
+    uploadState: (data: IUploadedFile) => {
+      setValue(name, [...(value || []), data], { shouldValidate: true });
     },
     setUploadProgress: (progressEvent) => {
       const progress = (progressEvent.loaded / progressEvent.total) * 100;
@@ -98,10 +98,15 @@ const AppFileUpload = ({
     onDropRejected: (fileRejections) => {
       if (fileRejections && fileRejections.length > 0) {
         const file = fileRejections[0].file;
-        toast.error(`File "${file.name}" exceeds the ${(maxFileSize! / (1024 * 1024)).toFixed(0)}MB size limit.`);
+        toast.error(
+          `File "${file.name}" exceeds the ${(
+            maxFileSize! /
+            (1024 * 1024)
+          ).toFixed(0)}MB size limit.`
+        );
         return;
       }
-    }
+    },
   });
 
   const isError = formUtils.formState.errors[name];
@@ -129,7 +134,6 @@ const AppFileUpload = ({
             disabled ? "opacity-50 cursor-not-allowed" : ""
           )}
         >
-
           <input {...fieldProps} {...getInputProps()} />
 
           <CloudUpload className="w-8 h-8 text-muted-foreground mb-1" />
@@ -143,8 +147,13 @@ const AppFileUpload = ({
             <span className="font-medium">{acceptedFileTypes}</span>
           </p>
         </div>
-        {(isUploading || customIsLoading) && <AppCircularProgress wrapperClassName="absolute translate-x-[-50%] translate-y-[-50%] top-1/2 left-1/2" showLabel value={uploadProgress || cutomUploadProgress || 0} />}
-
+        {(isUploading || customIsLoading) && (
+          <AppCircularProgress
+            wrapperClassName="absolute translate-x-[-50%] translate-y-[-50%] top-1/2 left-1/2"
+            showLabel
+            value={uploadProgress || cutomUploadProgress || 0}
+          />
+        )}
       </div>
 
       {bottomDesc && (
@@ -155,7 +164,13 @@ const AppFileUpload = ({
           />
         </div>
       )}
-      <AppSelectedFilesList listIsLoading={listIsLoading} isLoading={customIsLoading} selectedIds={selectedIds} onRemovenClick={customOnRemove ? customOnRemove : onRemoveFile} files={value || []} />
+      <AppSelectedFilesList
+        listIsLoading={listIsLoading}
+        isLoading={customIsLoading}
+        selectedIds={selectedIds}
+        onRemovenClick={customOnRemove ? customOnRemove : onRemoveFile}
+        files={value || []}
+      />
     </div>
   );
 };

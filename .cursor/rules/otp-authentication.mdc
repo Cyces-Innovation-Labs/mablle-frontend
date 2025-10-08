@@ -1,0 +1,134 @@
+---
+description: OTP Authentication Implementation Guidelines
+---
+
+# OTP Authentication Implementation Rules
+
+## Component Usage Guidelines
+
+### Always Use Existing Components
+- **ALWAYS use `AppOTP` component** for OTP inputs instead of creating custom OTP inputs
+- **ALWAYS use `AppText` component** for all text/typography elements instead of native HTML elements
+- **ALWAYS use `Button` component** from shadcn/ui for all buttons
+
+### AppOTP Component Usage
+```typescript
+import AppOTP from "./AppOTP";
+
+// Usage example:
+<AppOTP
+  name="otp"
+  formUtils={formUtils}
+  otpLength={4}
+  maxLength={4}
+  className="w-full"
+  inputClassName="justify-center"
+/>
+```
+
+### AppText Component Usage
+```typescript
+import AppText from "@/components/Commmon/AppText";
+
+// Usage examples:
+<AppText type="h1" className="text-[28px] font-bold">Login to Account</AppText>
+<AppText type="p" className="text-[16px] text-gray-600">Please enter your phone number</AppText>
+
+// NEVER use native HTML elements:
+// ❌ <h1>Login to Account</h1>
+// ❌ <p>Please enter your phone number</p>
+```
+
+## API Endpoints Structure
+
+### Authentication Endpoints
+```typescript
+export const authEndpoints = {
+  login: "/api/access/login/",
+  signup: "/api/signup",
+  refresh: "/api/access/refresh/",
+  sendOtp: "/api/access/trigger-otp/",
+  verifyOtp: "/api/access/login/",
+  logout: "/api/access/logout/",
+}
+```
+
+use appOTP via appForm
+
+### API Payload Structure
+- **Send OTP**: `{ phone_number: string, user_type: "user" }`
+- **Verify OTP**: `{ phone_number: string, user_type: "user", otp: string }`
+- **Refresh Token**: `{ refresh_token: string }`
+
+## OTP Authentication Flow
+
+### Two-Step Process
+1. **Phone Number Input**: User enters phone number, calls `sendOtp` endpoint
+2. **OTP Verification**: User enters 4-digit OTP, calls `verifyOtp` endpoint
+
+### State Management
+- Use `useState` for step management (1 = phone input, 2 = OTP verification)
+- Use `useState` for countdown timer (45 seconds default)
+- Use `useForm` from react-hook-form for form management
+
+### Error Handling
+- Always use `handleApiError` from `@/lib/common-funnctions`
+- Show loading states with button disabled states
+- Display proper error messages to users
+
+## UI/UX Guidelines
+
+### Design System
+- Use burgundy color scheme: `#821a52`
+- Use proper spacing: `gap-6`, `gap-4`, `gap-3`
+- Use rounded corners: `rounded-3xl`, `rounded-lg`, `rounded-xl`
+- Use proper typography: `text-[28px]`, `text-[16px]`, `text-[14px]`
+
+### Layout Structure
+- Centered layout with max-width constraints
+- Proper padding and margins
+- Responsive design considerations
+- Background with purple gradient overlay
+
+### Interactive Elements
+- Auto-focus navigation between OTP inputs
+- Backspace navigation to previous input
+- Countdown timer with proper formatting
+- Loading states for all buttons
+- Disabled states when appropriate
+
+## File Structure
+
+### OTP Authentication Files
+- [OTPLogin.tsx](mdc:src/Pages/AuthPages/components/OTPLogin/OTPLogin.tsx) - Main OTP authentication component
+- [AppOTP.tsx](mdc:src/Pages/AuthPages/components/OTPLogin/AppOTP.tsx) - OTP input component
+- [otpInputMeta.tsx](mdc:src/Pages/AuthPages/components/OTPLogin/otpInputMeta.tsx) - Form metadata
+- [LoginPage.tsx](mdc:src/Pages/AuthPages/LoginPage.tsx) - Main login page
+
+### API Configuration
+- [appConfig.ts](mdc:src/api/appConfig.ts) - API base URL configuration
+- [endpoints.ts](mdc:src/api/endpoints/endpoints.ts) - API endpoints definition
+- [appAxios.ts](mdc:src/api/appAxios.ts) - Axios configuration
+
+## Development Guidelines
+
+### Before Implementing OTP Features
+1. Check existing `AppOTP` component first
+2. Use existing form patterns from `AppForm`
+3. Follow API patterns in `src/api/`
+4. Use existing UI components from `src/components/ui/`
+
+### Code Quality Standards
+- Always use TypeScript with proper types
+- Follow existing naming conventions
+- Use existing patterns before creating new ones
+- Handle errors consistently with `handleApiError`
+- Use React Query for server state management
+- Use proper form validation with Zod schemas
+
+### Testing Considerations
+- Test with Chrome MCP for UI validation
+- Test API calls with proper payload structure
+- Test error handling scenarios
+- Test responsive design on different screen sizes
+- Test accessibility features

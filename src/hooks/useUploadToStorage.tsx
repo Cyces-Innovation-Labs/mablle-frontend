@@ -4,7 +4,7 @@ import type { IUploadedFile } from "@/components/Commmon/types";
 type UploadOptions = {
   endpoint: string;
   setUploadProgress?: (progressEvent: ProgressEvent) => void;
-  uploadState?: (data: IUploadedFile[]) => void;
+  uploadState?: (data: IUploadedFile) => void;
 };
 
 export const useUploadToStorage = ({
@@ -17,7 +17,7 @@ export const useUploadToStorage = ({
       makePostRequestProgress(endpoint, body, {}, setUploadProgress),
     onSuccess: (data) => {
       if (uploadState) {
-        uploadState(data as IUploadedFile[]);
+        uploadState(data?.data as IUploadedFile);
       }
     },
     onError: (error) => {

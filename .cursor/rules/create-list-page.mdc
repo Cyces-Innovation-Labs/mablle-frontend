@@ -1,45 +1,48 @@
 ---
 alwaysApply: false
 ---
+
 # Create List Page Rule
 
 Use this rule when creating admin listing pages. Supports both standard patterns and custom Figma designs.
 
 ## Standard List Page Pattern
 
+### CRITICAL: Always Use AppListFilter for Search and Filters
+
+**NEVER create custom search and filter components.** Always use the existing [AppListFilter.tsx](mdc:src/components/Commmon/AppListFilter.tsx) component which is integrated into [AppTableWithSearchAndFilter.tsx](mdc:src/components/Commmon/AppTable/AppTableWithSearchAndFilter.tsx).
+
 ### File Structure
+
 ```typescript
 // src/Pages/ProtectedPaths/[ModuleName]/[ModuleName]ListPage.tsx
 import { useState } from "react";
-import AppLayout from "@/components/layout/MainLayout/AppLayout";
-import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
 import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
-import AppTable from "@/components/Commmon/AppTable/AppTable";
-import AppButton from "@/components/Commmon/AppButton";
-import type { IAppTable } from "@/components/Commmon/types";
+import AppTableWithSearchAndFilter from "@/components/Commmon/AppTable/AppTableWithSearchAndFilter";
+import AppText from "@/components/Commmon/AppText";
+import { Button } from "@/components/ui/button";
 import useGetTableData from "@/hooks/useGetTableData";
 import { useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
+import { filterListFor[ModuleName] } from "./[ModuleName]FormHelpers";
 import { [MODULE]_CREATE_PAGE_URL } from "@/navigation/urls";
 ```
 
 ### Standard List Page Template
+
 ```typescript
 const [ModuleName]ListPage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const formUtils = useForm();
   const navigate = useNavigate();
 
-  const {
-    data,
-    isLoading,
-    total,
-    refetch,
-    setPage,
-    page
-  } = useGetTableData({
+  const { setPage, setSearch, page, metaData, tableData, isLoading } = useGetTableData({
     endpoint: "[moduleEndpoints].list",
     metaEndpoint: "[moduleEndpoints].meta",
-    searchTerm: searchTerm,
-    // Additional query parameters
+    filters: {
+      // Add filters based on form values
+      filter1: formUtils.getValues("filter1") || "",
+      filter2: formUtils.getValues("filter2") || "",
+    }
   });
 
   const handleEdit = (id: string) => {
@@ -55,75 +58,160 @@ const [ModuleName]ListPage = () => {
     navigate(`/module/${id}`);
   };
 
-  const tableProps: IAppTable = {
-    headers: {
-      id: "ID",
-      user_data.name: "Name",
-      user_data.email: "Email",
-      status: "Status",
-      created_at: "Created At"
-    },
-    body: data || [],
-    actions: [
-      { label: "View", onClick: handleView },
-      { label: "Edit", onClick: handleEdit },
-      { label: "Delete", onClick: handleDelete }
-    ],
-    selectedRows: true,
-    page: page,
-    setPage: setPage,
-    total: total || 0,
-    isLoading,
-    customValueRender: {
-      status: (value: string) => (
-        <AppBadge variant={value === 'active' ? 'success' : 'secondary'}>
-          {value}
-        </AppBadge>
-      ),
-      created_at: (value: string) => new Date(value).toLocaleDateString()
-    }
+  const handleExport = () => {
+    // Implement export functionality
+    console.log("Exporting data...");
   };
 
-  return (
-    <AppLayout>
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <AppTitleWithBackButton title="[Module Name] Management" />
-          <AppButton 
-            onClick={() => navigate([MODULE]_CREATE_PAGE_URL)}
-            className="bg-primary text-white"
-          >
-            Add New [Module]
-          </AppButton>
-        </div>
-        
-        <AppPageWrapper>
-          {/* Search and Filters */}
-          <div className="mb-4 flex gap-4">
-            <AppSearchInput
-              value={searchTerm}
-              onChange={setSearchTerm}
-              placeholder="Search [module]..."
-            />
-            {/* Add additional filters here */}
-          </div>
+  const customValueRender = {
+    status: (row: any) => (
+      <AppBadge variant={row.status === 'active' ? 'success' : 'secondary'}>
+        {row.status}
+      </AppBadge>
+    ),
+    created_at: (row: any) => new Date(row.created_at).toLocaleDateString(),
+    // Add more custom renders as needed
+  };
 
-          {/* Table */}
-          <AppTable {...tableProps} />
-        </AppPageWrapper>
+  const customActions = [
+    { label: "View", onClick: handleView },
+    { label: "Edit", onClick: handleEdit },
+    { label: "Delete", onClick: handleDelete }
+  ];
+
+  const asideComp = (
+    <div className="flex gap-3">
+      <Button
+        variant="outline"
+        onClick={handleExport}
+        className="flex items-center gap-2 text-[#821a52] border-[#821a52] hover:bg-[#821a52] hover:text-white"
+      >
+        <Upload className="w-4 h-4" />
+        Export
+      </Button>
+      <Button
+        onClick={() => navigate([MODULE]_CREATE_PAGE_URL)}
+        className="flex items-center gap-2 bg-[#821a52] hover:bg-[#6b1441] text-white"
+      >
+        <Plus className="w-4 h-4" />
+        Add New
+      </Button>
+    </div>
+  );
+
+  return (
+    <AppPageWrapper>
+      {/* Header Section */}
+      <div className="mb-6">
+        <AppText type="h1" className="text-3xl font-bold text-gray-900 mb-2">
+          [Module Name]
+        </AppText>
+        <AppText type="p" className="text-gray-600">
+          Manage your [module name] and related data.
+        </AppText>
       </div>
-    </AppLayout>
+
+      {/* Table with Search and Filters using AppListFilter */}
+      <AppTableWithSearchAndFilter
+        handleSearch={setSearch}
+        asideComp={asideComp}
+        formUtils={formUtils}
+        filterInputArr={filterListFor[ModuleName](metaData)}
+        headers={metaData?.data?.columns}
+        body={tableData?.data?.results || []}
+        page={page}
+        total={tableData?.data?.total || 0}
+        setPage={setPage}
+        customValueRender={customValueRender}
+        actions={customActions}
+        searchPlaceholder="Search [module name] by name, email..."
+        isLoading={isLoading}
+      />
+    </AppPageWrapper>
   );
 };
 
 export default [ModuleName]ListPage;
 ```
 
+## Filter Helper Pattern
+
+### CRITICAL: Create Filter Helper Function
+
+Every module MUST have a filter helper function in the FormHelpers file:
+
+```typescript
+// src/Pages/ProtectedPaths/[ModuleName]/[ModuleName]FormHelpers.tsx
+export const filterListFor[ModuleName] = (metaData: any): InputGroup[] => {
+  return [
+    {
+      wrapperClassName: "flex gap-4 items-center",
+      render: [
+        {
+          name: "status",
+          type: "select",
+          label: "Status:",
+          options: [
+            { label: "All", value: "All" },
+            { label: "Active", value: "Active" },
+            { label: "Inactive", value: "Inactive" },
+          ],
+        },
+        {
+          name: "date_range",
+          type: "date",
+          label: "Date range:",
+          placeholder: "Select date range",
+        }
+      ],
+    },
+  ];
+};
+```
+
+### Filter Integration with useGetTableData
+
+```typescript
+const { setPage, setSearch, page, metaData, tableData, isLoading } = useGetTableData({
+  endpoint: "api/[module]/list/",
+  metaEndpoint: "api/[module]/list/table-meta/",
+  filters: {
+    status: formUtils.getValues("status") || "All",
+    date_range: formUtils.getValues("date_range") || "",
+  }
+});
+```
+
+### Sample MetaData Response Structure
+
+The `metaEndpoint` should return a response with the following structure:
+
+```json
+{
+  "data": {
+    "columns": {
+      "full_name": "Customer Name",
+      "phone_number": "Phone Number",
+      "region.identity": "Region",
+      "sentiment_score": "Sentiment Score",
+      "last_called_date": "Last Call",
+      "next_follow_up": "Next Follow-up"
+    }
+  },
+  "status": "success",
+  "status_code": 200,
+  "action_code": "DO_NOTHING"
+}
+```
+
+**Note**: The `columns` object contains the field mappings for table headers. The keys are the actual field names from the API response, and the values are the display labels for the table columns. Search functionality may or may not be included in the metaData response depending on the API implementation.
+
 ## Custom Figma Design Integration
 
 When a Figma link or screenshot is provided:
 
 ### Design Analysis
+
 1. **Layout Structure** - Identify grid, flex, or custom layouts
 2. **Component Types** - Cards, tables, lists, custom widgets
 3. **Styling Patterns** - Colors, spacing, typography
@@ -131,17 +219,18 @@ When a Figma link or screenshot is provided:
 5. **Data Visualization** - Charts, graphs, progress bars
 
 ### Implementation Strategy
+
 ```typescript
 // Custom components based on Figma design
 const CustomListPage = () => {
   return (
-    <AppLayout>
-      <div className="p-6">
+    <AppPageWrapper>
+      <div>
         {/* Custom header based on Figma */}
         <div className="custom-header-styles">
           {/* Implement exact Figma design */}
         </div>
-        
+
         {/* Custom content area */}
         <div className="custom-content-layout">
           {/* Follow Figma layout patterns */}
@@ -149,7 +238,7 @@ const CustomListPage = () => {
           {/* Create custom components for unique elements */}
         </div>
       </div>
-    </AppLayout>
+    </AppPageWrapper>
   );
 };
 ```
@@ -157,6 +246,7 @@ const CustomListPage = () => {
 ### Figma Integration Guidelines
 
 #### When Figma Link Provided:
+
 1. **Analyze Design** - Extract layout, components, and styling
 2. **Component Mapping** - Map Figma elements to existing components
 3. **Custom Components** - Create new components for unique elements
@@ -164,25 +254,28 @@ const CustomListPage = () => {
 5. **Accessibility** - Follow WCAG guidelines
 
 #### Component Priority:
+
 1. **Use Existing Components First** - [AppTable](mdc:src/components/Commmon/AppTable/AppTable.tsx), [AppForm](mdc:src/components/Commmon/AppForm/AppForm.tsx)
 2. **Extend Existing Components** - Add props for customization
 3. **Create Custom Components** - For unique Figma elements
 4. **Use shadcn/ui Components** - For standard UI elements
 
 #### Styling Approach:
+
 ```typescript
 // TailwindCSS classes based on Figma
 const customStyles = {
   // Extract exact colors, spacing, typography from Figma
   header: "bg-[#f8f9fa] border-b border-[#e9ecef]",
   card: "bg-white rounded-lg shadow-sm border border-[#dee2e6]",
-  button: "bg-[#007bff] hover:bg-[#0056b3] text-white"
+  button: "bg-[#007bff] hover:bg-[#0056b3] text-white",
 };
 ```
 
 ## Required Imports for List Pages
 
 ### Core Components
+
 ```typescript
 import AppLayout from "@/components/layout/MainLayout/AppLayout";
 import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
@@ -194,6 +287,7 @@ import AppBadge from "@/components/Commmon/AppBadge";
 ```
 
 ### Hooks and Utils
+
 ```typescript
 import useGetTableData from "@/hooks/useGetTableData";
 import { useNavigate } from "react-router";
@@ -204,6 +298,7 @@ import type { IAppTable } from "@/components/Commmon/types";
 ## Implementation Checklist
 
 ### Standard List Page:
+
 - [ ] Create file: `[ModuleName]ListPage.tsx`
 - [ ] Add proper imports
 - [ ] Implement table with [AppTable](mdc:src/components/Commmon/AppTable/AppTable.tsx)
@@ -214,6 +309,7 @@ import type { IAppTable } from "@/components/Commmon/types";
 - [ ] Add proper navigation
 
 ### Custom Figma Design:
+
 - [ ] Analyze Figma design
 - [ ] Map to existing components
 - [ ] Create custom components if needed
@@ -225,29 +321,34 @@ import type { IAppTable } from "@/components/Commmon/types";
 ## Common Patterns
 
 ### Table Actions
+
 ```typescript
 const actions = [
   { label: "View", onClick: (id) => navigate(`/module/${id}`) },
   { label: "Edit", onClick: (id) => navigate(`/module/${id}/edit`) },
-  { label: "Delete", onClick: async (id) => await handleDelete(id) }
+  { label: "Delete", onClick: async (id) => await handleDelete(id) },
 ];
 ```
 
 ### Search and Filters
+
 ```typescript
 const [filters, setFilters] = useState({
   search: "",
   status: "",
-  dateRange: ""
+  dateRange: "",
 });
 ```
 
 ### Custom Value Rendering
+
 ```typescript
 const customValueRender = {
-  status: (value) => <AppBadge variant={getStatusVariant(value)}>{value}</AppBadge>,
+  status: (value) => (
+    <AppBadge variant={getStatusVariant(value)}>{value}</AppBadge>
+  ),
   avatar: (value) => <AppAvatar src={value} />,
-  actions: (value, row) => <ActionButtons row={row} />
+  actions: (value, row) => <ActionButtons row={row} />,
 };
 ```
 

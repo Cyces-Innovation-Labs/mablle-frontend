@@ -7,7 +7,9 @@ const otpPhoneInputArr = () => {
         {
           type: "phone",
           name: "phone_number",
-          label: "Phone number",
+          label: "Phone Number",
+          placeholder: "+919876543210",
+          required: true,
         },
       ],
     },

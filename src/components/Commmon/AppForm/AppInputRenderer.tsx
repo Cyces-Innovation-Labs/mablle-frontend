@@ -47,6 +47,7 @@ interface InputConfig {
   };
   formMessageClassName?: string;
   customOnChange?: (value: string) => void;
+  onInputChange?: (value: string) => void;
 }
 
 interface AppInputRendererProps {
@@ -93,6 +94,7 @@ const AppInputRenderer = ({
             className={input.className}
             labelClassName={input.labelClassName}
             customOnChange={input.customOnChange}
+            onInputChange={input.onInputChange}
           />
         );
 
@@ -250,20 +252,21 @@ const AppInputRenderer = ({
       className={`grid grid-cols-1 gap-4 items-baseline ${formWrapperClassName}`}
     >
       {inputArr?.map((group, groupIndex) => (
-        <div
-          key={groupIndex}
-          className={`grid grid-cols-1 gap-4 items-baseline ${group.wrapperClassName}`}
-        >
+        <div key={groupIndex} className={group.outerWrapperClassName}>
           {group?.subTitle && (
             <AppText
               text={group.subTitle}
-              className="text-[16px] font-medium"
+              className="text-[18px] mb-2 font-bold text-primary"
             />
           )}
-          {/* @ts-expect-error ignore */}
-          {group.render.map((input: InputConfig) => (
-            <> {renderInput(input)}</>
-          ))}
+          <div
+            className={`grid grid-cols-1 gap-4 items-baseline ${group.wrapperClassName}`}
+          >
+            {/* @ts-expect-error ignore */}
+            {group.render.map((input: InputConfig) => (
+              <> {renderInput(input)}</>
+            ))}
+          </div>
         </div>
       ))}
     </div>

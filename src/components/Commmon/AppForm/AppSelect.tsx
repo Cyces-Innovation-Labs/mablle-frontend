@@ -6,6 +6,7 @@ import {
   FormDescription,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectTrigger,
@@ -37,6 +38,7 @@ interface AppSelectProps<T extends FieldValues> {
   readOnly?: boolean;
   disabled?: boolean;
   formMessageClassName?: string;
+  onInputChange?: (value: string) => void;
 }
 
 const AppSelect = <T extends FieldValues>({
@@ -53,6 +55,7 @@ const AppSelect = <T extends FieldValues>({
   disabled = false,
   readOnly = false,
   formMessageClassName,
+  onInputChange
 }: AppSelectProps<T>) => {
   const value = formUtils.watch(name);
   return (
@@ -93,6 +96,16 @@ const AppSelect = <T extends FieldValues>({
               </SelectTrigger>
             </FormControl>
             <SelectContent>
+            {onInputChange && (
+                  <div className="px-2 py-1">
+                    <Input
+                      type="text"
+                      placeholder="Type to filter..."
+                      onChange={(e) => onInputChange(e.target.value)}
+                      className="h-8"
+                    />
+                  </div>
+                )}
               {options.map((option) => (
                 <SelectItem
                   key={String(option.id ?? option.value)}
