@@ -25,45 +25,8 @@ src/Pages/ProtectedPaths/[ModuleName]/
 #### A. [ModuleName]ListPage.tsx - Main Listing Page
 
 ```typescript
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Plus, Upload } from "lucide-react";
-import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
-import AppText from "@/components/Commmon/AppText";
-import AppTableWithSearchAndFilter from "@/components/Commmon/AppTable/AppTableWithSearchAndFilter";
-import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
-import useGetTableData from "@/hooks/useGetTableData";
-import { [moduleName]Endpoints } from "@/api/endpoints/endpoints";
-import { [MODULE]_CREATE_PAGE_URL, [MODULE]_EDIT_PAGE_URL, [MODULE]_DETAIL_PAGE_URL } from "@/navigation/urls";
-import { filterListFor[ModuleName] } from "./[ModuleName]FormHelpers";
-
 const [ModuleName]ListPage = () => {
-  const navigate = useNavigate();
-
-  // Form for filters
-  const formUtils = useForm({
-    defaultValues: {
-      // Add filter fields here
-    },
-  });
-
-  // Fetch table data
-  const { data, metaData, isLoading, page, setPage, search, setSearch } = useGetTableData({
-    endpoint: "",
-    metaEndpoint: "",
-    filters: {
-      // Add filter values here
-    },
-    page,
-    search,
-  });
-
-
-  return (
-    <AppPageWrapper>
-    </AppPageWrapper>
-  );
+  return <></>;
 };
 
 export default [ModuleName]ListPage;
@@ -72,22 +35,8 @@ export default [ModuleName]ListPage;
 #### B. [ModuleName]FormPage.tsx - Create/Edit Form (Shared)
 
 ```typescript
-import { useParams, useNavigate } from "react-router-dom";
-import useCrud from "@/hooks/useCrud";
-import AppForm from "@/components/Commmon/AppForm/AppForm";
-import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
-import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton"
 const [ModuleName]FormPage = () => {
-
-
-  return (
-    <AppPageWrapper>
-      <AppTitleWithBackButton
-        title={isEdit ? "Edit [Module]" : "Create New [Module]"}
-        backPath={[MODULE]_PAGE_URL}
-      />
-    </AppPageWrapper>
-  );
+  return <></>;
 };
 
 export default [ModuleName]FormPage;
@@ -96,41 +45,8 @@ export default [ModuleName]FormPage;
 #### C. [ModuleName]DetailPage.tsx - Detail View (Optional)
 
 ```typescript
-import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import makeGetRequest from "@/api/makeGetRequest";
-import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
-import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
-import AppText from "@/components/Commmon/AppText";
-import AppSpinner from "@/components/Commmon/AppSpinner";
-import { Button } from "@/components/ui/button";
-
 const [ModuleName]DetailPage = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["[moduleName]-detail", id],
-    queryFn: () => makeGetRequest([moduleName]Endpoints.detail(id!)),
-    enabled: !!id,
-  });
-
-  if (isLoading) {
-    return (
-      <AppPageWrapper>
-        <AppSpinner />
-      </AppPageWrapper>
-    );
-  }
-
-  const [moduleName]Data = data?.data;
-
-  return (
-    <AppPageWrapper>
-      <AppTitleWithBackButton title="[Module] Details" backPath={[MODULE]_PAGE_URL} />
-      // Add detail fields here
-    </AppPageWrapper>
-  );
+  return <></>;
 };
 
 export default [ModuleName]DetailPage;
@@ -143,43 +59,24 @@ import type { InputGroup } from "@/components/Commmon/types";
 import { z } from "zod";
 
 // Default values for form
-export const [moduleName]DefaultValues = {
-  ...
-  // Add more fields
-};
+export const [moduleName]DefaultValues = {};
 
 // Zod validation schema
-export const [moduleName]Schema = z.object({
- ...
-});
+export const [moduleName]Schema = z.object({});
 
 // Form input configuration for create/edit form
-export const [moduleName]InputArr: InputGroup[] = [
-  ...
-];
+export const [moduleName]InputArr: InputGroup[] = [];
 
 // Filter input configuration for list page
-export const filterListFor[ModuleName] = (metaData: any): InputGroup[] => {
-  return [
-   ...
-  ];
+export const filterListFor[ModuleName] = (): InputGroup[] => {
+  return [];
 };
 
 // Transform data before API submission (optional)
-export const [moduleName]ChangeDataBeforeMutate = (body: any) => {
-  return {
-    ...body,
-    // Transform data as needed
-  };
-};
+export const [moduleName]ChangeDataBeforeMutate = (body: any) => body;
 
 // Transform data before prefilling form (optional)
-export const [moduleName]ChangeDataBeforePrefill = (data: any) => {
-  return {
-    ...data,
-    // Transform data as needed
-  };
-};
+export const [moduleName]ChangeDataBeforePrefill = (data: any) => data;
 ```
 
 ### 3. Add API Endpoints
@@ -187,9 +84,7 @@ export const [moduleName]ChangeDataBeforePrefill = (data: any) => {
 Add endpoints to [endpoints.ts](mdc:src/api/endpoints/endpoints.ts):
 
 ```typescript
-export const [moduleName]Endpoints = {
-  ...
-};
+export const [moduleName]Endpoints = {}; (Leave it empty)
 ```
 
 ### 4. Add Navigation URLs
