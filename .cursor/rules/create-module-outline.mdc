@@ -1,0 +1,277 @@
+---
+description: Create module outline with folder structure, skeleton pages, and routing setup
+---
+
+# Create Module Outline Rule
+
+Use this rule when creating a new module in the admin panel. This ensures consistent structure and proper routing setup for all modules.
+
+## Module Creation Steps
+
+### 1. Create Module Folder Structure
+
+Create a new folder inside `src/Pages/ProtectedPaths/` with the module name in PascalCase:
+
+```
+src/Pages/ProtectedPaths/[ModuleName]/
+├── [ModuleName]ListPage.tsx           # Listing page with AppTable
+├── [ModuleName]DetailFormPage.tsx     # Detail view (optional, read-only)
+├── [ModuleName]FormPage.tsx           # Create/Edit form (shared component)
+└── [ModuleName]FormHelpers.tsx        # Form metadata and validation
+```
+
+### 2. Create Skeleton Pages
+
+#### A. [ModuleName]ListPage.tsx - Main Listing Page
+
+```typescript
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Plus, Upload } from "lucide-react";
+import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
+import AppText from "@/components/Commmon/AppText";
+import AppTableWithSearchAndFilter from "@/components/Commmon/AppTable/AppTableWithSearchAndFilter";
+import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
+import useGetTableData from "@/hooks/useGetTableData";
+import { [moduleName]Endpoints } from "@/api/endpoints/endpoints";
+import { [MODULE]_CREATE_PAGE_URL, [MODULE]_EDIT_PAGE_URL, [MODULE]_DETAIL_PAGE_URL } from "@/navigation/urls";
+import { filterListFor[ModuleName] } from "./[ModuleName]FormHelpers";
+
+const [ModuleName]ListPage = () => {
+  const navigate = useNavigate();
+
+  // Form for filters
+  const formUtils = useForm({
+    defaultValues: {
+      // Add filter fields here
+    },
+  });
+
+  // Fetch table data
+  const { data, metaData, isLoading, page, setPage, search, setSearch } = useGetTableData({
+    endpoint: "",
+    metaEndpoint: "",
+    filters: {
+      // Add filter values here
+    },
+    page,
+    search,
+  });
+
+
+  return (
+    <AppPageWrapper>
+    </AppPageWrapper>
+  );
+};
+
+export default [ModuleName]ListPage;
+```
+
+#### B. [ModuleName]FormPage.tsx - Create/Edit Form (Shared)
+
+```typescript
+import { useParams, useNavigate } from "react-router-dom";
+import useCrud from "@/hooks/useCrud";
+import AppForm from "@/components/Commmon/AppForm/AppForm";
+import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
+import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton"
+const [ModuleName]FormPage = () => {
+
+
+  return (
+    <AppPageWrapper>
+      <AppTitleWithBackButton
+        title={isEdit ? "Edit [Module]" : "Create New [Module]"}
+        backPath={[MODULE]_PAGE_URL}
+      />
+    </AppPageWrapper>
+  );
+};
+
+export default [ModuleName]FormPage;
+```
+
+#### C. [ModuleName]DetailPage.tsx - Detail View (Optional)
+
+```typescript
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import makeGetRequest from "@/api/makeGetRequest";
+import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
+import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
+import AppText from "@/components/Commmon/AppText";
+import AppSpinner from "@/components/Commmon/AppSpinner";
+import { Button } from "@/components/ui/button";
+
+const [ModuleName]DetailPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["[moduleName]-detail", id],
+    queryFn: () => makeGetRequest([moduleName]Endpoints.detail(id!)),
+    enabled: !!id,
+  });
+
+  if (isLoading) {
+    return (
+      <AppPageWrapper>
+        <AppSpinner />
+      </AppPageWrapper>
+    );
+  }
+
+  const [moduleName]Data = data?.data;
+
+  return (
+    <AppPageWrapper>
+      <AppTitleWithBackButton title="[Module] Details" backPath={[MODULE]_PAGE_URL} />
+      // Add detail fields here
+    </AppPageWrapper>
+  );
+};
+
+export default [ModuleName]DetailPage;
+```
+
+#### D. [ModuleName]FormHelpers.tsx - Form Metadata and Validation
+
+```typescript
+import type { InputGroup } from "@/components/Commmon/types";
+import { z } from "zod";
+
+// Default values for form
+export const [moduleName]DefaultValues = {
+  ...
+  // Add more fields
+};
+
+// Zod validation schema
+export const [moduleName]Schema = z.object({
+ ...
+});
+
+// Form input configuration for create/edit form
+export const [moduleName]InputArr: InputGroup[] = [
+  ...
+];
+
+// Filter input configuration for list page
+export const filterListFor[ModuleName] = (metaData: any): InputGroup[] => {
+  return [
+   ...
+  ];
+};
+
+// Transform data before API submission (optional)
+export const [moduleName]ChangeDataBeforeMutate = (body: any) => {
+  return {
+    ...body,
+    // Transform data as needed
+  };
+};
+
+// Transform data before prefilling form (optional)
+export const [moduleName]ChangeDataBeforePrefill = (data: any) => {
+  return {
+    ...data,
+    // Transform data as needed
+  };
+};
+```
+
+### 3. Add API Endpoints
+
+Add endpoints to [endpoints.ts](mdc:src/api/endpoints/endpoints.ts):
+
+```typescript
+export const [moduleName]Endpoints = {
+  ...
+};
+```
+
+### 4. Add Navigation URLs
+
+Add URL constants to [urls.tsx](mdc:src/navigation/urls.tsx):
+
+```typescript
+export const [MODULE]_PAGE_URL = `/[module-name]`;
+export const [MODULE]_CREATE_PAGE_URL = `/[module-name]/create`;
+export const [MODULE]_EDIT_PAGE_URL = `/[module-name]/:id/edit`;
+export const [MODULE]_DETAIL_PAGE_URL = `/[module-name]/:id`;
+```
+
+### 5. Add Routes
+
+Add routes to [protectedRoutes.tsx](mdc:src/routes/protectedRoutes.tsx):
+
+```typescript
+import [ModuleName]ListPage from "@/Pages/ProtectedPaths/[ModuleName]/[ModuleName]ListPage";
+import [ModuleName]FormPage from "@/Pages/ProtectedPaths/[ModuleName]/[ModuleName]FormPage";
+import [ModuleName]DetailPage from "@/Pages/ProtectedPaths/[ModuleName]/[ModuleName]DetailPage";
+import { 
+  [MODULE]_PAGE_URL, 
+  [MODULE]_CREATE_PAGE_URL, 
+  [MODULE]_EDIT_PAGE_URL, 
+  [MODULE]_DETAIL_PAGE_URL 
+} from "@/navigation/urls";
+
+// Add to the routes array:
+<Route path={[MODULE]_PAGE_URL} element={<[ModuleName]ListPage />} />
+<Route path={[MODULE]_CREATE_PAGE_URL} element={<[ModuleName]FormPage />} />
+<Route path={[MODULE]_EDIT_PAGE_URL} element={<[ModuleName]FormPage />} />
+<Route path={[MODULE]_DETAIL_PAGE_URL} element={<[ModuleName]DetailPage />} />
+```
+
+### 6. Add Sidebar Navigation (Optional)
+
+Add navigation link to [AppSidebar.tsx](mdc:src/components/layout/MainLayout/AppSidebar.tsx):
+
+```typescript
+{
+  title: "[Module Name Plural]",
+  url: [MODULE]_PAGE_URL,
+  icon: IconName, // Import from lucide-react
+}
+```
+
+## Naming Conventions
+
+- **Module Name**: PascalCase (e.g., `CareManager`, `UserProfile`)
+- **File Names**: PascalCase with module prefix (e.g., `CareManagerListPage.tsx`)
+- **Folder Name**: PascalCase (e.g., `CareManger/`)
+- **Constants**: SCREAMING_SNAKE_CASE (e.g., `CARE_MANAGER_PAGE_URL`)
+- **Variables**: camelCase (e.g., `careManagerEndpoints`)
+
+## Module Types
+
+### Full CRUD Module (Default)
+- List Page ✓
+- Form Page (Create/Edit) ✓
+- Detail Page ✓
+- Form Helpers ✓
+
+### List-Only Module (Read-Only)
+- List Page ✓
+- Detail Page ✓
+- Form Helpers (filters only) ✓
+
+### Form-Only Module (No List)
+- Form Page ✓
+- Form Helpers ✓
+
+## Quick Start Checklist
+
+- [ ] Create module folder in `src/Pages/ProtectedPaths/`
+- [ ] Create `[ModuleName]ListPage.tsx`
+- [ ] Create `[ModuleName]FormPage.tsx`
+- [ ] Create `[ModuleName]DetailPage.tsx` (optional)
+- [ ] Create `[ModuleName]FormHelpers.tsx`
+- [ ] Add endpoints to `endpoints.ts`
+- [ ] Add URLs to `urls.tsx`
+- [ ] Add routes to `protectedRoutes.tsx`
+- [ ] Add sidebar navigation (optional)
+
+This rule ensures all modules follow the same structure and patterns, making the codebase consistent and maintainable.

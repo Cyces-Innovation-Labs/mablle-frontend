@@ -26,6 +26,7 @@ import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { filterListFor[ModuleName] } from "./[ModuleName]FormHelpers";
 import { [MODULE]_CREATE_PAGE_URL } from "@/navigation/urls";
+import { [moduleEndpoints] } from "@/api/endpoints/endpoints";
 ```
 
 ### Standard List Page Template
@@ -36,8 +37,8 @@ const [ModuleName]ListPage = () => {
   const navigate = useNavigate();
 
   const { setPage, setSearch, page, metaData, tableData, isLoading } = useGetTableData({
-    endpoint: "[moduleEndpoints].list",
-    metaEndpoint: "[moduleEndpoints].meta",
+    endpoint: [moduleEndpoints].list,
+    metaEndpoint: [moduleEndpoints].meta,
     filters: {
       // Add filters based on form values
       filter1: formUtils.getValues("filter1") || "",
@@ -173,10 +174,10 @@ export const filterListFor[ModuleName] = (metaData: any): InputGroup[] => {
 
 ```typescript
 const { setPage, setSearch, page, metaData, tableData, isLoading } = useGetTableData({
-  endpoint: "api/[module]/list/",
-  metaEndpoint: "api/[module]/list/table-meta/",
+  endpoint: [moduleEndpoints].list,
+  metaEndpoint: [moduleEndpoints].meta,
   filters: {
-    status: formUtils.getValues("status") || "All",
+    status: formUtils.getValues("status") || "",
     date_range: formUtils.getValues("date_range") || "",
   }
 });
@@ -297,16 +298,19 @@ import type { IAppTable } from "@/components/Commmon/types";
 
 ## Implementation Checklist
 
-### Standard List Page:
+### Standard List Page: 
 
-- [ ] Create file: `[ModuleName]ListPage.tsx`
+- [ ] Create file: `[ModuleName]ListPage.tsx` (If not already created)
 - [ ] Add proper imports
+- [ ] Ask user for table data endpoint and meta endpoint
+- [ ] Ask user for the sample table list and meta data response.
 - [ ] Implement table with [AppTable](mdc:src/components/Commmon/AppTable/AppTable.tsx)
-- [ ] Add search functionality
-- [ ] Add CRUD actions (View, Edit, Delete)
-- [ ] Add create button
-- [ ] Handle loading states
+- [ ] Add search and filter (if needed) functionality - using [AppListFilter](mdc:src/components/Commmon/AppListFilter.tsx)
+- [ ] If the figma design has any actions, add them. (Buttons or dropdowns(AppDropdownMenu)) 
+- [ ] Add create button (If needed)
+- [ ] Handle loading states (passing the loading state to the [AppTable](mdc:src/components/Commmon/AppTable/AppTable.tsx) component)
 - [ ] Add proper navigation
+- [ ] Once done ask user if there are any other changes to be made.
 
 ### Custom Figma Design:
 
@@ -324,20 +328,8 @@ import type { IAppTable } from "@/components/Commmon/types";
 
 ```typescript
 const actions = [
-  { label: "View", onClick: (id) => navigate(`/module/${id}`) },
-  { label: "Edit", onClick: (id) => navigate(`/module/${id}/edit`) },
-  { label: "Delete", onClick: async (id) => await handleDelete(id) },
+  { label: "View", onClick: (id) => navigate(`${MAKE_[MODULE]_DETAIL_PAGE_URL(id)}`) },
 ];
-```
-
-### Search and Filters
-
-```typescript
-const [filters, setFilters] = useState({
-  search: "",
-  status: "",
-  dateRange: "",
-});
 ```
 
 ### Custom Value Rendering
@@ -348,7 +340,6 @@ const customValueRender = {
     <AppBadge variant={getStatusVariant(value)}>{value}</AppBadge>
   ),
   avatar: (value) => <AppAvatar src={value} />,
-  actions: (value, row) => <ActionButtons row={row} />,
 };
 ```
 
