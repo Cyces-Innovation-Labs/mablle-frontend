@@ -1,0 +1,172 @@
+---
+description: Create module outline with folder structure, skeleton pages, and routing setup
+---
+
+# Create Module Outline Rule
+
+Use this rule when creating a new module in the admin panel. This ensures consistent structure and proper routing setup for all modules.
+
+## Module Creation Steps
+
+### 1. Create Module Folder Structure
+
+Create a new folder inside `src/Pages/ProtectedPaths/` with the module name in PascalCase:
+
+```
+src/Pages/ProtectedPaths/[ModuleName]/
+├── [ModuleName]ListPage.tsx           # Listing page with AppTable
+├── [ModuleName]DetailFormPage.tsx     # Detail view (optional, read-only)
+├── [ModuleName]FormPage.tsx           # Create/Edit form (shared component)
+└── [ModuleName]FormHelpers.tsx        # Form metadata and validation
+```
+
+### 2. Create Skeleton Pages
+
+#### A. [ModuleName]ListPage.tsx - Main Listing Page
+
+```typescript
+const [ModuleName]ListPage = () => {
+  return <></>;
+};
+
+export default [ModuleName]ListPage;
+```
+
+#### B. [ModuleName]FormPage.tsx - Create/Edit Form (Shared)
+
+```typescript
+const [ModuleName]FormPage = () => {
+  return <></>;
+};
+
+export default [ModuleName]FormPage;
+```
+
+#### C. [ModuleName]DetailPage.tsx - Detail View (Optional)
+
+```typescript
+const [ModuleName]DetailPage = () => {
+  return <></>;
+};
+
+export default [ModuleName]DetailPage;
+```
+
+#### D. [ModuleName]FormHelpers.tsx - Form Metadata and Validation
+
+```typescript
+import type { InputGroup } from "@/components/Commmon/types";
+import { z } from "zod";
+
+// Default values for form
+export const [moduleName]DefaultValues = {};
+
+// Zod validation schema
+export const [moduleName]Schema = z.object({});
+
+// Form input configuration for create/edit form
+export const [moduleName]InputArr: InputGroup[] = [];
+
+// Filter input configuration for list page
+export const filterListFor[ModuleName] = (): InputGroup[] => {
+  return [];
+};
+
+// Transform data before API submission (optional)
+export const [moduleName]ChangeDataBeforeMutate = (body: any) => body;
+
+// Transform data before prefilling form (optional)
+export const [moduleName]ChangeDataBeforePrefill = (data: any) => data;
+```
+
+### 3. Add API Endpoints
+
+Add endpoints to [endpoints.ts](mdc:src/api/endpoints/endpoints.ts):
+
+```typescript
+export const [moduleName]Endpoints = {}; (Leave it empty)
+```
+
+### 4. Add Navigation URLs
+
+Add URL constants to [urls.tsx](mdc:src/navigation/urls.tsx):
+
+```typescript
+export const [MODULE]_PAGE_URL = `/[module-name]`;
+export const [MODULE]_CREATE_PAGE_URL = `/[module-name]/create`;
+export const [MODULE]_EDIT_PAGE_URL = `/[module-name]/:id/edit`;
+export const [MODULE]_DETAIL_PAGE_URL = `/[module-name]/:id`;
+```
+
+### 5. Add Routes
+
+Add routes to [protectedRoutes.tsx](mdc:src/routes/protectedRoutes.tsx):
+
+```typescript
+import [ModuleName]ListPage from "@/Pages/ProtectedPaths/[ModuleName]/[ModuleName]ListPage";
+import [ModuleName]FormPage from "@/Pages/ProtectedPaths/[ModuleName]/[ModuleName]FormPage";
+import [ModuleName]DetailPage from "@/Pages/ProtectedPaths/[ModuleName]/[ModuleName]DetailPage";
+import { 
+  [MODULE]_PAGE_URL, 
+  [MODULE]_CREATE_PAGE_URL, 
+  [MODULE]_EDIT_PAGE_URL, 
+  [MODULE]_DETAIL_PAGE_URL 
+} from "@/navigation/urls";
+
+// Add to the routes array:
+<Route path={[MODULE]_PAGE_URL} element={<[ModuleName]ListPage />} />
+<Route path={[MODULE]_CREATE_PAGE_URL} element={<[ModuleName]FormPage />} />
+<Route path={[MODULE]_EDIT_PAGE_URL} element={<[ModuleName]FormPage />} />
+<Route path={[MODULE]_DETAIL_PAGE_URL} element={<[ModuleName]DetailPage />} />
+```
+
+### 6. Add Sidebar Navigation (Optional)
+
+Add navigation link to [AppSidebar.tsx](mdc:src/components/layout/MainLayout/AppSidebar.tsx):
+
+```typescript
+{
+  title: "[Module Name Plural]",
+  url: [MODULE]_PAGE_URL,
+  icon: IconName, // Import from lucide-react
+}
+```
+
+## Naming Conventions
+
+- **Module Name**: PascalCase (e.g., `CareManager`, `UserProfile`)
+- **File Names**: PascalCase with module prefix (e.g., `CareManagerListPage.tsx`)
+- **Folder Name**: PascalCase (e.g., `CareManger/`)
+- **Constants**: SCREAMING_SNAKE_CASE (e.g., `CARE_MANAGER_PAGE_URL`)
+- **Variables**: camelCase (e.g., `careManagerEndpoints`)
+
+## Module Types
+
+### Full CRUD Module (Default)
+- List Page ✓
+- Form Page (Create/Edit) ✓
+- Detail Page ✓
+- Form Helpers ✓
+
+### List-Only Module (Read-Only)
+- List Page ✓
+- Detail Page ✓
+- Form Helpers (filters only) ✓
+
+### Form-Only Module (No List)
+- Form Page ✓
+- Form Helpers ✓
+
+## Quick Start Checklist
+
+- [ ] Create module folder in `src/Pages/ProtectedPaths/`
+- [ ] Create `[ModuleName]ListPage.tsx`
+- [ ] Create `[ModuleName]FormPage.tsx`
+- [ ] Create `[ModuleName]DetailPage.tsx` (optional)
+- [ ] Create `[ModuleName]FormHelpers.tsx`
+- [ ] Add endpoints to `endpoints.ts`
+- [ ] Add URLs to `urls.tsx`
+- [ ] Add routes to `protectedRoutes.tsx`
+- [ ] Add sidebar navigation (optional)
+
+This rule ensures all modules follow the same structure and patterns, making the codebase consistent and maintainable.
