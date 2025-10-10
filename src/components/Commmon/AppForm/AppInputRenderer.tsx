@@ -45,6 +45,8 @@ interface InputConfig {
     text: string;
     color: string;
   };
+  otpLength?: number;
+  maxLength?: number;
   formMessageClassName?: string;
   customOnChange?: (value: string) => void;
   onInputChange?: (value: string) => void;
@@ -225,6 +227,8 @@ const AppInputRenderer = ({
             className={input.className}
             labelClassName={input.labelClassName || labelClassName}
             inputClassName={input.inputClassName}
+            otpLength={input.otpLength}
+            maxLength={input.maxLength}
           />
         );
 

@@ -78,9 +78,9 @@ const AppOTP = <T extends FieldValues>({
               }}
               {...field}
             >
-              <InputOTPGroup className="justify-center w-full">
+              <InputOTPGroup className="justify-center w-full gap-4">
                 {Array.from({ length: otpLength }, (_, index) => (
-                  <InputOTPSlot className="size-12" key={index} index={index} />
+                  <InputOTPSlot className="size-12 !rounded-sm border flex-1" key={index} index={index} />
                 ))}
               </InputOTPGroup>
             </InputOTP>

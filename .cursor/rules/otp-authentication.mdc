@@ -7,24 +7,11 @@ description: OTP Authentication Implementation Guidelines
 ## Component Usage Guidelines
 
 ### Always Use Existing Components
-- **ALWAYS use `AppOTP` component** for OTP inputs instead of creating custom OTP inputs
-- **ALWAYS use `AppText` component** for all text/typography elements instead of native HTML elements
-- **ALWAYS use `Button` component** from shadcn/ui for all buttons
+- **ALWAYS use `OTPLogin` component** for OTP based authentication. 
+- **Ask user for `send OTP`, `verify OTP`, `refresh token` and `logout` APIs.
+- **Show the user the existing payload and ask if he wanna change anything.**
 
-### AppOTP Component Usage
-```typescript
-import AppOTP from "./AppOTP";
 
-// Usage example:
-<AppOTP
-  name="otp"
-  formUtils={formUtils}
-  otpLength={4}
-  maxLength={4}
-  className="w-full"
-  inputClassName="justify-center"
-/>
-```
 
 ### AppText Component Usage
 ```typescript
@@ -45,7 +32,6 @@ import AppText from "@/components/Commmon/AppText";
 ```typescript
 export const authEndpoints = {
   login: "/api/access/login/",
-  signup: "/api/signup",
   refresh: "/api/access/refresh/",
   sendOtp: "/api/access/trigger-otp/",
   verifyOtp: "/api/access/login/",
@@ -101,7 +87,6 @@ use appOTP via appForm
 
 ### OTP Authentication Files
 - [OTPLogin.tsx](mdc:src/Pages/AuthPages/components/OTPLogin/OTPLogin.tsx) - Main OTP authentication component
-- [AppOTP.tsx](mdc:src/Pages/AuthPages/components/OTPLogin/AppOTP.tsx) - OTP input component
 - [otpInputMeta.tsx](mdc:src/Pages/AuthPages/components/OTPLogin/otpInputMeta.tsx) - Form metadata
 - [LoginPage.tsx](mdc:src/Pages/AuthPages/LoginPage.tsx) - Main login page
 
@@ -113,7 +98,7 @@ use appOTP via appForm
 ## Development Guidelines
 
 ### Before Implementing OTP Features
-1. Check existing `AppOTP` component first
+1. Check existing `OTPLogin` component first
 2. Use existing form patterns from `AppForm`
 3. Follow API patterns in `src/api/`
 4. Use existing UI components from `src/components/ui/`

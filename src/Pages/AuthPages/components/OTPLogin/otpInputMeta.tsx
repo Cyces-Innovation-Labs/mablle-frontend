@@ -23,7 +23,9 @@ const otpOtpInputArr = () => {
           {
             type: "otp",
             name: "otp",
-            label: "Enter the OTP",
+            otpLength: 4,
+            maxLength: 4,
+            // label: "Enter the OTP",
           },
         ],
       },
