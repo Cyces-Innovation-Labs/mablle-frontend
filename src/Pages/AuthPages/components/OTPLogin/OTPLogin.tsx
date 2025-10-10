@@ -9,7 +9,7 @@ import AppForm from "@/components/Commmon/AppForm/AppForm";
 import { otpPhoneInputArr } from "./otpInputMeta";
 import type { InputGroup } from "@/components/Commmon/types";
 import useAuth from "@/hooks/AuthHooks/useAuth";
-import { MAKE_DASHBOARD_URL } from "@/navigation/make-url";
+import { MAKE_USER_URL } from "@/navigation/make-url";
 import { handleApiError } from "@/lib/common-funnctions";
 import AppText from "@/components/Commmon/AppText";
 import { Button } from "@/components/ui/button";
@@ -56,7 +56,7 @@ const OTPLogin = () => {
     onSuccess: (res: any) => {
       // handle success here
       handleLoginSuccess(res);
-      navigate(MAKE_DASHBOARD_URL);
+      navigate(MAKE_USER_URL);
       toast.success("Login Successfull");
     },
     onError: (err) => {

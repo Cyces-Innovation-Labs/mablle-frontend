@@ -30,6 +30,7 @@ interface AppFormProps {
   primaryBtnType?: "submit" | "button";
   onPrimaryButtonClick?: () => void;
   secondaryButtonDisabled?: boolean
+  labelClassName?: string
 }
 
 const AppForm = ({
@@ -52,6 +53,7 @@ const AppForm = ({
   primaryBtnType = "submit",
   onPrimaryButtonClick,
   secondaryButtonDisabled,
+  labelClassName,
 }: AppFormProps) => {
   if (isLoading)
     return (
@@ -70,6 +72,7 @@ const AppForm = ({
         >
           {topChildren && children}
           <AppInputRenderer
+            labelClassName={labelClassName}
             inputArr={inputArr}
             formUtils={formUtils}
             formWrapperClassName={formWrapperClassName}

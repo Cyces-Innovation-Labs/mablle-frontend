@@ -13,7 +13,7 @@ import makePostRequest from "@/api/makePostRequest";
 import { authEndpoints } from "@/api/endpoints/endpoints";
 import { toast } from "sonner";
 import { handleApiError } from "@/lib/common-funnctions";
-import { MAKE_DASHBOARD_URL } from "@/navigation/make-url";
+import { MAKE_USER_URL } from "@/navigation/make-url";
 
 function PasswordLogin({ className }: React.ComponentProps<"form">) {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ function PasswordLogin({ className }: React.ComponentProps<"form">) {
     }) => makePostRequest(authEndpoints.login, data),
     onSuccess: (response) => {
       handleLoginSuccess(response);
-      navigate(MAKE_DASHBOARD_URL);
+      navigate(MAKE_USER_URL);
       toast.success("Login successful");
     },
     onError: (error) => {
@@ -54,7 +54,7 @@ function PasswordLogin({ className }: React.ComponentProps<"form">) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-6 border rounded-lg p-6 py-8 shadow-xs hover:shadow-sm transition-shadow duration-300",
+        "flex flex-col gap-6 border rounded-lg p-6 py-8 shadow-xs hover:shadow-sm transition-shadow duration-300 bg-background",
         className
       )}
     >

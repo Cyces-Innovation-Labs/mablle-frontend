@@ -32,14 +32,13 @@ const AppListFilter: React.FC<NewRowFormProps> = ({
   handleSearch,
   searchPlaceholder = "Search",
 }) => {
-  const [searchValue, setSearchValue] = React.useState("");
+  
   const handleClearFilters = () => {
     inputArr?.forEach((group) => {
       group.render.forEach((filter) => {
         formUtils?.setValue(filter.name, "");
       });
     });
-    setSearchValue("");
     if (handleSearch) {
       handleSearch("");
     }
@@ -51,7 +50,6 @@ const AppListFilter: React.FC<NewRowFormProps> = ({
         <div className="flex-shrink-0 min-w-[280px] max-w-[400px]">
           <AppSearchInput
             handleSearch={(v) => {
-              setSearchValue(v);
               if (handleSearch) {
                 handleSearch(v);
               }
@@ -64,6 +62,7 @@ const AppListFilter: React.FC<NewRowFormProps> = ({
       {inputArr?.length && (
         <>
           <AppForm
+          labelClassName="!mb-0"
             noDefaultButtons
             inputArr={inputArr ?? []}
             //@ts-expect-error TODO
