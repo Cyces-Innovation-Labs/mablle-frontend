@@ -32,7 +32,6 @@ const AppListFilter: React.FC<NewRowFormProps> = ({
   handleSearch,
   searchPlaceholder = "Search",
 }) => {
-  
   const handleClearFilters = () => {
     inputArr?.forEach((group) => {
       group.render.forEach((filter) => {
@@ -62,16 +61,16 @@ const AppListFilter: React.FC<NewRowFormProps> = ({
       {inputArr?.length && (
         <>
           <AppForm
-          labelClassName="!mb-0"
+            labelClassName="!mb-0"
             noDefaultButtons
             inputArr={inputArr ?? []}
             //@ts-expect-error TODO
             formUtils={formUtils && formUtils}
-            className={className}
-            formClassName={`flex flex-col w-full md:flex-row space-x-4 md:items-center ${
+            className={`${className}`}
+            formClassName={`flex flex-col w-full md:flex-row space-x-4 md:items-center flex-1 ${
               formClassName ?? ""
             }`}
-            formWrapperClassName={formWrapperClassName}
+            formWrapperClassName={` ${formWrapperClassName}`}
             skeletonWrapperClassName={skeletonWrapperClassName}
             isLoading={isLoading}
             fieldsCount={fieldsCount}
@@ -85,7 +84,7 @@ const AppListFilter: React.FC<NewRowFormProps> = ({
               className="text-[14px] whitespace-nowrap cursor-pointer text-primary underline px-[10px] py-[11px]"
               onClick={handleClearFilters}
             >
-              Clear Filters
+              Clear
             </button>
           ) : null}
         </>

@@ -10,7 +10,7 @@ Use this rule when creating admin listing pages. Supports both standard patterns
 
 ### CRITICAL: Always Use AppListFilter for Search and Filters
 
-**NEVER create custom search and filter components.** Always use the existing [AppListFilter.tsx](mdc:src/components/Commmon/AppListFilter.tsx) component which is integrated into [AppTableWithSearchAndFilter.tsx](mdc:src/components/Commmon/AppTable/AppTableWithSearchAndFilter.tsx).
+**NEVER create custom search and filter components.** Always use the existing [AppListFilter.tsx](mdc:src/components/Commmon/AppListFilter.tsx) component which is integrated into [AppTableWithSearchAndFilter.tsx](mdc:src/components/Commmon/AppTable/AppTableWithSearchAndFilter.tsx). And always ask user for the apis and sample response for the table data and meta data.
 
 ### File Structure
 
@@ -75,9 +75,30 @@ const [ModuleName]ListPage = () => {
   };
 
   const customActions = [
-    { label: "View", onClick: handleView },
-    { label: "Edit", onClick: handleEdit },
-    { label: "Delete", onClick: handleDelete }
+    {
+      label: "Actions",
+      render: (row: any) => {
+        const menuOptions: { label: string; onClick: () => void }[] = [
+          {
+            label: "Edit",
+            onClick: () => handleParentEditClick(...),
+          },
+          {
+            label: "View",
+            onClick: () => handleOnSingleView(row.id),
+          }
+        ];
+
+        return (
+          <AppDropdownMenu
+            open={open === row.id}
+            onOpenChange={(open) => setOpen(open ? row.id : null)}
+            trigger={<MoreHorizontal className="w-4 h-4 cursor-pointer" />}
+            content={menuOptions}
+          />
+        );
+    }
+    },
   ];
 
   const asideComp = (
@@ -146,14 +167,14 @@ Every module MUST have a filter helper function in the FormHelpers file:
 export const filterListFor[ModuleName] = (metaData: any): InputGroup[] => {
   return [
     {
-      wrapperClassName: "flex gap-4 items-center",
+      wrapperClassName: "!flex gap-4 items-center",
       render: [
         {
           name: "status",
           type: "select",
           label: "Status:",
+          className: "flex",
           options: [
-            { label: "All", value: "All" },
             { label: "Active", value: "Active" },
             { label: "Inactive", value: "Inactive" },
           ],
@@ -162,6 +183,7 @@ export const filterListFor[ModuleName] = (metaData: any): InputGroup[] => {
           name: "date_range",
           type: "date",
           label: "Date range:",
+          className: "flex",
           placeholder: "Select date range",
         }
       ],
@@ -173,14 +195,15 @@ export const filterListFor[ModuleName] = (metaData: any): InputGroup[] => {
 ### Filter Integration with useGetTableData
 
 ```typescript
-const { setPage, setSearch, page, metaData, tableData, isLoading } = useGetTableData({
-  endpoint: [moduleEndpoints].list,
-  metaEndpoint: [moduleEndpoints].meta,
-  filters: {
-    status: formUtils.getValues("status") || "",
-    date_range: formUtils.getValues("date_range") || "",
-  }
-});
+const { setPage, setSearch, page, metaData, tableData, isLoading } =
+  useGetTableData({
+    endpoint: [moduleEndpoints].list,
+    metaEndpoint: [moduleEndpoints].meta,
+    filters: {
+      status: formUtils.getValues("status") || "",
+      date_range: formUtils.getValues("date_range") || "",
+    },
+  });
 ```
 
 ### Sample MetaData Response Structure
@@ -298,7 +321,7 @@ import type { IAppTable } from "@/components/Commmon/types";
 
 ## Implementation Checklist
 
-### Standard List Page: 
+### Standard List Page:
 
 - [ ] Create file: `[ModuleName]ListPage.tsx` (If not already created)
 - [ ] Add proper imports
@@ -306,7 +329,7 @@ import type { IAppTable } from "@/components/Commmon/types";
 - [ ] Ask user for the sample table list and meta data response.
 - [ ] Implement table with [AppTable](mdc:src/components/Commmon/AppTable/AppTable.tsx)
 - [ ] Add search and filter (if needed) functionality - using [AppListFilter](mdc:src/components/Commmon/AppListFilter.tsx)
-- [ ] If the figma design has any actions, add them. (Buttons or dropdowns(AppDropdownMenu)) 
+- [ ] If the figma design has any actions, add them. (Buttons or dropdowns(AppDropdownMenu))
 - [ ] Add create button (If needed)
 - [ ] Handle loading states (passing the loading state to the [AppTable](mdc:src/components/Commmon/AppTable/AppTable.tsx) component)
 - [ ] Add proper navigation

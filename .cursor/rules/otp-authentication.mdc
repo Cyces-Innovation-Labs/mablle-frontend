@@ -10,6 +10,7 @@ description: OTP Authentication Implementation Guidelines
 - **ALWAYS use `OTPLogin` component** for OTP based authentication. 
 - **Ask user for `send OTP`, `verify OTP`, `refresh token` and `logout` APIs.
 - **Show the user the existing payload and ask if he wanna change anything.**
+- **Once OTP based login is confirmed, remove the PasswordLogin component from AppLogin**
 
 
 
@@ -74,7 +75,6 @@ use appOTP via appForm
 - Centered layout with max-width constraints
 - Proper padding and margins
 - Responsive design considerations
-- Background with purple gradient overlay
 
 ### Interactive Elements
 - Auto-focus navigation between OTP inputs
@@ -110,10 +110,3 @@ use appOTP via appForm
 - Handle errors consistently with `handleApiError`
 - Use React Query for server state management
 - Use proper form validation with Zod schemas
-
-### Testing Considerations
-- Test with Chrome MCP for UI validation
-- Test API calls with proper payload structure
-- Test error handling scenarios
-- Test responsive design on different screen sizes
-- Test accessibility features

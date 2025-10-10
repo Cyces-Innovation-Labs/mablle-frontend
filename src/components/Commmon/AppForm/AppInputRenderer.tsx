@@ -78,7 +78,7 @@ const AppInputRenderer = ({
             placeholder={input.placeholder}
             formUtils={formUtils}
             className={input.className}
-            labelClassName={input.labelClassName || labelClassName}
+            labelClassName={`${labelClassName} ${input.labelClassName}`}
             inputClassName={input.inputClassName}
             customOnChange={input.customOnChange}
           />
@@ -96,9 +96,10 @@ const AppInputRenderer = ({
             options={input.options ?? []}
             formUtils={formUtils}
             className={input.className}
-            labelClassName={input.labelClassName || labelClassName}
             customOnChange={input.customOnChange}
             onInputChange={input.onInputChange}
+            labelClassName={`${labelClassName} ${input.labelClassName}`}
+
           />
         );
 
@@ -112,7 +113,7 @@ const AppInputRenderer = ({
             placeholder={input.placeholder}
             formUtils={formUtils}
             className={input.className}
-            labelClassName={input.labelClassName || labelClassName}
+            labelClassName={`${labelClassName} ${input.labelClassName}`}
             inputClassName={input.inputClassName}
           />
         );
@@ -128,7 +129,7 @@ const AppInputRenderer = ({
             placeholder={input.placeholder}
             formUtils={formUtils}
             className={input.className}
-            labelClassName={input.labelClassName || labelClassName}
+            labelClassName={`${labelClassName} ${input.labelClassName}`}
             customOnChange={input.customOnChange}
           />
         );
@@ -141,7 +142,8 @@ const AppInputRenderer = ({
             name={input.name}
             placeholder={input.placeholder}
             className={input.className}
-            labelClassName={input.labelClassName || labelClassName}
+            labelClassName={`${labelClassName} ${input.labelClassName}`}
+
             min={input.min}
             max={input.max}
             step={input.step}
@@ -159,7 +161,8 @@ const AppInputRenderer = ({
             label={input.label}
             description={input.description}
             formUtils={formUtils}
-            labelClassName={input.labelClassName || labelClassName}
+            labelClassName={`${labelClassName} ${input.labelClassName}`}
+
             tag={input.tag}
           />
         );
@@ -173,7 +176,8 @@ const AppInputRenderer = ({
             label={input.label}
             description={input.description}
             topDescription={input.topDescription}
-            labelClassName={input.labelClassName || labelClassName}
+            labelClassName={`${labelClassName} ${input.labelClassName}`}
+
             className={input.className}
           />
         );
@@ -193,7 +197,7 @@ const AppInputRenderer = ({
             placeholder={input.placeholder}
             formUtils={formUtils}
             className={input.className}
-            labelClassName={input.labelClassName || labelClassName}
+            labelClassName={`${labelClassName} ${input.labelClassName}`}
             inputClassName={input.inputClassName}
             formMessageClassName={input.formMessageClassName}
           />
@@ -210,7 +214,7 @@ const AppInputRenderer = ({
             placeholder={input.placeholder}
             formUtils={formUtils}
             className={input.className}
-            labelClassName={input.labelClassName || labelClassName}
+            labelClassName={`${labelClassName} ${input.labelClassName}`}
             inputClassName={input.inputClassName}
             customOnChange={input.customOnChange}
           />
@@ -225,7 +229,7 @@ const AppInputRenderer = ({
             topDescription={input.topDescription}
             formUtils={formUtils}
             className={input.className}
-            labelClassName={input.labelClassName || labelClassName}
+            labelClassName={`${labelClassName} ${input.labelClassName}`}
             inputClassName={input.inputClassName}
             otpLength={input.otpLength}
             maxLength={input.maxLength}
@@ -245,7 +249,7 @@ const AppInputRenderer = ({
             placeholder={input.placeholder}
             formUtils={formUtils}
             className={input.className}
-            labelClassName={input.labelClassName || labelClassName}
+            labelClassName={`${labelClassName} ${input.labelClassName}`}
             inputClassName={input.inputClassName}
             formMessageClassName={input.formMessageClassName}
           />
