@@ -36,19 +36,20 @@ const AppTitleWithBackButton = ({
               className="mr-1"
               onClick={handleBackNavigateTo}
             >
-              <ArrowLeft className="size-[24px]" />
+              <ArrowLeft className="size-[24px] self-start" />
             </Button>
           )}
-          <AppText type="h1" className="text-3xl font-bold text-gray-900">
-            {title}
-          </AppText>
+          <div>
+            <AppText type="h1" className="text-3xl font-bold text-gray-900">
+              {title}
+            </AppText>
+            {description && (
+              <AppText type="p" className="text-gray-600">
+                {description}
+              </AppText>
+            )}
+          </div>
         </div>
-
-        {description && (
-          <AppText type="p" className="text-gray-600">
-            {description}
-          </AppText>
-        )}
       </div>
       {asideComp}
       {/* <AppText text={title} className="text-[28px] font-bold my-[28px]" /> */}

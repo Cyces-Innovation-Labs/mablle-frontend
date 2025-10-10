@@ -281,7 +281,6 @@ export const filterListForUsers = (): InputGroup[] => {
           type: "select",
           label: "CM:",
           options: [
-            { label: "All", value: "All" },
             { label: "Rohan Verma", value: "Rohan Verma" },
             { label: "Amit Desai", value: "Amit Desai" },
             { label: "Anaya Patel", value: "Anaya Patel" },

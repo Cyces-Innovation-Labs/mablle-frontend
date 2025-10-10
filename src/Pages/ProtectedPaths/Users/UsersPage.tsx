@@ -23,7 +23,7 @@ const UsersPage = () => {
       endpoint: userEndpoints.list,
       metaEndpoint: userEndpoints.meta,
       filters: {
-        care_manager: formUtils.getValues("care_manager") || "All",
+        care_manager: formUtils.getValues("care_manager") || "",
         last_call_date: formUtils.watch("last_call_date"),
       },
     });

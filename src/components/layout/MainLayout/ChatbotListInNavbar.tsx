@@ -1,14 +1,14 @@
 import { User } from "lucide-react";
 import NavbarList from "./NavbarList";
+import { USER_PAGE_URL } from "@/navigation/urls";
 
 const ChatbotListInNavbar = () => {
   const list = [
     {
       title: "Users",
-      url: "/user",
+      url: USER_PAGE_URL,
       icon: User,
     },
-
   ];
   return (
     <div>
