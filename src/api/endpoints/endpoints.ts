@@ -14,18 +14,28 @@ export const authEndpoints = {
   logout: "/api/access/logout/",
 }
 
-export const userEndpoints = {
+export const clientEndpoints = {
   list: "/api/admin-panel/user/list/",
   meta: "/api/admin-panel/user/list/table-meta/",
-  cud: (id: string) => `/api/admin-panel/user/cud/${id? `${id}/`:`` }`,
-  createMeta: "/api/admin-panel/user/cud/meta/",
-  updateMeta: (id: string) => `/api/admin-panel/user/cud/${id}/meta`,
-  updateDetail: (id: string) => `/api/admin-panel/user/update-detail/${id}/`,
-  detail: (id: string) => `/api/admin-panel/user/detail/${id}/`,
+  cud: (id: string) => `/api/admin-panel/client/cud/${id? `${id}/`:`` }`,
+  createMeta: "/api/admin-panel/client/cud/meta/",
+  updateMeta: (id: string) => `/api/admin-panel/client/cud/${id}/meta`,
+  updateDetail: (id: string) => `/api/admin-panel/client/update-detail/${id}/`,
+  detail: (id: string) => `/api/admin-panel/client/detail/${id}/`,
 }
 
 export const fileEndpoints = {
   upload: "/api/access/profile-picture/upload/",
+}
+
+export const designerEndpoints = {
+  list: "/api/admin-panel/designer/list/",
+  meta: "/api/admin-panel/designer/list/table-meta/",
+  cud: (id: string) => `/api/admin-panel/designer/cud/${id? `${id}/`:`` }`,
+  createMeta: "/api/admin-panel/designer/cud/meta/",
+  updateMeta: (id: string) => `/api/admin-panel/designer/cud/${id}/meta`,
+  updateDetail: (id: string) => `/api/admin-panel/designer/update-detail/${id}/`,
+  detail: (id: string) => `/api/admin-panel/designer/detail/${id}/`,
 }
 
 export const metaEndpoints = {

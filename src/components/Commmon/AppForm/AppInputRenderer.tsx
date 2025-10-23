@@ -274,7 +274,7 @@ const AppInputRenderer = ({
           >
             {/* @ts-expect-error ignore */}
             {group.render.map((input: InputConfig) => (
-              <> {renderInput(input)}</>
+              <div key={input.name}> {renderInput(input)}</div>
             ))}
           </div>
         </div>

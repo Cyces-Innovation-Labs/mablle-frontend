@@ -5,16 +5,16 @@ import AppText from "@/components/Commmon/AppText";
 import AppAvatar from "@/components/Commmon/AppAvatar";
 import { Button } from "@/components/ui/button";
 import useGetTableData from "@/hooks/useGetTableData";
-import { Download, Plus } from "lucide-react";
+import { MAKE_LEAD_DETAIL_FORM_PAGE_URL } from "@/navigation/make-url";
+import { Download } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { filterListForUsers } from "./UsersFormHelpers";
 import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
 import { clientEndpoints } from "@/api/endpoints/endpoints";
-import { MAKE_CLIENT_DETAIL_FORM_PAGE_URL } from "@/navigation/make-url";
+import { filterListForUsers } from "../Users/UsersFormHelpers";
 
-const UsersPage = () => {
+const LeadsPage = () => {
   const formUtils = useForm();
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
@@ -23,15 +23,16 @@ const UsersPage = () => {
       endpoint: clientEndpoints.list,
       metaEndpoint: clientEndpoints.meta,
       filters: {
-        care_manager: formUtils.getValues("care_manager") || "",
-        last_call_date: formUtils.watch("last_call_date"),
+        designer: formUtils.getValues("designer") || "",
+        lead_status: formUtils.watch("lead_status"),
+        date_range: formUtils.watch("date_range"),
       },
     });
 
   const navigate = useNavigate();
 
   const customValueRender = {
-    full_name: (row: any) => {
+    lead_name: (row: any) => {
       return (
         <div className="flex items-center gap-3">
           <input
@@ -48,44 +49,66 @@ const UsersPage = () => {
           />
           <AppAvatar
             src={row.avatar}
-            fallback={row.full_name?.charAt(0) || "U"}
+            fallback={row.lead_name?.charAt(0) || "L"}
           />
           <AppText type="span" className="font-medium">
-            {row.full_name}
+            {row.lead_name}
           </AppText>
         </div>
       );
     },
-    sentiment_score: (row: any) => {
+    lead_number: (row: any) => {
       return (
-        <div className="flex items-center">
-          <AppText type="span" className="text-sm">
-            {row.sentiment_score}/5
-          </AppText>
-        </div>
-      );
-    },
-    last_call: (row: any) => {
-      return (
-        <AppText type="span" className="text-sm text-gray-600">
-          {row.last_call}
+        <AppText type="span" className="text-sm font-mono">
+          {row.lead_number}
         </AppText>
       );
     },
-    next_followup: (row: any) => {
+    designer: (row: any) => {
       return (
-        <div className="flex items-center gap-2">
-          <AppText type="span" className="text-sm">
-            {row.next_followup}
-          </AppText>
-          <button className="text-gray-400 hover:text-gray-600">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="1" fill="currentColor" />
-              <circle cx="19" cy="12" r="1" fill="currentColor" />
-              <circle cx="5" cy="12" r="1" fill="currentColor" />
-            </svg>
-          </button>
-        </div>
+        <AppText type="span" className="text-sm">
+          {row.designer}
+        </AppText>
+      );
+    },
+    lead_created: (row: any) => {
+      return (
+        <AppText type="span" className="text-sm text-gray-600">
+          {row.lead_created}
+        </AppText>
+      );
+    },
+    mobile: (row: any) => {
+      return (
+        <AppText type="span" className="text-sm">
+          {row.mobile}
+        </AppText>
+      );
+    },
+    status: (row: any) => {
+      const statusColors: Record<string, string> = {
+        FC: "bg-green-100 text-green-800",
+        HO: "bg-blue-100 text-blue-800", 
+        QL: "bg-purple-100 text-purple-800",
+        CF: "bg-orange-100 text-orange-800"
+      };
+      return (
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[row.status] || 'bg-gray-100 text-gray-800'}`}>
+          {row.status}
+        </span>
+      );
+    },
+    lead_status: (row: any) => {
+      const leadStatusColors: Record<string, string> = {
+        New: "bg-blue-100 text-blue-800",
+        Qualified: "bg-green-100 text-green-800",
+        Converted: "bg-purple-100 text-purple-800",
+        Lost: "bg-red-100 text-red-800"
+      };
+      return (
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${leadStatusColors[row.lead_status] || 'bg-gray-100 text-gray-800'}`}>
+          {row.lead_status}
+        </span>
       );
     },
   };
@@ -97,7 +120,7 @@ const UsersPage = () => {
         return (
           <AppLink
             className="font-medium py-1 px-3 hover:underline"
-            to={MAKE_CLIENT_DETAIL_FORM_PAGE_URL(row.id)}
+            to={MAKE_LEAD_DETAIL_FORM_PAGE_URL(row.id)}
           >
             View
           </AppLink>
@@ -108,7 +131,7 @@ const UsersPage = () => {
 
   const handleExport = () => {
     // Implement export functionality
-    console.log("Exporting data...");
+    console.log("Exporting leads data...");
   };
 
   const asideComp = (
@@ -121,13 +144,6 @@ const UsersPage = () => {
         <Download className="w-4 h-4" />
         Export
       </Button>
-      <Button
-        onClick={() => navigate(MAKE_CLIENT_DETAIL_FORM_PAGE_URL("create"))}
-        className="flex items-center gap-2"
-      >
-        <Plus className="w-4 h-4" />
-        Add New
-      </Button>
     </div>
   );
 
@@ -137,8 +153,8 @@ const UsersPage = () => {
       <AppTitleWithBackButton
         asideComp={asideComp}
         hideBackButton
-        title="Users"
-        description="Manage your users and voice recordings."
+        title="Leads"
+        description="Manage your leads and potential clients."
       />
 
       {/* Table with Search and Filters */}
@@ -153,11 +169,11 @@ const UsersPage = () => {
         setPage={setPage}
         customValueRender={customValueRender}
         actions={customActions}
-        searchPlaceholder="Search users by name, phone or care ma..."
+        searchPlaceholder="Enter lead number, designer..."
         isLoading={isLoading}
       />
     </AppPageWrapper>
   );
 };
 
-export default UsersPage;
+export default LeadsPage;

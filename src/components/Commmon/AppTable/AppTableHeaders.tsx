@@ -13,18 +13,18 @@ const AppTableHeaders = ({
   actions?: IAppTableAction[];
   addIndex?: boolean
 }) => {
-
+  
   return (
-    <TableHeader className={` bg-[#F9FAFB] ${""}`}>
+    <TableHeader className={`bg-[#DAA14C33] rounded-t-[8px] ${""}`}>
       <TableRow>
         {addIndex && <TableHead className="text-[#64748B] px-[10px]">S.No</TableHead>}
         {!!selectedRows && <TableHead className="px-[10px]"></TableHead>}
         {headersToMap.map((header, ind) => (
-          <TableHead className="p-[17px] py-3 text-[#64748B] font-[600]" key={header?.toString() + `${ind}`}>
+          <TableHead className={`${ind == 0 ? 'rounded-tl-[8px]' : ''} p-[17px] py-3 text-primary font-[600]`} key={header?.toString() + `${ind}`}>
             {header}
           </TableHead>
         ))}
-        {!!actions && <TableHead className="px-[10px]"></TableHead>}
+        {!!actions && <TableHead className="px-[10px] rounded-tr-[8px]"></TableHead>}
       </TableRow>
     </TableHeader>
   );

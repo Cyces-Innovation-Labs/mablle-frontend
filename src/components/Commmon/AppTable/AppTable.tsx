@@ -31,8 +31,8 @@ const AppTable = ({
   if (actions) colSpan += 1;
 
   return (
-    <div className="">
-      <Table className="border gri">
+    <div className="rounded-[8px] border">
+      <Table className="rounded-[8px]">
         <AppTableHeaders
           selectedRows={selectedRows}
           actions={actions}

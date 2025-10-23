@@ -3,16 +3,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@font-face {
-  font-family: "Plus Jakarta Sans";
-  src: url("/src/assets/fonts/PlusJakartaSans-VariableFont_wght.ttf")
-    format("truetype");
-  font-weight: 100 900;
-  font-display: swap;
-}
-
 * {
-  font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 @theme inline {
@@ -91,13 +83,13 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: #FFFFFF;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: rgba(130, 26, 82, 1);
+  --primary: #23211D;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -106,7 +98,7 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
+  --border: #EAEAEA;
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
@@ -126,12 +118,12 @@
   --code-header-background: #fafaff;
 
   /* Navbar CSS */
-  --navbar-link: #18181b;
+  --navbar-link: #23211D;
   /* Text CSS */
-  --text-primary: #18181b;
-  --text-secondary: #71717a;
+  --text-primary: #23211D;
+  --text-secondary: #717182;
   --navbar-link-header: #a1a1aa;
-  --navbar-link-active: #e1ebff;
+  --navbar-link-active: #DAA14C33;
   --danger: #ff0000;
   --grey-900: #101828;
 

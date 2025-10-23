@@ -9,11 +9,11 @@ import AppForm from "@/components/Commmon/AppForm/AppForm";
 import { otpOtpInputArr, otpPhoneInputArr } from "./otpInputMeta";
 import type { InputGroup } from "@/components/Commmon/types";
 import useAuth from "@/hooks/AuthHooks/useAuth";
-import { MAKE_USER_URL } from "@/navigation/make-url";
 import { handleApiError } from "@/lib/common-funnctions";
 import AppText from "@/components/Commmon/AppText";
 import { Button } from "@/components/ui/button";
 import { MoveLeft } from "lucide-react";
+import { CLIENT_PAGE_URL } from "@/navigation/urls";
 
 const OTPLogin = () => {
   const [step, setStep] = useState(1);
@@ -58,7 +58,7 @@ const OTPLogin = () => {
     onSuccess: (res: any) => {
       // handle success here
       handleLoginSuccess(res);
-      navigate(MAKE_USER_URL);
+      navigate(CLIENT_PAGE_URL);
       toast.success("Login Successfull");
     },
     onError: (err) => {

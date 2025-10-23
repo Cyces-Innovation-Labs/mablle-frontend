@@ -44,7 +44,7 @@ const AppListFilter: React.FC<NewRowFormProps> = ({
   };
 
   return (
-    <div className={`${className} flex md:flex-row flex-col w-full gap-[20px]`}>
+    <div className={`${className} flex md:flex-row md:justify-between flex-col w-full gap-[20px]`}>
       {handleSearch && (
         <div className="flex-shrink-0 min-w-[280px] max-w-[400px]">
           <AppSearchInput
@@ -59,7 +59,7 @@ const AppListFilter: React.FC<NewRowFormProps> = ({
         </div>
       )}
       {inputArr?.length && (
-        <>
+        <div className="flex gap-2">
           <AppForm
             labelClassName="!mb-0"
             noDefaultButtons
@@ -87,7 +87,7 @@ const AppListFilter: React.FC<NewRowFormProps> = ({
               Clear
             </button>
           ) : null}
-        </>
+        </div>
       )}
     </div>
   );

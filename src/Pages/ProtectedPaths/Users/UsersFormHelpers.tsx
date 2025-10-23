@@ -277,9 +277,9 @@ export const filterListForUsers = (): InputGroup[] => {
         {
           className: "flex",
           inputClassName:"w-fit",
+          placeholder: "Select Care Manager",
           name: "care_manager",
           type: "select",
-          label: "CM:",
           options: [
             { label: "Rohan Verma", value: "Rohan Verma" },
             { label: "Amit Desai", value: "Amit Desai" },
@@ -292,7 +292,6 @@ export const filterListForUsers = (): InputGroup[] => {
           className: "flex w-fit",
           name: "last_call_date",
           type: "date",
-          label: "Last call on:",
           placeholder: "Jul 25 ~ Jul 30",
         }
       ],

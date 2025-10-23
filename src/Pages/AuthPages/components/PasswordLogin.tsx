@@ -13,7 +13,7 @@ import makePostRequest from "@/api/makePostRequest";
 import { authEndpoints } from "@/api/endpoints/endpoints";
 import { toast } from "sonner";
 import { handleApiError } from "@/lib/common-funnctions";
-import { MAKE_USER_URL } from "@/navigation/make-url";
+import { CLIENT_PAGE_URL } from "@/navigation/urls";
 
 function PasswordLogin({ className }: React.ComponentProps<"form">) {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ function PasswordLogin({ className }: React.ComponentProps<"form">) {
     }) => makePostRequest(authEndpoints.login, data),
     onSuccess: (response) => {
       handleLoginSuccess(response);
-      navigate(MAKE_USER_URL);
+      navigate(CLIENT_PAGE_URL);
       toast.success("Login successful");
     },
     onError: (error) => {

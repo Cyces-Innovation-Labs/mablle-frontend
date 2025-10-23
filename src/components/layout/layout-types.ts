@@ -14,4 +14,7 @@ export interface INavbarList {
   onClick?: () => void;
   className?: string;
   isSelected?: boolean;
+  children?: INavbarList[];
+  isExpanded?: boolean;
+  isParent?: boolean;
 }

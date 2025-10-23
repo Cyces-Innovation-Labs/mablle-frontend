@@ -40,11 +40,11 @@ const AppTitleWithBackButton = ({
             </Button>
           )}
           <div>
-            <AppText type="h1" className="text-3xl font-bold text-gray-900">
+            <AppText type="h1" className="text-2xl font-bold text-primary">
               {title}
             </AppText>
             {description && (
-              <AppText type="p" className="text-gray-600">
+              <AppText type="p" className="text-[#504849] text-sm">
                 {description}
               </AppText>
             )}
