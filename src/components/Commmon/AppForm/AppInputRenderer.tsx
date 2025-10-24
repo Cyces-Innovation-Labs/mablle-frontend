@@ -50,6 +50,9 @@ interface InputConfig {
   formMessageClassName?: string;
   customOnChange?: (value: string) => void;
   onInputChange?: (value: string) => void;
+  required?: boolean;
+  validation?: any;
+  conditionalRender?: (formValues: any) => boolean;
 }
 
 interface AppInputRendererProps {
@@ -66,6 +69,11 @@ const AppInputRenderer = ({
   labelClassName,
 }: AppInputRendererProps) => {
   const renderInput = (input: InputConfig) => {
+    // Check if input should be conditionally rendered
+    if (input.conditionalRender && !input.conditionalRender(formUtils.watch())) {
+      return null;
+    }
+    
     switch (input.type) {
       case "text":
         return (
@@ -274,7 +282,7 @@ const AppInputRenderer = ({
           >
             {/* @ts-expect-error ignore */}
             {group.render.map((input: InputConfig) => (
-              <div key={input.name}> {renderInput(input)}</div>
+              <div key={input.name} className={`block w-full ${input.className}`}> {renderInput(input)}</div>
             ))}
           </div>
         </div>

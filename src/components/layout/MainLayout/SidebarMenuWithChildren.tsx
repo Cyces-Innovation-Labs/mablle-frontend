@@ -77,7 +77,7 @@ const SidebarMenuWithChildren = ({
         ) : (
           IconForNonImage && <IconForNonImage width={17} height={17} />
         )}
-        <span className={`text-black text-[14px] font-medium ${hasSelectedChild ? "ml-2" : ""}`}>{item?.title}</span>
+        <span className={`text-black text-[14px] font-medium ${hasChildren ? "ml-2" : ""}`}>{item?.title}</span>
         {hasChildren && (
           <div className="ml-auto">
             {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}

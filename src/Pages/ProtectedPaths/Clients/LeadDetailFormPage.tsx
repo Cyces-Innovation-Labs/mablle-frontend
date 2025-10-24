@@ -17,7 +17,7 @@ const LeadDetailFormPage = () => {
   const navigate = useNavigate();
   const isCreate = leadId == "create";
 
-  const { formUtils, handleSubmit, isMetaLoading, isSubmitting, metaData, prefillIsLoading } =
+  const { formUtils, handleSubmit, isMetaLoading, isSubmitting, prefillIsLoading } =
     useCrud({
       submitEndpoint: clientEndpoints.cud(leadId || ""),
       metaEndpoint: isCreate
@@ -49,8 +49,8 @@ const LeadDetailFormPage = () => {
   return (
     <AppPageWrapper>
       <AppTitleWithBackButton
-        title={isCreate ? "Add New Lead" : "Edit Lead"}
-        description={isCreate ? "Create a new lead record" : "Update lead information"}
+        title={isCreate ? "Create a new Lead" : "Edit Lead"}
+        description={isCreate ? "Lorem ipsum dolor sit amet consectetur." : "Update lead information"}
         onBackNavigateTo={LEAD_PAGE_URL}
       />
 

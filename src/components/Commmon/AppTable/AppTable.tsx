@@ -17,7 +17,8 @@ const AppTable = ({
   isLoading,
   customValueRender,
   hidePagination,
-  addIndex = false
+  addIndex = false,
+  handleRowClick
 }: IAppTable) => {
   if (isLoading) {
     return <SkeletonTable columns={5} rows={10} />;
@@ -47,6 +48,7 @@ const AppTable = ({
           colSpan={colSpan}
           customValueRender={customValueRender}
           addIndex={addIndex}
+          handleRowClick={handleRowClick}
         />
       </Table>
 

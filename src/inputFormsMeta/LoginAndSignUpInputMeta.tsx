@@ -3,19 +3,21 @@ import { z } from "zod";
 
 export const loginInputs: InputGroup[] = [
   {
-    wrapperClassName: "",
+    wrapperClassName: "space-y-",
     render: [
       {
         name: "email",
         type: "text",
-        label: "Email",
-        placeholder: "Enter your email",
+        label: "",
+        placeholder: "Email or phone number",
+        className: "w-full !rounded-[16px] max-w-[358px]",
       },
       {
         name: "password",
         type: "password",
-        label: "Password",
-        placeholder: "Enter your password",
+        label: "",
+        placeholder: "Password",
+        className: "w-full !rounded-[16px] max-w-[358px]",
       },
     ],
   },

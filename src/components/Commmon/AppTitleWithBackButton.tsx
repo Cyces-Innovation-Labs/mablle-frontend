@@ -29,16 +29,15 @@ const AppTitleWithBackButton = ({
   return (
     <div className="flex items-center justify-between my-6">
       <div className="">
-        <div className="flex items-center mb-2">
-          {!hideBackButton && (
-            <Button
-              variant={"ghost"}
-              className="mr-1"
+      {!hideBackButton && (
+            <div
+              className="mr-1 flex items-center gap-2 !pl-0 mb-4 text-[#717182] cursor-pointer"
               onClick={handleBackNavigateTo}
             >
-              <ArrowLeft className="size-[24px] self-start" />
-            </Button>
+              <ArrowLeft className="size-[24px] self-start" /> Back
+            </div>
           )}
+        <div className="flex items-center mb-2">        
           <div>
             <AppText type="h1" className="text-2xl font-bold text-primary">
               {title}

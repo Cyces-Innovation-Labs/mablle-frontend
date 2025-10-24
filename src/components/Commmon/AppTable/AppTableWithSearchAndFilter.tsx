@@ -17,6 +17,7 @@ const AppTableWithSearchAndFilter = ({
   asideComp,
   formUtils,
   filterInputArr,
+  handleRowClick,
 }: IAppTableWithSearchAndFilter) => {
   return (
     <div className="flex-1">
@@ -39,6 +40,7 @@ const AppTableWithSearchAndFilter = ({
         isLoading={isLoading}
         actions={actions}
         customValueRender={customValueRender}
+        handleRowClick={handleRowClick}
       />
     </div>
   );

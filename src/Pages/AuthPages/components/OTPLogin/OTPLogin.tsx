@@ -14,6 +14,7 @@ import AppText from "@/components/Commmon/AppText";
 import { Button } from "@/components/ui/button";
 import { MoveLeft } from "lucide-react";
 import { CLIENT_PAGE_URL } from "@/navigation/urls";
+import AppImage from "@/components/Commmon/AppImage";
 
 const OTPLogin = () => {
   const [step, setStep] = useState(1);
@@ -86,12 +87,23 @@ const OTPLogin = () => {
   };
 
   return (
-    <div className="bg-white border border-gray-300 rounded-3xl p-8 w-full shadow-sm">
-      <div className="flex flex-col gap-6 items-center">
+    <div className="">
+      {/* Golden Logo */}
+      <div className="flex flex-col items-center gap-2">
+        <AppImage src="/gold-logo.svg" alt="logo" />
+      </div>
+
+      {/* Title */}
+      <div className="text-center mt-3">
+        <AppText type="h1" className="text-md font-semibold text-primary">
+          Login to your account
+        </AppText>
+      </div>
+      <div className="flex flex-col gap-6 items-center mt-5">
         {step == 1 ? (
           // Phone Number Step
           <>
-            <div className="flex flex-col gap-4 items-center text-center">
+            {/* <div className="flex flex-col gap-4 items-center text-center">
               <AppText
                 type="h1"
                 className="text-[28px] font-bold text-black tracking-[-0.1143px] leading-tight"
@@ -104,7 +116,7 @@ const OTPLogin = () => {
               >
                 Please enter your phone number to get OTP
               </AppText>
-            </div>
+            </div> */}
 
             <div className="w-full">
               <AppForm
@@ -116,7 +128,7 @@ const OTPLogin = () => {
                 <Button
                   type="submit"
                   disabled={sendOtpPending}
-                  className="w-full bg-[#821a52] opacity-90 rounded-lg text-white mt-2 font-semibold tracking-[-0.0714px] hover:opacity-100 transition-opacity disabled:opacity-50"
+                  className="w-full bg-primary opacity-90 mt-4 rounded-lg text-white font-semibold tracking-[-0.0714px] hover:bg-primary/90 transition-opacity disabled:opacity-50"
                 >
                   {sendOtpPending ? "Sending..." : "Send OTP"}
                 </Button>
@@ -157,7 +169,7 @@ const OTPLogin = () => {
                     <button
                       type="button"
                       onClick={() => setStep(1)}
-                      className="text-[12px] font-semibold text-[#821a52] text-left hover:underline"
+                      className="text-[12px] font-semibold text-primary text-left hover:underline mt-1"
                     >
                       Use a different phone number
                     </button>
@@ -180,7 +192,7 @@ const OTPLogin = () => {
                       disabled={
                         verifyOtpPending || !formUtils?.getValues("otp")
                       }
-                      className="w-full bg-[#821a52] opacity-90 rounded-lg text-white font-semibold tracking-[-0.0714px] hover:opacity-100 transition-opacity disabled:opacity-50"
+                      className="w-full bg-primary opacity-90 rounded-lg mt-4 text-white font-semibold tracking-[-0.0714px] hover:bg-primary/90 transition-opacity disabled:opacity-50"
                     >
                       {verifyOtpPending ? "Verifying..." : "Submit"}
                     </Button>
@@ -198,7 +210,7 @@ const OTPLogin = () => {
                         });
                         setSeconds(45);
                       }}
-                      className="w-full rounded-xl text-[16px] font-semibold text-[#821a52] hover:bg-gray-50 transition-colors"
+                      className="w-full rounded-xl text-[16px] font-semibold text-[#9C6E61] hover:bg-gray-50 transition-colors"
                     >
                       Resend Code
                     </Button>

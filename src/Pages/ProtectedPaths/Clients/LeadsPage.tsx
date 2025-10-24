@@ -1,12 +1,11 @@
-import AppLink from "@/components/Commmon/AppLink";
 import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
 import AppTableWithSearchAndFilter from "@/components/Commmon/AppTable/AppTableWithSearchAndFilter";
 import AppText from "@/components/Commmon/AppText";
 import AppAvatar from "@/components/Commmon/AppAvatar";
 import { Button } from "@/components/ui/button";
 import useGetTableData from "@/hooks/useGetTableData";
-import { MAKE_LEAD_DETAIL_FORM_PAGE_URL } from "@/navigation/make-url";
-import { Download } from "lucide-react";
+import { MAKE_LEAD_DETAIL_FORM_PAGE_URL, MAKE_LEAD_DETAIL_PAGE_URL } from "@/navigation/make-url";
+import { Download, Plus } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
@@ -113,25 +112,14 @@ const LeadsPage = () => {
     },
   };
 
-  const customActions = [
-    {
-      label: "",
-      render: (row: any) => {
-        return (
-          <AppLink
-            className="font-medium py-1 px-3 hover:underline"
-            to={MAKE_LEAD_DETAIL_FORM_PAGE_URL(row.id)}
-          >
-            View
-          </AppLink>
-        );
-      },
-    },
-  ];
-
   const handleExport = () => {
     // Implement export functionality
     console.log("Exporting leads data...");
+  };
+
+  const handleRowClick = (row: any) => {
+    // Navigate to lead detail page
+    navigate(MAKE_LEAD_DETAIL_PAGE_URL(row.id));
   };
 
   const asideComp = (
@@ -143,6 +131,13 @@ const LeadsPage = () => {
       >
         <Download className="w-4 h-4" />
         Export
+      </Button>
+      <Button
+        onClick={() => navigate(MAKE_LEAD_DETAIL_FORM_PAGE_URL("create"))}
+        className="flex items-center gap-2 text-white"
+      >
+        <Plus className="w-4 h-4" />
+        Add New Lead
       </Button>
     </div>
   );
@@ -168,9 +163,9 @@ const LeadsPage = () => {
         total={tableData?.data?.count || 0}
         setPage={setPage}
         customValueRender={customValueRender}
-        actions={customActions}
         searchPlaceholder="Enter lead number, designer..."
         isLoading={isLoading}
+        handleRowClick={handleRowClick}
       />
     </AppPageWrapper>
   );

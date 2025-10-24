@@ -89,6 +89,9 @@ export type InputConfig = {
   labelClassName?: string;
   inputClassName?: string;
   onInputChange?: (value: string) => void;
+  required?: boolean;
+  validation?: any;
+  conditionalRender?: (formValues: any) => boolean;
 };
 
 export type InputGroup = {
@@ -208,6 +211,7 @@ export interface IAppTable {
   customValueRender?: {
     [key: string]: (row: IAppTableBody, header: string) => React.ReactNode;
   };
+  handleRowClick?: (row: IAppTableBody) => void;
 }
 
 export interface IAppTableWithSearchAndFilter extends IAppTable {

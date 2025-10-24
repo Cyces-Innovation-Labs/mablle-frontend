@@ -58,26 +58,8 @@ const AppNavbar = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
-                <div className="flex items-center justify-start gap-2 p-2">
-                  <div className="flex flex-col space-y-1 leading-none">
-                    <p className="font-medium">{userData?.first_name} {userData?.last_name}</p>
-                    <p className="w-[200px] truncate text-sm text-muted-foreground">
-                      {userData?.email}
-                    </p>
-                  </div>
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer">
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                  className="cursor-pointer text-red-600 focus:text-red-600"
+                  className="cursor-pointer text-primary focus:text-red-600"
                   onClick={onOpen}
                 >
                   <LogOut className="mr-2 h-4 w-4" />

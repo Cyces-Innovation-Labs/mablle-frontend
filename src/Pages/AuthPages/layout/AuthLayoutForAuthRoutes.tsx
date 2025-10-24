@@ -14,7 +14,6 @@ const AuthLayoutForAuthRoutes = () => {
     } else {
       setUserData(JSON.parse(userData));
       navigate("");
-
     }
   }, []);
   return (

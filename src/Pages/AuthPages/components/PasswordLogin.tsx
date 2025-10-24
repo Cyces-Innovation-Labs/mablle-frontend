@@ -14,6 +14,7 @@ import { authEndpoints } from "@/api/endpoints/endpoints";
 import { toast } from "sonner";
 import { handleApiError } from "@/lib/common-funnctions";
 import { CLIENT_PAGE_URL } from "@/navigation/urls";
+import AppImage from "@/components/Commmon/AppImage";
 
 function PasswordLogin({ className }: React.ComponentProps<"form">) {
   const navigate = useNavigate();
@@ -43,7 +44,8 @@ function PasswordLogin({ className }: React.ComponentProps<"form">) {
   });
 
   const onSubmit = (data: { email: string; password: string }) => {
-    loginMutation({ ...data, user_type: "user" });
+    navigate(CLIENT_PAGE_URL);
+    // loginMutation({ ...data, user_type: "user" });
   };
 
   const handleSubmit = (val: { email: string; password: string }) => {
@@ -52,55 +54,45 @@ function PasswordLogin({ className }: React.ComponentProps<"form">) {
   };
 
   return (
-    <div
-      className={cn(
-        "flex flex-col gap-6 border rounded-lg p-6 py-8 shadow-xs hover:shadow-sm transition-shadow duration-300 bg-background",
-        className
-      )}
-    >
-      <div className="flex flex-col items-center gap-2 text-center">
-        <AppText className="text-2xl font-bold">Login to your account</AppText>
-        <AppText className="text-muted-foreground text-sm text-balance">
-          Enter your email below to login to your account
+    <div className={cn("flex flex-col items-center gap-5", className)}>
+      {/* Golden Logo */}
+      <div className="flex flex-col items-center gap-2">
+        <AppImage src="/gold-logo.svg" alt="logo" />
+      </div>
+
+      {/* Title */}
+      <div className="text-center mt-3">
+        <AppText type="h1" className="text-md font-semibold text-primary">
+          Login to your account
         </AppText>
       </div>
-      <div className="pb-1">
-        <div className="flex flex-col gap-4">
-          <AppForm
-            formUtils={formUtils}
-            inputArr={loginInputs}
-            onSubmit={handleSubmit}
-            isLoading={isPending}
-            noDefaultButtons
-          >
-            <Button type="submit" className="w-full mt-4">
-              Login
-            </Button>
-          </AppForm>
 
-          {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-            <span className="bg-background text-muted-foreground relative z-10 px-2">
-              Or continue with
-            </span>
-          </div> */}
+      {/* Form */}
+      <div className="w-full">
+        <AppForm
+          formUtils={formUtils}
+          inputArr={loginInputs}
+          onSubmit={handleSubmit}
+          isLoading={isPending}
+          noDefaultButtons
+        >
+          <Button 
+            type="submit" 
+            className="w-full bg-primary hover:bg-gray-800 text-white font-medium py-5 mt-4 rounded-[16px]"
+          >
+            Enter
+          </Button>
+        </AppForm>
+
+        {/* Forgot Password Link */}
+        <div className="text-center mt-4">
+          <button 
+            type="button"
+            className="text-sm text-[#9C6E61] hover:text-[#9C6E61]/80 font-medium cursor-pointer"
+          >
+            Forgot password?
+          </button>
         </div>
-        {/* <div className="text-center text-sm mt-4">
-          Don&apos;t have an account?{" "}
-          <AppLink
-            to="/signup"
-            className="underline underline-offset-4 font-semibold"
-          >
-            Sign up
-          </AppLink>
-        </div> */}
-        {/* <div className="text-center text-sm mt-2">
-          <AppLink
-            to="/reset-password"
-            className=" text-muted-foreground text-[12px] hover:text-primary hover:font-medium"
-          >
-            Forgot your password?
-          </AppLink>
-        </div> */}
       </div>
     </div>
   );
