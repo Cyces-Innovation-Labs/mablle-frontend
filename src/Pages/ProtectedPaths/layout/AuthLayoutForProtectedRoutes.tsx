@@ -16,9 +16,7 @@ const AuthLayoutForProtectedRoutes = () => {
     }
   }, []);
   return (
-    <>
       <Outlet />
-    </>
   );
 };
 
