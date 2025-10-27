@@ -1,7 +1,9 @@
 import AppText from "@/components/Commmon/AppText";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Download, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router";
+import React from "react";
 
 interface StatusTag {
   label: string;
@@ -14,11 +16,16 @@ interface CommonDetailHeaderProps {
   onBackClick?: () => void;
   mainTitle: string;
   mainStatusTag?: StatusTag;
-  subTitle?: string;
+  subTitle?: string | React.ReactNode;
   subStatusTag?: StatusTag;
   onExportClick?: () => void;
   exportButtonLabel?: string;
   showExportButton?: boolean;
+  // Switch props (optional)
+  showSwitch?: boolean;
+  switchLabel?: string;
+  switchChecked?: boolean;
+  onSwitchChange?: (checked: boolean) => void;
 }
 
 const CommonDetailHeader = ({
@@ -31,6 +38,10 @@ const CommonDetailHeader = ({
   onExportClick,
   exportButtonLabel = "Export",
   showExportButton = true,
+  showSwitch = false,
+  switchLabel,
+  switchChecked = false,
+  onSwitchChange,
 }: CommonDetailHeaderProps) => {
   const navigate = useNavigate();
 
@@ -83,9 +94,13 @@ const CommonDetailHeader = ({
           {(subTitle || subStatusTag) && (
             <div className="flex items-center space-x-3">
               {subTitle && (
-                <AppText type="p" className="text-gray-600">
-                  {subTitle}
-                </AppText>
+                typeof subTitle === 'string' ? (
+                  <AppText type="p" className="text-gray-600">
+                    {subTitle}
+                  </AppText>
+                ) : (
+                  subTitle
+                )
               )}
               {subStatusTag && (
                 <div className={`px-2 py-1 rounded-full text-xs font-medium ${subStatusTag.color}`}>
@@ -99,19 +114,38 @@ const CommonDetailHeader = ({
         </div>
       </div>
 
-      {/* Right Section - Export Button */}
-      {showExportButton && (
-        <div className="flex-shrink-0">
-          <Button
-            onClick={onExportClick}
-            variant="outline"
-            className="flex items-center space-x-2 bg-[#9C6E611A] text-primary hover:bg-[#9C6E611A]/90"
-          >
-            <Download className="w-4 h-4" />
-            <span>{exportButtonLabel}</span>
-          </Button>
-        </div>
-      )}
+      {/* Right Section - Switch and Export Button */}
+      <div className="flex items-center space-x-4">
+        {/* Switch */}
+        {showSwitch && (
+          <div className="flex items-center space-x-2">
+            {switchLabel && (
+              <AppText type="span" className="text-sm text-gray-600">
+                {switchLabel}
+              </AppText>
+            )}
+            <Switch
+              checked={switchChecked}
+              onCheckedChange={onSwitchChange}
+            />
+            
+          </div>
+        )}
+
+        {/* Export Button */}
+        {showExportButton && (
+          <div className="flex-shrink-0">
+            <Button
+              onClick={onExportClick}
+              variant="outline"
+              className="flex items-center space-x-2 bg-[#9C6E611A] text-primary hover:bg-[#9C6E611A]/90"
+            >
+              <Download className="w-4 h-4" />
+              <span>{exportButtonLabel}</span>
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

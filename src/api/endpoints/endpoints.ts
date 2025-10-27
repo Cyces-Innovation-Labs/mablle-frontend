@@ -29,8 +29,8 @@ export const fileEndpoints = {
 }
 
 export const designerEndpoints = {
-  list: "/api/admin-panel/designer/list/",
-  meta: "/api/admin-panel/designer/list/table-meta/",
+  list: "/api/admin-panel/users/list/",
+  meta: "/api/admin-panel/users/list/table-meta/",
   cud: (id: string) => `/api/admin-panel/designer/cud/${id? `${id}/`:`` }`,
   createMeta: "/api/admin-panel/designer/cud/meta/",
   updateMeta: (id: string) => `/api/admin-panel/designer/cud/${id}/meta`,

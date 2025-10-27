@@ -5,19 +5,20 @@ import AppText from "@/components/Commmon/AppText";
 import AppAvatar from "@/components/Commmon/AppAvatar";
 import { Button } from "@/components/ui/button";
 import useGetTableData from "@/hooks/useGetTableData";
-import { MAKE_DESIGNER_DETAIL_FORM_PAGE_URL } from "@/navigation/make-url";
+import { MAKE_DESIGNER_DETAIL_PAGE_URL } from "@/navigation/make-url";
 import { Download } from "lucide-react";
-import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
 import { designerEndpoints } from "@/api/endpoints/endpoints";
 import { filterListForUsers } from "../Users/UsersFormHelpers";
+import { dummyDesignersData, dummyTableHeaders } from "@/constants/dummy-data";
+import { useNavigate } from "react-router-dom";
 
 const DesignersPage = () => {
   const formUtils = useForm();
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-
+  const navigate = useNavigate();
   const { setPage, setSearch, page, metaData, tableData, isLoading } =
     useGetTableData({
       endpoint: designerEndpoints.list,
@@ -28,8 +29,6 @@ const DesignersPage = () => {
         date_range: formUtils.watch("date_range"),
       },
     });
-
-  const navigate = useNavigate();
 
   const customValueRender = {
     designer_name: (row: any) => {
@@ -114,22 +113,6 @@ const DesignersPage = () => {
     },
   };
 
-  const customActions = [
-    {
-      label: "",
-      render: (row: any) => {
-        return (
-          <AppLink
-            className="font-medium py-1 px-3 hover:underline"
-            to={MAKE_DESIGNER_DETAIL_FORM_PAGE_URL(row.id)}
-          >
-            View
-          </AppLink>
-        );
-      },
-    },
-  ];
-
   const handleExport = () => {
     // Implement export functionality
     console.log("Exporting designers data...");
@@ -148,6 +131,10 @@ const DesignersPage = () => {
     </div>
   );
 
+  const handleRowClick = (row: any) => {
+    navigate(MAKE_DESIGNER_DETAIL_PAGE_URL(row.id));
+  };
+
   return (
     <AppPageWrapper>
       {/* Header Section */}
@@ -163,15 +150,15 @@ const DesignersPage = () => {
         handleSearch={setSearch}
         formUtils={formUtils}
         filterInputArr={filterListForUsers()}
-        headers={metaData?.data?.columns}
-        body={tableData?.data?.results || []}
+        headers={metaData?.data?.columns || dummyTableHeaders.columns}
+        body={tableData?.data?.results || dummyDesignersData}
         page={page}
         total={tableData?.data?.count || 0}
         setPage={setPage}
         customValueRender={customValueRender}
-        actions={customActions}
         searchPlaceholder="Enter designer name, specialization..."
         isLoading={isLoading}
+        handleRowClick={handleRowClick} 
       />
     </AppPageWrapper>
   );

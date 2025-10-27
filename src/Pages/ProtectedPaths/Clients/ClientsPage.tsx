@@ -1,11 +1,10 @@
-import AppLink from "@/components/Commmon/AppLink";
 import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
 import AppTableWithSearchAndFilter from "@/components/Commmon/AppTable/AppTableWithSearchAndFilter";
 import AppText from "@/components/Commmon/AppText";
 import AppAvatar from "@/components/Commmon/AppAvatar";
 import { Button } from "@/components/ui/button";
 import useGetTableData from "@/hooks/useGetTableData";
-import { MAKE_CLIENT_DETAIL_FORM_PAGE_URL } from "@/navigation/make-url";
+import { MAKE_CLIENT_DETAIL_PAGE_URL } from "@/navigation/make-url";
 import { Download } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
@@ -13,6 +12,8 @@ import { useState } from "react";
 import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
 import { clientEndpoints } from "@/api/endpoints/endpoints";
 import { filterListForUsers } from "../Users/UsersFormHelpers";
+import { dummyClientsData } from "@/constants/dummy-data";
+import { dummyTableHeaders } from "@/constants/dummy-data";
 
 const ClientsPage = () => {
   const formUtils = useForm();
@@ -112,22 +113,6 @@ const ClientsPage = () => {
     },
   };
 
-  const customActions = [
-    {
-      label: "",
-      render: (row: any) => {
-        return (
-          <AppLink
-            className="font-medium py-1 px-3 hover:underline"
-            to={MAKE_CLIENT_DETAIL_FORM_PAGE_URL(row.id)}
-          >
-            View
-          </AppLink>
-        );
-      },
-    },
-  ];
-
   const handleExport = () => {
     // Implement export functionality
     console.log("Exporting clients data...");
@@ -146,7 +131,11 @@ const ClientsPage = () => {
     </div>
   );
 
-  return (
+  const handleRowClick = (row: any) => {
+    navigate(MAKE_CLIENT_DETAIL_PAGE_URL(row.id));
+  };
+
+      return (
     <AppPageWrapper>
       {/* Header Section */}
       <AppTitleWithBackButton
@@ -161,15 +150,15 @@ const ClientsPage = () => {
         handleSearch={setSearch}
         formUtils={formUtils}
         filterInputArr={filterListForUsers()}
-        headers={metaData?.data?.columns}
-        body={tableData?.data?.results || []}
+        headers={metaData?.data?.columns || dummyTableHeaders.columns}
+        body={tableData?.data?.results || dummyClientsData}
         page={page}
         total={tableData?.data?.count || 0}
         setPage={setPage}
         customValueRender={customValueRender}
-        actions={customActions}
         searchPlaceholder="Enter project number, designer..."
         isLoading={isLoading}
+        handleRowClick={handleRowClick}
       />
     </AppPageWrapper>
   );

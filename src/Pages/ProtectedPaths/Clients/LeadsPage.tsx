@@ -12,6 +12,7 @@ import { useState } from "react";
 import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
 import { clientEndpoints } from "@/api/endpoints/endpoints";
 import { filterListForUsers } from "../Users/UsersFormHelpers";
+import { dummyLeadsData, dummyTableHeaders } from "@/constants/dummy-data";
 
 const LeadsPage = () => {
   const formUtils = useForm();
@@ -157,8 +158,8 @@ const LeadsPage = () => {
         handleSearch={setSearch}
         formUtils={formUtils}
         filterInputArr={filterListForUsers()}
-        headers={metaData?.data?.columns}
-        body={tableData?.data?.results || []}
+        headers={metaData?.data?.columns || dummyTableHeaders.columns}
+        body={tableData?.data?.results || dummyLeadsData}
         page={page}
         total={tableData?.data?.count || 0}
         setPage={setPage}

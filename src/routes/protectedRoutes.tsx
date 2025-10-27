@@ -1,9 +1,12 @@
 import AppLayout from "@/components/layout/MainLayout/AppLayout";
 import {
   CLIENT_PAGE_URL,
+  CLIENT_DETAIL_PAGE_URL,
+  CLIENT_DETAIL_FORM_PAGE_URL,
   LEAD_PAGE_URL,
   LEAD_DETAIL_FORM_PAGE_URL,
   DESIGNER_PAGE_URL,
+  DESIGNER_DETAIL_PAGE_URL,
   DASHBOARD_PAGE_URL,
   PROJECT_NOTES_PAGE_URL,
   MANAGE_CLIENT_APP_PAGE_URL,
@@ -27,6 +30,21 @@ import ReportsPage from "@/Pages/ProtectedPaths/Reports/ReportsPage";
 import SettingsPage from "@/Pages/ProtectedPaths/Settings/SettingsPage";
 import { Navigate, Route } from "react-router-dom";
 import LeadDetailPage from "@/Pages/ProtectedPaths/Clients/LeadDetailPage";
+import ClientDetailPage from "@/Pages/ProtectedPaths/Clients/ClientDetailPage";
+import ClientDetailFormPage from "@/Pages/ProtectedPaths/Clients/ClientDetailFormPage";
+import DesignersDetailPage from "@/Pages/ProtectedPaths/Designers/DesignersDetailPage";
+import DesignerOverviewPage from "@/Pages/ProtectedPaths/Designers/DesignerOverviewPage";
+import DesignerProjectsPage from "@/Pages/ProtectedPaths/Designers/DesignerProjectsPage";
+import DesignerPortfolioPage from "@/Pages/ProtectedPaths/Designers/DesignerPortfolioPage";
+import PersonalDetails from "@/Pages/ProtectedPaths/Clients/tabs/PersonalDetails";
+import ProjectTimeline from "@/Pages/ProtectedPaths/Clients/tabs/ProjectTimeline";
+import ExecutionImages from "@/Pages/ProtectedPaths/Clients/tabs/ExecutionImages";
+import ExecutionTimeline from "@/Pages/ProtectedPaths/Clients/tabs/ExecutionTimeline";
+import DesignStartsWithYouForm from "@/Pages/ProtectedPaths/Clients/tabs/DesignStartsWithYouForm";
+import DesignRenders from "@/Pages/ProtectedPaths/Clients/tabs/DesignRenders";
+import Quotations from "@/Pages/ProtectedPaths/Clients/tabs/Quotations";
+import Contract from "@/Pages/ProtectedPaths/Clients/tabs/Contract";
+import Payments from "@/Pages/ProtectedPaths/Clients/tabs/Payments";
 
 export const protectedRoutes = () => {
   return (
@@ -40,6 +58,18 @@ export const protectedRoutes = () => {
         
         {/* Clients */}
         <Route path={CLIENT_PAGE_URL} element={<ClientsPage />} />
+        {/* <Route path={CLIENT_DETAIL_FORM_PAGE_URL} element={<ClientDetailFormPage />} /> */}
+        <Route path={CLIENT_DETAIL_PAGE_URL} element={<ClientDetailPage />}>
+          <Route index element={<PersonalDetails />} />
+          <Route path="project-timeline" element={<ProjectTimeline />} />
+          <Route path="execution-images" element={<ExecutionImages />} />
+          <Route path="execution-timeline" element={<ExecutionTimeline />} />
+          <Route path="design-starts-with-you" element={<DesignStartsWithYouForm />} />
+          <Route path="design-renders" element={<DesignRenders />} />
+          <Route path="quotations" element={<Quotations />} />
+          <Route path="contract" element={<Contract />} />
+          <Route path="payments" element={<Payments />} />
+        </Route>
         
         {/* Leads */}
         <Route path={LEAD_PAGE_URL} element={<LeadsPage />} />
@@ -48,6 +78,12 @@ export const protectedRoutes = () => {
         
         {/* Designers */}
         <Route path={DESIGNER_PAGE_URL} element={<DesignersPage />} />
+        <Route path={DESIGNER_DETAIL_PAGE_URL} element={<DesignersDetailPage />}>
+          <Route index element={<Navigate to="overview" replace />} />
+          <Route path="overview" element={<DesignerOverviewPage />} />
+          <Route path="projects" element={<DesignerProjectsPage />} />
+          <Route path="portfolio" element={<DesignerPortfolioPage />} />
+        </Route>
         
         {/* Other Pages */}
         <Route path={PROJECT_NOTES_PAGE_URL} element={<ProjectNotesPage />} />

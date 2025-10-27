@@ -1,6 +1,6 @@
 import AppText from "@/components/Commmon/AppText";
 import { Button } from "@/components/ui/button";
-import { Edit, Phone, Mail, MapPin, User } from "lucide-react";
+import { Phone, Mail, User, PencilLine } from "lucide-react";
 
 interface PersonalDetailsProps {
   profileImage?: string;
@@ -44,8 +44,9 @@ const PersonalDetails = ({
             onClick={onEdit}
             className="flex items-center space-x-1 text-gray-600 hover:text-gray-900"
           >
-            <Edit className="w-4 h-4" />
-            <span>Edit</span>
+            
+            <span className="text-sm font-semibold text-[#054D8B] underline">Edit</span>
+            <PencilLine className="w-4 h-4 text-[#054D8B]" />
           </Button>
         )}
       </div>
