@@ -98,6 +98,7 @@ const DesignersDetailPage = () => {
         onTabChange={handleTabChange}
         activeTabBgColor="#DAA14C"
         className="!w-full"
+        triggerClassName="w-fit max-w-[100px]"
       />
 
       {/* Tab Content */}

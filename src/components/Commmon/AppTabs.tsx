@@ -12,6 +12,7 @@ interface AppTabsProps {
   onTabChange: (value: string) => void;
   activeTabBgColor?: string;
   className?: string;
+  triggerClassName?: string;
 }
 
 const AppTabs = ({
@@ -20,6 +21,7 @@ const AppTabs = ({
   onTabChange,
   activeTabBgColor = "#9C6E61",
   className,
+  triggerClassName,
 }: AppTabsProps) => {
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className={`${className}`}>
@@ -28,7 +30,7 @@ const AppTabs = ({
           <TabsTrigger
             key={tab.value}
             value={tab.value}
-            className="h-auto data-[state=active]:text-white transition-colors rounded-[24px] px-3 py-2 cursor-pointer w-fit"
+            className={`${triggerClassName} h-auto data-[state=active]:text-white transition-colors rounded-[24px] px-3 py-2 cursor-pointer`}
             data-active-bg={activeTabBgColor}
           >
             {tab.label}
