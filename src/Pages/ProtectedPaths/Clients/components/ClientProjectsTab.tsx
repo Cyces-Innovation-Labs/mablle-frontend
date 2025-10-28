@@ -1,5 +1,5 @@
 import AppText from "@/components/Commmon/AppText";
-import { useOutletContext } from "react-router";
+// import { useOutletContext } from "react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const ClientProjectsTab = () => {
-  const client = useOutletContext<any>();
+  // const client = useOutletContext<any>();
   const [searchValue, setSearchValue] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 

@@ -1,8 +1,8 @@
 import AppText from "@/components/Commmon/AppText";
-import { useOutletContext } from "react-router";
+// import { useOutletContext } from "react-router";
 
 const Quotations = () => {
-  const client = useOutletContext<any>();
+  // const client = useOutletContext<any>();
 
   return (
     <div className="space-y-6">

@@ -1,4 +1,4 @@
-import AppLink from "@/components/Commmon/AppLink";
+
 import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
 import AppTableWithSearchAndFilter from "@/components/Commmon/AppTable/AppTableWithSearchAndFilter";
 import AppText from "@/components/Commmon/AppText";
@@ -11,7 +11,6 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
 import { designerEndpoints } from "@/api/endpoints/endpoints";
-import { filterListForUsers } from "../Users/UsersFormHelpers";
 import { dummyDesignersData, dummyTableHeaders } from "@/constants/dummy-data";
 import { useNavigate } from "react-router-dom";
 
@@ -149,7 +148,6 @@ const DesignersPage = () => {
       <AppTableWithSearchAndFilter
         handleSearch={setSearch}
         formUtils={formUtils}
-        filterInputArr={filterListForUsers()}
         headers={metaData?.data?.columns || dummyTableHeaders.columns}
         body={tableData?.data?.results || dummyDesignersData}
         page={page}

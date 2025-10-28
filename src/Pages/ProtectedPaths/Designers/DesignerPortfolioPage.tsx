@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AppText from "@/components/Commmon/AppText";
 import { Button } from "@/components/ui/button";
-import { Pencil, PencilLine } from "lucide-react";
+import { PencilLine } from "lucide-react";
 import PortfolioProjectCard, {
   type PortfolioProjectData,
 } from "./components/PortfolioProjectCard";

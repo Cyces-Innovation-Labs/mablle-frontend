@@ -13,7 +13,7 @@ interface StepConfig {
 interface UseMultiStepFormProps {
   steps: StepConfig[];
   defaultValues: any;
-  onSubmitSuccess?: (data: any) => void;
+  // onSubmitSuccess?: (data: any) => void; // Will be implemented when needed
 }
 
 interface UseMultiStepFormReturn {
@@ -33,7 +33,7 @@ interface UseMultiStepFormReturn {
 const useMultiStepForm = ({
   steps,
   defaultValues,
-  onSubmitSuccess,
+  // onSubmitSuccess, // Will be used for final submission
 }: UseMultiStepFormProps): UseMultiStepFormReturn => {
   const [currentStep, setCurrentStep] = useState(0);
   const [stepData, setStepData] = useState<Record<number, any>>({});

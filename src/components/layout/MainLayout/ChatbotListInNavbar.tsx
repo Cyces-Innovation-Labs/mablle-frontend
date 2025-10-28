@@ -1,12 +1,12 @@
 import { User } from "lucide-react";
 import NavbarList from "./NavbarList";
-import { USER_PAGE_URL } from "@/navigation/urls";
+import { CLIENT_PAGE_URL } from "@/navigation/urls";
 
 const ChatbotListInNavbar = () => {
   const list = [
     {
       title: "Users",
-      url: USER_PAGE_URL,
+      url: CLIENT_PAGE_URL,
       icon: User,
     },
   ];

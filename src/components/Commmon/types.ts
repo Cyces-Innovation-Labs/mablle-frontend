@@ -32,6 +32,10 @@ export interface IUploadedFile {
   uuid: string;
   id: string;
   file: string;
+  // Optional metadata fields used in various UI components
+  file_name?: string; // human readable filename
+  size?: number | string; // size in bytes
+  total_chars?: number; // for text-based uploads
 }
 
 export interface IWebsiteLink {

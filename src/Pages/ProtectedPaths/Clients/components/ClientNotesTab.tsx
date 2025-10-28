@@ -1,12 +1,12 @@
 import { useState } from "react";
 import AppText from "@/components/Commmon/AppText";
-import { useOutletContext } from "react-router";
+// import { useOutletContext } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Edit, Trash2 } from "lucide-react";
 
 const ClientNotesTab = () => {
-  const client = useOutletContext<any>();
+  // const client = useOutletContext<any>();
   const [isAdding, setIsAdding] = useState(false);
   const [noteText, setNoteText] = useState("");
 

@@ -2,7 +2,6 @@ import AppLayout from "@/components/layout/MainLayout/AppLayout";
 import {
   CLIENT_PAGE_URL,
   CLIENT_DETAIL_PAGE_URL,
-  CLIENT_DETAIL_FORM_PAGE_URL,
   LEAD_PAGE_URL,
   LEAD_DETAIL_FORM_PAGE_URL,
   DESIGNER_PAGE_URL,
@@ -31,7 +30,6 @@ import SettingsPage from "@/Pages/ProtectedPaths/Settings/SettingsPage";
 import { Navigate, Route } from "react-router-dom";
 import LeadDetailPage from "@/Pages/ProtectedPaths/Clients/LeadDetailPage";
 import ClientDetailPage from "@/Pages/ProtectedPaths/Clients/ClientDetailPage";
-import ClientDetailFormPage from "@/Pages/ProtectedPaths/Clients/ClientDetailFormPage";
 import DesignersDetailPage from "@/Pages/ProtectedPaths/Designers/DesignersDetailPage";
 import DesignerOverviewPage from "@/Pages/ProtectedPaths/Designers/DesignerOverviewPage";
 import DesignerProjectsPage from "@/Pages/ProtectedPaths/Designers/DesignerProjectsPage";

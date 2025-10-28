@@ -1,7 +1,7 @@
 import AppPageWrapper from "@/components/Commmon/AppPageWrapper";
 import AppTitleWithBackButton from "@/components/Commmon/AppTitleWithBackButton";
 import AppText from "@/components/Commmon/AppText";
-import { ClipboardList, Plus, Filter, Eye } from "lucide-react";
+import { ClipboardList, Plus, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const DesignRequestFormPage = () => {

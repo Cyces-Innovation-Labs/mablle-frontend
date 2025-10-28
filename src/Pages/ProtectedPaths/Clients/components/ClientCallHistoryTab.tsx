@@ -1,10 +1,10 @@
 import AppText from "@/components/Commmon/AppText";
-import { useOutletContext } from "react-router";
+// import { useOutletContext } from "react-router";
 import { Phone, PhoneIncoming, PhoneOutgoing, PhoneMissed } from "lucide-react";
-import AppAvatar from "@/components/Commmon/AppAvatar";
+// import AppAvatar from "@/components/Commmon/AppAvatar";
 
 const ClientCallHistoryTab = () => {
-  const client = useOutletContext<any>();
+  // const client = useOutletContext<any>();
 
   // Mock call history data
   const callHistory = [

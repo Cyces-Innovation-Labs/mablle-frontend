@@ -57,8 +57,8 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
     }
   };
 
-  const isPaymentRelated = project.mainStatus.toLowerCase().includes("payment");
-  const isHandover = project.mainStatus.toLowerCase().includes("handover");
+  // const isPaymentRelated = project.mainStatus.toLowerCase().includes("payment");
+  // const isHandover = project.mainStatus.toLowerCase().includes("handover");
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">

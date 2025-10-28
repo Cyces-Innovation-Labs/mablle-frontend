@@ -1,6 +1,6 @@
 import axios from "axios";
 import getHostAPIUrl from "./appConfig";
-import { setupAxiosInterceptors } from "./axiosInterceptor";
+// import { setupAxiosInterceptors } from "./axiosInterceptor";
 // import { setupAxiosInterceptors } from "./axiosInterceptor";
 
 export default function appAxios() {
@@ -11,7 +11,7 @@ export default function appAxios() {
   });
 
   // Setup interceptors
-  setupAxiosInterceptors(axiosInstance);
+  // setupAxiosInterceptors(axiosInstance);
 
   return axiosInstance;
 }

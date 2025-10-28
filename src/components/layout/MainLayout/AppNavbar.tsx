@@ -1,11 +1,11 @@
-import { Search, Bell, LogOut, User, Settings } from "lucide-react";
+import { Search, Bell, LogOut} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
+  // DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import AppAvatar from "@/components/Commmon/AppAvatar";

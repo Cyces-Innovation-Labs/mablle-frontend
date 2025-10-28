@@ -1,10 +1,10 @@
 import AppText from "@/components/Commmon/AppText";
-import { useOutletContext } from "react-router";
+// import { useOutletContext } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Upload, Download, FileText, File } from "lucide-react";
 
 const ClientDocumentsTab = () => {
-  const client = useOutletContext<any>();
+  // const client = useOutletContext<any>();
 
   // Mock documents data
   const documents = [

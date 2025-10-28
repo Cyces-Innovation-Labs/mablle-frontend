@@ -45,7 +45,7 @@ function PasswordLogin({ className }: React.ComponentProps<"form">) {
 
   const onSubmit = (data: { email: string; password: string }) => {
     navigate(CLIENT_PAGE_URL);
-    // loginMutation({ ...data, user_type: "user" });
+    loginMutation({ ...data, user_type: "user" });
   };
 
   const handleSubmit = (val: { email: string; password: string }) => {

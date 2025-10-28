@@ -1,5 +1,5 @@
 import AppText from "@/components/Commmon/AppText";
-import { Archive, Star, Trash2, Pencil, PencilLine } from "lucide-react";
+import { Trash2, PencilLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export interface PortfolioProjectData {
