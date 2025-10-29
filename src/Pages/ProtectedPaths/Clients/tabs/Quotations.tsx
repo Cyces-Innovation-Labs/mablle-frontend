@@ -113,10 +113,11 @@ const Quotations = () => {
                       <Button variant={"ghost"} className="text-xs flex items-center gap-1 text-[#054D8B] !px-0 hover:underline">
                         <Download className="w-3 h-3" /> Download
                       </Button>
-                      <AccordionTrigger className="!py-0 !px-0 h-4 w-4 flex-shrink-0" />
+                      <AccordionTrigger className="!flex-none inline-flex items-center justify-center p-0 h-5 w-5 [&>svg]:size-4" />
                     </div>
                   </div>
                 </div>
+                
 
                 {/* Content table */}
                 <AccordionContent className={`${q.isFinal ? "bg-[#E6F2E9]" : "bg-[#9C6E611A]"} px-4`}>
