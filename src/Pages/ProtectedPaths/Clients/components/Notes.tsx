@@ -43,19 +43,19 @@ const Notes = ({ notes = defaultNotes, onSend, placeholder = "Add comment on thi
   };
 
   return (
-    <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-3">
+    <div className="space-y-4">
       {/* Input */}
       <div className="relative">
         <Textarea
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder={placeholder}
-          className="min-h-[84px] pr-12 text-sm resize-none"
+          className="min-h-[84px] pr-12 text-sm resize-none bg-[#F0F0F0]"
         />
         <Button
           type="button"
           size="icon"
-          className="absolute right-2 bottom-2 h-8 w-8 rounded-full bg-[#054D8B] text-white hover:bg-[#054D8B]/90"
+          className="absolute right-2 bottom-2 h-8 w-8 rounded-full bg-primary text-white hover:bg-primary/90"
           onClick={handleSend}
         >
           <Send className="w-4 h-4" />
@@ -65,7 +65,7 @@ const Notes = ({ notes = defaultNotes, onSend, placeholder = "Add comment on thi
       {/* Notes list */}
       <div className="mt-3 max-h-[420px] overflow-y-auto pr-1">
         {notes.map((n) => (
-          <div key={n.id} className="flex items-start gap-3 py-3 border-b last:border-b-0">
+          <div key={n.id} className="flex items-start gap-3 py-3">
             <Avatar className="h-9 w-9">
               <AvatarImage src={n.user.avatarUrl} />
               <AvatarFallback>{n.user.name.charAt(0)}</AvatarFallback>

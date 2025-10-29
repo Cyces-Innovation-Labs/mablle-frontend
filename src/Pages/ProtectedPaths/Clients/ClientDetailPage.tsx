@@ -25,6 +25,7 @@ const ClientDetailPage = () => {
                       pathname.includes('/quotations') ? 'quotations' :
                       pathname.includes('/contract') ? 'contract' :
                       pathname.includes('/payments') ? 'payments' :
+                      pathname.includes('/notes') ? 'notes' :
                       'personal-details';
 
   const [activeTab, setActiveTab] = useState(currentTab);
@@ -82,6 +83,7 @@ const ClientDetailPage = () => {
     { value: "quotations", label: "Quotations" },
     { value: "contract", label: "Contract" },
     { value: "payments", label: "Payments" },
+    { value: "notes", label: "Notes" },
   ];
 
   return (

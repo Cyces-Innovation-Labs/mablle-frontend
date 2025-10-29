@@ -43,6 +43,7 @@ import DesignRenders from "@/Pages/ProtectedPaths/Clients/tabs/DesignRenders";
 import Quotations from "@/Pages/ProtectedPaths/Clients/tabs/Quotations";
 import Contract from "@/Pages/ProtectedPaths/Clients/tabs/Contract";
 import Payments from "@/Pages/ProtectedPaths/Clients/tabs/Payments";
+import ClientNotesTab from "@/Pages/ProtectedPaths/Clients/components/ClientNotesTab";
 
 export const protectedRoutes = () => {
   return (
@@ -67,6 +68,7 @@ export const protectedRoutes = () => {
           <Route path="quotations" element={<Quotations />} />
           <Route path="contract" element={<Contract />} />
           <Route path="payments" element={<Payments />} />
+          <Route path="notes" element={<ClientNotesTab />} />
         </Route>
         
         {/* Leads */}
