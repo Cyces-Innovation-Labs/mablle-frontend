@@ -1,6 +1,5 @@
 import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Circle } from "lucide-react";
 import GreenTickCircle from "@/icons/GreenTickCircle";
 
 interface ExecStep {
