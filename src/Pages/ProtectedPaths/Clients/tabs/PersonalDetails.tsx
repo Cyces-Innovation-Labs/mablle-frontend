@@ -11,10 +11,6 @@ const PersonalDetails = () => {
     location: "Bangalore, India",
   };
 
-  const handleEditPersonalDetails = () => {
-    console.log("Edit personal details");
-  };
-
   return (
     <div className="space-y-6">
       {/* Personal Details */}
@@ -25,8 +21,6 @@ const PersonalDetails = () => {
         email={client.email}
         address={client.address || "-"}
         location={client.location || "-"}
-        onEdit={handleEditPersonalDetails}
-        showEditButton={true}
       />
     </div>
   );

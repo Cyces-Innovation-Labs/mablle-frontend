@@ -1,5 +1,6 @@
 import GreenTickCircle from "@/icons/GreenTickCircle";
 import { Copy, Trash2 } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
 
 type RenderImage = {
   id: string;
@@ -77,20 +78,22 @@ const walkthroughs: Walkthrough[] = [
   { id: "w4", title: "Living Room Walkthrough", uploadedOn: "23rd sep 2025" },
 ];
 
-const RenderCard = ({ img }: { img: RenderImage }) => (
-  <div
-    className={`relative rounded-[16px] overflow-hidden ${
-      img.isFinal ? "border-2 border-[#0DA000]" : "border border-[#E4E7EC]"
-    }`}
-  >
-    {img.isFinal && (
-      <div className="absolute left-0 top-0 bg-white rounded-br-[20px] px-4 py-[6px] shadow-sm flex items-center gap-2">
-        <span className="text-[#0DA000] font-bold text-[12px] leading-none">FINAL</span>
-        <GreenTickCircle />
-      </div>
-    )}
-    <img src={img.url} alt={img.id} className="w-full aspect-square object-cover" />
-  </div>
+const RenderCard = ({ img, categoryId, clientId }: { img: RenderImage; categoryId: string; clientId?: string }) => (
+  <Link to={`/clients/${clientId || "1"}/design-renders/${categoryId}/${img.id}`} className="block">
+    <div
+      className={`relative rounded-[16px] overflow-hidden ${
+        img.isFinal ? "border-2 border-[#0DA000]" : "border border-[#E4E7EC]"
+      }`}
+    >
+      {img.isFinal && (
+        <div className="absolute left-0 top-0 bg-white rounded-br-[20px] px-4 py-2 shadow-sm flex items-center gap-2">
+          <span className="text-[#0DA000] font-extrabold text-[18px] leading-none">FINAL</span>
+          <GreenTickCircle />
+        </div>
+      )}
+      <img src={img.url} alt={img.id} className="w-full aspect-square object-cover" />
+    </div>
+  </Link>
 );
 
 const SectionHeader = ({ title, count }: { title: string; count?: string }) => (
@@ -103,6 +106,7 @@ const SectionHeader = ({ title, count }: { title: string; count?: string }) => (
 );
 
 const DesignRenders = () => {
+  const { clientId } = useParams();
   return (
     <div className="space-y-6 bg-white shadow-sm rounded-[8px] p-6">
       <div className="flex items-center gap-2 mb-10">
@@ -114,7 +118,7 @@ const DesignRenders = () => {
       <SectionHeader title="3D Floorplan" count={`${featuredFloorplans.length} files`} />
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
         {featuredFloorplans.map((img) => (
-          <RenderCard key={img.id} img={img} />
+          <RenderCard key={img.id} img={img} categoryId="floorplan" clientId={clientId} />
         ))}
       </div>
 
@@ -130,7 +134,7 @@ const DesignRenders = () => {
             </div>
             <div className="px-4 pb-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
               {cat.images.map((img) => (
-                <RenderCard key={img.id} img={img} />
+                <RenderCard key={img.id} img={img} categoryId={cat.id} clientId={clientId} />
               ))}
             </div>
           </div>

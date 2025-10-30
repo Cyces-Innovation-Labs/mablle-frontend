@@ -72,8 +72,8 @@ const Notes = ({ notes = defaultNotes, onSend, placeholder = "Add comment on thi
             </Avatar>
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-[#23211D]">{n.user.name}</span>
-                <span className="text-xs text-muted-foreground">{n.date}</span>
+                <span className="text-sm font-bold text-[#23211D]">{n.user.name}</span>
+                <span className="text-[13px] text-primary">{n.date}</span>
               </div>
               <p className="text-sm text-[#23211D] mt-1 leading-5">{n.text}</p>
             </div>

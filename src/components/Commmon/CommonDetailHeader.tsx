@@ -26,6 +26,7 @@ interface CommonDetailHeaderProps {
   switchLabel?: string;
   switchChecked?: boolean;
   onSwitchChange?: (checked: boolean) => void;
+  isExport?: boolean;
 }
 
 const CommonDetailHeader = ({
@@ -42,6 +43,7 @@ const CommonDetailHeader = ({
   switchLabel,
   switchChecked = false,
   onSwitchChange,
+  isExport = true,
 }: CommonDetailHeaderProps) => {
   const navigate = useNavigate();
 
@@ -138,9 +140,15 @@ const CommonDetailHeader = ({
             <Button
               onClick={onExportClick}
               variant="outline"
-              className="flex items-center space-x-2 bg-[#9C6E611A] text-primary hover:bg-[#9C6E611A]/90"
+              className={`flex items-center space-x-2 ${isExport ? 'bg-[#9C6E611A] text-primary hover:bg-[#9C6E611A]/90' : 'bg-[#9C6E61] text-white hover:text-white hover:bg-[#9C6E61]/90'}`}
             >
-              <Download className="w-4 h-4" />
+              {
+                isExport ? (
+                  <Download className="w-4 h-4" />
+                ) : (
+                  null
+                )
+              }
               <span>{exportButtonLabel}</span>
             </Button>
           </div>

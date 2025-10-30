@@ -1,6 +1,5 @@
 import AppText from "@/components/Commmon/AppText";
-import { Button } from "@/components/ui/button";
-import { Phone, Mail, User, PencilLine } from "lucide-react";
+import { Phone, Mail, User } from "lucide-react";
 
 interface PersonalDetailsProps {
   profileImage?: string;
@@ -9,8 +8,6 @@ interface PersonalDetailsProps {
   email: string;
   address?: string;
   location?: string;
-  onEdit?: () => void;
-  showEditButton?: boolean;
 }
 
 const PersonalDetails = ({
@@ -20,8 +17,6 @@ const PersonalDetails = ({
   email,
   address = "-",
   location = "-",
-  onEdit,
-  showEditButton = true,
 }: PersonalDetailsProps) => {
   return (
     <div className="space-y-4">
@@ -37,18 +32,6 @@ const PersonalDetails = ({
             Personal Details
           </AppText>
         </div>
-        {showEditButton && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onEdit}
-            className="flex items-center space-x-1 text-gray-600 hover:text-gray-900"
-          >
-            
-            <span className="text-sm font-semibold text-[#054D8B] underline">Edit</span>
-            <PencilLine className="w-4 h-4 text-[#054D8B]" />
-          </Button>
-        )}
       </div>
         <div className="flex items-start space-x-6">
           {/* Profile Image */}

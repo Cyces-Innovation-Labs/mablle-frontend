@@ -112,6 +112,7 @@ const ClientDetailPage = () => {
           onExportClick={handleExport}
           exportButtonLabel="Design Workspace"
           showExportButton={true}
+          isExport={false}
         />
       </div>
 

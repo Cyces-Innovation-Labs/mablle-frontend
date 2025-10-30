@@ -44,6 +44,8 @@ import Quotations from "@/Pages/ProtectedPaths/Clients/tabs/Quotations";
 import Contract from "@/Pages/ProtectedPaths/Clients/tabs/Contract";
 import Payments from "@/Pages/ProtectedPaths/Clients/tabs/Payments";
 import ClientNotesTab from "@/Pages/ProtectedPaths/Clients/components/ClientNotesTab";
+import DesignRenderDetailPage from "@/Pages/ProtectedPaths/Clients/DesignRenderDetailPage";
+import QuotationDetailPage from "@/Pages/ProtectedPaths/Clients/QuotationDetailPage";
 
 export const protectedRoutes = () => {
   return (
@@ -70,6 +72,9 @@ export const protectedRoutes = () => {
           <Route path="payments" element={<Payments />} />
           <Route path="notes" element={<ClientNotesTab />} />
         </Route>
+        {/* Standalone pages */}
+        <Route path="/clients/:clientId/design-renders/:category/:renderId" element={<DesignRenderDetailPage />} />
+        <Route path="/clients/:clientId/quotations/:quotationId" element={<QuotationDetailPage />} />
         
         {/* Leads */}
         <Route path={LEAD_PAGE_URL} element={<LeadsPage />} />

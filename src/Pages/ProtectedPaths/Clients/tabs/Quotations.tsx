@@ -4,6 +4,7 @@ import { Share2, Download } from "lucide-react";
 import GreenTickCircle from "@/icons/GreenTickCircle";
 import { MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link, useParams } from "react-router-dom";
 
 interface WorkScopeRow {
   id: string;
@@ -25,7 +26,7 @@ interface QuotationData {
 
 const quotations: QuotationData[] = [
   {
-    id: "q3",
+    id: "3",
     title: "Quotation 3",
     uploadedOn: "23rd sep 2025",
     isFinal: true,
@@ -37,7 +38,7 @@ const quotations: QuotationData[] = [
     subtotal: "$ 50,000",
   },
   {
-    id: "q2",
+    id: "2",
     title: "Quotation 2",
     uploadedOn: "23rd sep 2025",
     commentCount: 1,
@@ -53,7 +54,7 @@ const quotations: QuotationData[] = [
     subtotal: "$ 50,000",
   },
   {
-    id: "q1",
+    id: "1",
     title: "Quotation 1",
     uploadedOn: "23rd sep 2025",
     commentCount: 10,
@@ -66,6 +67,7 @@ const quotations: QuotationData[] = [
 ];
 
 const Quotations = () => {
+  const { clientId } = useParams();
   return (
     <div className="space-y-[27px]">
       <div className="bg-white rounded-[8px] shadow-sm p-6">
@@ -89,7 +91,9 @@ const Quotations = () => {
                     <div className="flex items-center gap-3">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold text-md text-[#9C6E61]">{q.title}</span>
+                          <Link to={`/clients/${clientId}/quotations/${q.id}`} className="font-semibold text-md text-[#9C6E61] hover:underline">
+                            {q.title}
+                          </Link>
                           {q.isFinal && (
                             <span className="flex items-center gap-1">
                               <span className="font-bold text-[13px] text-[#00A63E]">FINAL</span>
@@ -117,7 +121,6 @@ const Quotations = () => {
                     </div>
                   </div>
                 </div>
-                
 
                 {/* Content table */}
                 <AccordionContent className={`${q.isFinal ? "bg-[#E6F2E9]" : "bg-[#9C6E611A]"} px-4`}>

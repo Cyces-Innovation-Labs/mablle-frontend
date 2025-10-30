@@ -39,10 +39,6 @@ const DesignerOverviewPage = () => {
     { label: "Updates", count: 1, color: "purple" as const },
   ];
 
-  const handleEditPersonalDetails = () => {
-    console.log("Edit personal details");
-  };
-
   const handleAddReview = () => {
     console.log("Add review");
   };
@@ -60,8 +56,6 @@ const DesignerOverviewPage = () => {
             email={designer.email}
             address={designer.address || "-"}
             location={designer.location || "-"}
-            onEdit={handleEditPersonalDetails}
-            showEditButton={true}
           />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
