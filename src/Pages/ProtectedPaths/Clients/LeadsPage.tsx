@@ -4,8 +4,8 @@ import AppText from "@/components/Commmon/AppText";
 import AppAvatar from "@/components/Commmon/AppAvatar";
 import { Button } from "@/components/ui/button";
 import useGetTableData from "@/hooks/useGetTableData";
-import { MAKE_LEAD_DETAIL_FORM_PAGE_URL, MAKE_LEAD_DETAIL_PAGE_URL } from "@/navigation/make-url";
-import { Download, Plus } from "lucide-react";
+import { MAKE_LEAD_DETAIL_PAGE_URL } from "@/navigation/make-url";
+import { Download } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
@@ -132,13 +132,6 @@ const LeadsPage = () => {
       >
         <Download className="w-4 h-4" />
         Export
-      </Button>
-      <Button
-        onClick={() => navigate(MAKE_LEAD_DETAIL_FORM_PAGE_URL("create"))}
-        className="flex items-center gap-2 text-white"
-      >
-        <Plus className="w-4 h-4" />
-        Add New Lead
       </Button>
     </div>
   );

@@ -38,16 +38,6 @@ const LeadDetailPage = () => {
     },
   };
 
-  const handleExport = () => {
-    console.log("Export lead data");
-    // Implement export functionality
-  };
-
-  const handleEditPersonalDetails = () => {
-    console.log("Edit personal details");
-    // Navigate to edit form or open modal
-  };
-
   return (
     <AppPageWrapper>
       {/* Header */}
@@ -61,9 +51,8 @@ const LeadDetailPage = () => {
           hasDropdown: true,
         }}
         subTitle={`${leadData.id} • ${leadData.date}`}
-        onExportClick={handleExport}
-        exportButtonLabel="Export"
-        showExportButton={true}
+
+        showExportButton={false}
       />
 
       {/* Content Sections */}
@@ -76,8 +65,6 @@ const LeadDetailPage = () => {
           email={leadData.email}
           address={leadData.address}
           location={leadData.location}
-          onEdit={handleEditPersonalDetails}
-          showEditButton={true}
         />
 
         {/* Renovation Calculator */}

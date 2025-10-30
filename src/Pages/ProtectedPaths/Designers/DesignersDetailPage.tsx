@@ -56,10 +56,6 @@ const DesignersDetailPage = () => {
     }
   };
 
-  const handleExport = () => {
-    console.log("Export designer data");
-  };
-
   const handleBackClick = () => {
     navigate(DESIGNER_PAGE_URL);
   };
@@ -82,9 +78,7 @@ const DesignersDetailPage = () => {
           label: designer.tag,
           color: "bg-purple-100 text-purple-800",
         }}
-        onExportClick={handleExport}
-        exportButtonLabel="Export"
-        showExportButton={true}
+        showExportButton={false}
         showSwitch={true}
         switchLabel={isActive ? "Active" : "Inactive"}
         switchChecked={isActive}
