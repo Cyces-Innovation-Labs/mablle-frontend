@@ -65,7 +65,7 @@ const ClientDetailPage = () => {
   };
 
   const handleExport = () => {
-    console.log("Export client data");
+    navigate(`/clients/${clientId}/design-workspace`);
   };
 
   const handleBackClick = () => {

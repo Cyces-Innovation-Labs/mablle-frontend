@@ -46,6 +46,7 @@ import Payments from "@/Pages/ProtectedPaths/Clients/tabs/Payments";
 import ClientNotesTab from "@/Pages/ProtectedPaths/Clients/components/ClientNotesTab";
 import DesignRenderDetailPage from "@/Pages/ProtectedPaths/Clients/DesignRenderDetailPage";
 import QuotationDetailPage from "@/Pages/ProtectedPaths/Clients/QuotationDetailPage";
+import DesignWorkspacePage from "@/Pages/ProtectedPaths/Clients/DesignWorkspacePage";
 
 export const protectedRoutes = () => {
   return (
@@ -75,6 +76,7 @@ export const protectedRoutes = () => {
         {/* Standalone pages */}
         <Route path="/clients/:clientId/design-renders/:category/:renderId" element={<DesignRenderDetailPage />} />
         <Route path="/clients/:clientId/quotations/:quotationId" element={<QuotationDetailPage />} />
+        <Route path="/clients/:clientId/design-workspace" element={<DesignWorkspacePage />} />
         
         {/* Leads */}
         <Route path={LEAD_PAGE_URL} element={<LeadsPage />} />
