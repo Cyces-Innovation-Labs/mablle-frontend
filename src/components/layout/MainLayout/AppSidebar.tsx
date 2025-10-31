@@ -15,10 +15,9 @@ import {
   FileText, 
   Smartphone, 
   Headphones, 
-  ClipboardList, 
   BarChart3, 
   Settings,
-  CornerDownRight
+  User
 } from "lucide-react";
 import AppImage from "@/components/Commmon/AppImage";
 import { AppLogo } from "@/assets";
@@ -35,21 +34,13 @@ const AppSidebar = ({ children }: { children: ReactNode }) => {
     },
     {
       title: "Clients",
-      url: "#",
+      url: "/clients",
       icon: UsersRound,
-      isParent: true,
-      children: [
-        {
-          title: "Clients",
-          url: "/clients",
-          icon: CornerDownRight,
-        },
-        {
-          title: "Leads",
-          url: "/leads",
-          icon: CornerDownRight,
-        },
-      ],
+    },
+    {
+      title: "Leads",
+      url: "/leads",
+      icon: User,
     },
     {
       title: "Designers",
@@ -70,11 +61,6 @@ const AppSidebar = ({ children }: { children: ReactNode }) => {
       title: "Support Tickets",
       url: "/support-tickets",
       icon: Headphones,
-    },
-    {
-      title: "Design Request Form",
-      url: "/design-request-form",
-      icon: ClipboardList,
     },
     {
       title: "Reports",

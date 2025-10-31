@@ -27,6 +27,13 @@ import SupportTicketsPage from "@/Pages/ProtectedPaths/SupportTickets/SupportTic
 import DesignRequestFormPage from "@/Pages/ProtectedPaths/DesignRequestForm/DesignRequestFormPage";
 import ReportsPage from "@/Pages/ProtectedPaths/Reports/ReportsPage";
 import SettingsPage from "@/Pages/ProtectedPaths/Settings/SettingsPage";
+import ProfileTab from "@/Pages/ProtectedPaths/Settings/tabs/ProfileTab";
+import RolesPermissionsTab from "@/Pages/ProtectedPaths/Settings/tabs/RolesPermissionsTab";
+import UsersTab from "@/Pages/ProtectedPaths/Settings/tabs/UsersTab";
+import NotificationsTab from "@/Pages/ProtectedPaths/Settings/tabs/NotificationsTab";
+import SystemLogsTab from "@/Pages/ProtectedPaths/Settings/tabs/SystemLogsTab";
+import UsersCreatePage from "@/Pages/ProtectedPaths/Settings/UsersCreatePage";
+import RolesCreatePage from "@/Pages/ProtectedPaths/Settings/RolesCreatePage";
 import { Navigate, Route } from "react-router-dom";
 import LeadDetailPage from "@/Pages/ProtectedPaths/Clients/LeadDetailPage";
 import ClientDetailPage from "@/Pages/ProtectedPaths/Clients/ClientDetailPage";
@@ -98,7 +105,15 @@ export const protectedRoutes = () => {
         <Route path={SUPPORT_TICKETS_PAGE_URL} element={<SupportTicketsPage />} />
         <Route path={DESIGN_REQUEST_FORM_PAGE_URL} element={<DesignRequestFormPage />} />
         <Route path={REPORTS_PAGE_URL} element={<ReportsPage />} />
-        <Route path={SETTINGS_PAGE_URL} element={<SettingsPage />} />
+        <Route path={SETTINGS_PAGE_URL} element={<SettingsPage />}>
+          <Route index element={<ProfileTab />} />
+          <Route path="roles" element={<RolesPermissionsTab />} />
+          <Route path="users" element={<UsersTab />} />
+          <Route path="notifications" element={<NotificationsTab />} />
+          <Route path="logs" element={<SystemLogsTab />} />
+        </Route>
+        <Route path="settings/users/create" element={<UsersCreatePage />} />
+        <Route path="settings/roles/create" element={<RolesCreatePage />} />
       </Route>
     </Route>
   );

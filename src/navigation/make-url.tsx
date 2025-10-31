@@ -26,3 +26,7 @@ export const MAKE_SUPPORT_TICKETS_URL =  `/support-tickets`
 export const MAKE_DESIGN_REQUEST_FORM_URL =  `/design-request-form`
 export const MAKE_REPORTS_URL =  `/reports`
 export const MAKE_SETTINGS_URL =  `/settings`
+export const MAKE_SETTINGS_USERS_CREATE_URL =  `/settings/users/create`
+export const MAKE_SETTINGS_USERS_URL = `/settings/users/`
+export const MAKE_SETTINGS_ROLES_URL = `/settings/roles`
+export const MAKE_SETTINGS_ROLES_CREATE_URL = `/settings/roles/create`

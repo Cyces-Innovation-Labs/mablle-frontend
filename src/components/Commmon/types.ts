@@ -96,12 +96,18 @@ export type InputConfig = {
   required?: boolean;
   validation?: any;
   conditionalRender?: (formValues: any) => boolean;
+  // Optional UI state props for specific inputs (used by AppInput)
+  readOnly?: boolean;
+  disabled?: boolean;
+  onPasswordChangeClick?: () => void;
+  changePasswordText?: string;
 };
 
 export type InputGroup = {
   wrapperClassName?: string;
   render: InputConfig[];
   subTitle?: string;
+  subTitleClassName?: string;
   outerWrapperClassName?: string;
 };
 

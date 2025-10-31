@@ -89,6 +89,15 @@ const AppInputRenderer = ({
             labelClassName={`${labelClassName} ${input.labelClassName}`}
             inputClassName={input.inputClassName}
             customOnChange={input.customOnChange}
+            // pass-through optional flags
+            // @ts-expect-error - AppInput supports these props
+            readOnly={input.readOnly}
+            // @ts-expect-error - AppInput supports these props
+            disabled={input.disabled}
+            // @ts-expect-error - AppInput supports these props
+            onPasswordChangeClick={input.onPasswordChangeClick}
+            // @ts-expect-error - AppInput supports these props
+            changePasswordText={input.changePasswordText}
           />
         );
 
@@ -260,6 +269,14 @@ const AppInputRenderer = ({
             labelClassName={`${labelClassName} ${input.labelClassName}`}
             inputClassName={input.inputClassName}
             formMessageClassName={input.formMessageClassName}
+            // @ts-expect-error - AppInput supports these props
+            readOnly={input.readOnly}
+            // @ts-expect-error - AppInput supports these props
+            disabled={input.disabled}
+            // @ts-expect-error - AppInput supports these props
+            onPasswordChangeClick={input.onPasswordChangeClick}
+            // @ts-expect-error - AppInput supports these props
+            changePasswordText={input.changePasswordText}
           />
         );
     }
@@ -274,7 +291,7 @@ const AppInputRenderer = ({
           {group?.subTitle && (
             <AppText
               text={group.subTitle}
-              className="text-[18px] mb-2 font-bold text-primary"
+              className={`${group.subTitleClassName || "text-[18px] mb-2 font-bold text-primary"}`}
             />
           )}
           <div

@@ -57,7 +57,8 @@ const AppSelect = <T extends FieldValues>({
   formMessageClassName,
   onInputChange
 }: AppSelectProps<T>) => {
-  const value = formUtils.watch(name);
+  const watchedValue = formUtils.watch(name);
+  const value = (watchedValue ?? "") as string;
   return (
     <FormField
       control={formUtils.control}
@@ -85,7 +86,6 @@ const AppSelect = <T extends FieldValues>({
                 field.onChange(value);
               }
             }}
-            defaultValue={value}
           >
             <FormControl>
               <SelectTrigger style={{ pointerEvents: readOnly ? 'none' : 'auto' }}>

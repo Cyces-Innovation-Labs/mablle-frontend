@@ -41,3 +41,11 @@ export const designerEndpoints = {
 export const metaEndpoints = {
   region: "/api/common/region/list/",
 }
+
+// Reports Module Endpoints
+// Always import and use these instead of hardcoding anywhere else
+export const reportEndpoints = {
+  list: "/api/admin-panel/reports/list/",
+  // Generate/download a report by key. Accepts query params like q, start_date, end_date
+  generate: (key: string) => `/api/admin-panel/reports/${key}/generate/`,
+};

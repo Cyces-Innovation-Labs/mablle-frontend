@@ -30,7 +30,7 @@ const AppTabs = ({
           <TabsTrigger
             key={tab.value}
             value={tab.value}
-            className={`${triggerClassName} h-auto data-[state=active]:text-white transition-colors rounded-[24px] px-3 py-2 cursor-pointer`}
+            className={`${triggerClassName} h-auto flex-none whitespace-nowrap data-[state=active]:text-white transition-colors rounded-[24px] px-3 py-2 cursor-pointer`}
             data-active-bg={activeTabBgColor}
           >
             {tab.label}

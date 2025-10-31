@@ -28,6 +28,8 @@ interface AppInputProps<T extends FieldValues> {
   readOnly?: boolean;
   customOnChange?: (e: any) => void;
   maxLength?: number;
+  onPasswordChangeClick?: () => void;
+  changePasswordText?: string;
 }
 
 const AppInput = <T extends FieldValues>({
@@ -46,6 +48,8 @@ const AppInput = <T extends FieldValues>({
   readOnly = false,
   customOnChange,
   maxLength,
+  onPasswordChangeClick,
+  changePasswordText,
 }: AppInputProps<T>) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -60,9 +64,21 @@ const AppInput = <T extends FieldValues>({
       render={({ field: { onChange, ...field },fieldState: { error } }) => (
         <FormItem className={className}>
           {label && (
-            <FormLabel className={`mb-[8px] ${labelClassName}`}>
-              {label}
-            </FormLabel>
+            <div className={`mb-[8px] flex items-center justify-between ${labelClassName}`}>
+              <FormLabel className="m-0 text-sm text-[#18181B] font-medium">
+                {label}
+              </FormLabel>
+              {type === "password" && (
+                <Button
+                  type="button"
+                  variant="link"
+                  className="p-0 h-auto text-[#054D8B] underline"
+                  onClick={onPasswordChangeClick}
+                >
+                  {changePasswordText || "Change Password"}
+                </Button>
+              )}
+            </div>
           )}
           {topDescription && (
             <FormDescription className="mt-[-6px] mb-2">
