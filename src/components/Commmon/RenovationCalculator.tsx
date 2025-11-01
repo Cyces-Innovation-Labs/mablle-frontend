@@ -1,5 +1,6 @@
 import AppText from "@/components/Commmon/AppText";
 import WorksRequired from "./WorksRequired";
+import SkeletonRenovationCalculator from "@/components/loaders/skeletonLoaders/SkeletonRenovationCalculator";
 
 interface PropertyDetail {
   type: string;
@@ -19,6 +20,7 @@ interface RenovationCalculatorProps {
   roomsRenovating: RoomDetail;
   worklivingRoom: string;
   workbedrooms: string;
+  isLoading?: boolean;
 }
 
 const RenovationCalculator = ({
@@ -27,7 +29,12 @@ const RenovationCalculator = ({
   roomsRenovating, 
   worklivingRoom,
   workbedrooms,
+  isLoading = false,
 }: RenovationCalculatorProps) => {
+  if (isLoading) {
+    return <SkeletonRenovationCalculator />;
+  }
+
   return (
     <div className="space-y-4">
       {/* Section Header */}
@@ -59,7 +66,7 @@ const RenovationCalculator = ({
             <AppText type="span" className="text-sm font-bold text-gray-900">
               Type
             </AppText>
-            <AppText type="span" className="text-sm font-bold text-gray-900">
+            <AppText type="span" className="text-sm font-bold text-gray-900 whitespace-nowrap">
               Property condition
             </AppText>
             <AppText type="span" className="text-sm font-bold text-gray-900">

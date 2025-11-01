@@ -122,7 +122,7 @@ const ClientDetailPage = () => {
         activeTab={activeTab}
         onTabChange={handleTabChange}
         activeTabBgColor="#23211D"
-        className="w-full max-w-[80vw]"
+        className="w-full max-w-[79dvw]"
         triggerClassName="w-fit"
       />
 

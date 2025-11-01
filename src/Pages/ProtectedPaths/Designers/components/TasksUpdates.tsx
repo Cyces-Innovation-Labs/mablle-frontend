@@ -1,4 +1,5 @@
 import AppText from "@/components/Commmon/AppText";
+import SkeletonTasksUpdates from "@/components/loaders/skeletonLoaders/SkeletonTasksUpdates";
 
 interface TaskUpdateItem {
   label: string;
@@ -8,9 +9,14 @@ interface TaskUpdateItem {
 
 interface TasksUpdatesProps {
   items: TaskUpdateItem[];
+  isLoading?: boolean;
 }
 
-const TasksUpdates = ({ items }: TasksUpdatesProps) => {
+const TasksUpdates = ({ items, isLoading = false }: TasksUpdatesProps) => {
+  if (isLoading) {
+    return <SkeletonTasksUpdates />;
+  }
+
   const getColorClasses = (color: string) => {
     switch (color) {
       case "red":

@@ -1,8 +1,11 @@
 import { useOutletContext } from "react-router";
 import PersonalDetailsComponent from "@/components/Commmon/PersonalDetails";
 
+interface PersonalDetailsProps {
+  isLoading?: boolean;
+}
 
-const PersonalDetails = () => {
+const PersonalDetails = ({ isLoading = false }: PersonalDetailsProps) => {
   const client = useOutletContext<any>() || {
     clientName: "Randy Dorwart",
     phone: "+91 98765 43210",
@@ -21,6 +24,7 @@ const PersonalDetails = () => {
         email={client.email}
         address={client.address || "-"}
         location={client.location || "-"}
+        isLoading={isLoading}
       />
     </div>
   );

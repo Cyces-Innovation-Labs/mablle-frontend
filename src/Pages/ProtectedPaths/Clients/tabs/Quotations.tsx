@@ -5,6 +5,7 @@ import GreenTickCircle from "@/icons/GreenTickCircle";
 import { MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useParams } from "react-router-dom";
+import SkeletonQuotations from "@/components/loaders/skeletonLoaders/SkeletonQuotations";
 
 interface WorkScopeRow {
   id: string;
@@ -66,8 +67,17 @@ const quotations: QuotationData[] = [
   },
 ];
 
-const Quotations = () => {
+interface QuotationsProps {
+  isLoading?: boolean;
+}
+
+const Quotations = ({ isLoading = false }: QuotationsProps) => {
   const { clientId } = useParams();
+  
+  if (isLoading) {
+    return <SkeletonQuotations />;
+  }
+
   return (
     <div className="space-y-[27px]">
       <div className="bg-white rounded-[8px] shadow-sm p-6">

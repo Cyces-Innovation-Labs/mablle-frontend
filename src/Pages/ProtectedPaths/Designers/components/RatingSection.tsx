@@ -1,6 +1,7 @@
 import AppText from "@/components/Commmon/AppText";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
+import SkeletonRatingSection from "@/components/loaders/skeletonLoaders/SkeletonRatingSection";
 
 interface RatingData {
   [key: string]: number;
@@ -11,6 +12,7 @@ interface RatingSectionProps {
   ratingDistribution: RatingData;
   totalRatings: number;
   onAddReview?: () => void;
+  isLoading?: boolean;
 }
 
 const RatingSection = ({
@@ -18,7 +20,12 @@ const RatingSection = ({
   ratingDistribution,
   totalRatings,
   onAddReview,
+  isLoading = false,
 }: RatingSectionProps) => {
+  if (isLoading) {
+    return <SkeletonRatingSection />;
+  }
+
   const getBarLength = (count: number, maxCount: number) => {
     if (maxCount === 0) return 0;
     return (count / maxCount) * 100;

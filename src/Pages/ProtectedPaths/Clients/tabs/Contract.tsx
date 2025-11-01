@@ -2,8 +2,17 @@ import AppText from "@/components/Commmon/AppText";
     import ContractIcon from "@/icons/ContractIcon";
 import GreenTickCircle from "@/icons/GreenTickCircle";
 import { Download, Trash2 } from "lucide-react";
+import SkeletonContract from "@/components/loaders/skeletonLoaders/SkeletonContract";
 
-const Contract = () => {
+interface ContractProps {
+  isLoading?: boolean;
+}
+
+const Contract = ({ isLoading = false }: ContractProps) => {
+  if (isLoading) {
+    return <SkeletonContract />;
+  }
+
   const file = {
     name: "Contract.pdf",
     createdOn: "23rd Sep 2025",

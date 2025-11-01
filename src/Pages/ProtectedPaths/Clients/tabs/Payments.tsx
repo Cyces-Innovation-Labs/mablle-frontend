@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import GreenTickCircle from "@/icons/GreenTickCircle";
 import { Download, Share2 } from "lucide-react";
+import SkeletonPayments from "@/components/loaders/skeletonLoaders/SkeletonPayments";
 
 interface PaymentLineItem {
   label: string;
@@ -58,7 +59,15 @@ const sections: PaymentSectionData[] = [
   },
 ];
 
-const Payments = () => {
+interface PaymentsProps {
+  isLoading?: boolean;
+}
+
+const Payments = ({ isLoading = false }: PaymentsProps) => {
+  if (isLoading) {
+    return <SkeletonPayments />;
+  }
+
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-[8px] p-6 shadow-sm">

@@ -1,6 +1,7 @@
 import AppText from "@/components/Commmon/AppText";
 import { Button } from "@/components/ui/button";
 import { Star, SquareCheck } from "lucide-react";
+import SkeletonClientReviewCard from "@/components/loaders/skeletonLoaders/SkeletonClientReviewCard";
 
 export interface ClientReviewData {
   id: string;
@@ -16,9 +17,14 @@ export interface ClientReviewData {
 interface ClientReviewCardProps {
   review: ClientReviewData;
   onPublish?: () => void;
+  isLoading?: boolean;
 }
 
-const ClientReviewCard = ({ review, onPublish }: ClientReviewCardProps) => {
+const ClientReviewCard = ({ review, onPublish, isLoading = false }: ClientReviewCardProps) => {
+  if (isLoading) {
+    return <SkeletonClientReviewCard />;
+  }
+
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-start gap-10">

@@ -1,6 +1,7 @@
 import GreenTickCircle from "@/icons/GreenTickCircle";
 import { Copy, Trash2 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
+import SkeletonDesignRenders from "@/components/loaders/skeletonLoaders/SkeletonDesignRenders";
 
 type RenderImage = {
   id: string;
@@ -105,8 +106,17 @@ const SectionHeader = ({ title, count }: { title: string; count?: string }) => (
   </div>
 );
 
-const DesignRenders = () => {
+interface DesignRendersProps {
+  isLoading?: boolean;
+}
+
+const DesignRenders = ({ isLoading = false }: DesignRendersProps) => {
   const { clientId } = useParams();
+  
+  if (isLoading) {
+    return <SkeletonDesignRenders />;
+  }
+
   return (
     <div className="space-y-6 bg-white shadow-sm rounded-[8px] p-6">
       <div className="flex items-center gap-2 mb-10">

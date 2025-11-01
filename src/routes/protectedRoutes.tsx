@@ -80,6 +80,7 @@ export const protectedRoutes = () => {
           <Route path="payments" element={<Payments />} />
           <Route path="notes" element={<ClientNotesTab />} />
         </Route>
+        
         {/* Standalone pages */}
         <Route path="/clients/:clientId/design-renders/:category/:renderId" element={<DesignRenderDetailPage />} />
         <Route path="/clients/:clientId/quotations/:quotationId" element={<QuotationDetailPage />} />
@@ -105,6 +106,8 @@ export const protectedRoutes = () => {
         <Route path={SUPPORT_TICKETS_PAGE_URL} element={<SupportTicketsPage />} />
         <Route path={DESIGN_REQUEST_FORM_PAGE_URL} element={<DesignRequestFormPage />} />
         <Route path={REPORTS_PAGE_URL} element={<ReportsPage />} />
+
+        {/* Settings pages */}
         <Route path={SETTINGS_PAGE_URL} element={<SettingsPage />}>
           <Route index element={<ProfileTab />} />
           <Route path="roles" element={<RolesPermissionsTab />} />

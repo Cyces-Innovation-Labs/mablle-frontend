@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Circle } from "lucide-react";
+import SkeletonProjectTimeline from "@/components/loaders/skeletonLoaders/SkeletonProjectTimeline";
 import GreenTickCircle from "@/icons/GreenTickCircle";
 import SessionCircle from "@/icons/SessionCircle";
 import BrownTickCircle from "@/icons/BrownTickCircle";
@@ -32,6 +33,7 @@ export type TimelineStep = {
 interface ProjectTimelineProps {
   estCompletion?: string;
   steps?: TimelineStep[];
+  isLoading?: boolean;
 }
 
 const LeftMarker = ({ status, icon }: { status: TimelineStatus; icon?: React.ReactNode }) => {
@@ -42,7 +44,11 @@ const LeftMarker = ({ status, icon }: { status: TimelineStatus; icon?: React.Rea
   return <Circle className={`w-4 h-4 ${baseColor} ${opacity}`} />;
 };
 
-const ProjectTimeline = ({ estCompletion = "Dec 30, 2025", steps = [] }: ProjectTimelineProps) => {
+const ProjectTimeline = ({ estCompletion = "Dec 30, 2025", steps = [], isLoading = false }: ProjectTimelineProps) => {
+  if (isLoading) {
+    return <SkeletonProjectTimeline />;
+  }
+
   const effectiveSteps: TimelineStep[] = steps.length ? steps : [
     { id: "init", title: "Initial Design Consultation Session", status: "completed",icon: <SessionCircle />, date: "15th Aug, 2025" },
     { id: "design", title: "3D Design Approved", status: "completed", date: "25th Aug, 2025", icon: <ImageCropped />, action: { label: "View Design" } },

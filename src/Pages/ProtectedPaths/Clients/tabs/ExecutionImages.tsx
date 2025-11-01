@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UploadIcon } from "lucide-react";
+import SkeletonExecutionImages from "@/components/loaders/skeletonLoaders/SkeletonExecutionImages";
 
 export type ExecutionImage = {
   id: string;
@@ -12,6 +13,7 @@ export type ExecutionImage = {
 interface ExecutionImagesProps {
   images?: ExecutionImage[];
   onAddMore?: () => void;
+  isLoading?: boolean;
 }
 
 const defaultImages: ExecutionImage[] = Array.from({ length: 10 }).map((_, i) => ({
@@ -26,7 +28,11 @@ const badgeStyles = (by: ExecutionImage["uploadedBy"]) =>
     ? "bg-[#717182] text-white"
     : "bg-[#9C6E61] text-white";
 
-const ExecutionImages = ({ images = defaultImages, onAddMore }: ExecutionImagesProps) => {
+const ExecutionImages = ({ images = defaultImages, onAddMore, isLoading = false }: ExecutionImagesProps) => {
+  if (isLoading) {
+    return <SkeletonExecutionImages />;
+  }
+
   const total = images.length;
 
   return (

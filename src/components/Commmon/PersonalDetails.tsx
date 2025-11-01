@@ -1,5 +1,6 @@
 import AppText from "@/components/Commmon/AppText";
 import { Phone, Mail, User } from "lucide-react";
+import SkeletonPersonalDetails from "@/components/loaders/skeletonLoaders/SkeletonPersonalDetails";
 
 interface PersonalDetailsProps {
   profileImage?: string;
@@ -8,6 +9,7 @@ interface PersonalDetailsProps {
   email: string;
   address?: string;
   location?: string;
+  isLoading?: boolean;
 }
 
 const PersonalDetails = ({
@@ -17,7 +19,12 @@ const PersonalDetails = ({
   email,
   address = "-",
   location = "-",
+  isLoading = false,
 }: PersonalDetailsProps) => {
+  if (isLoading) {
+    return <SkeletonPersonalDetails />;
+  }
+
   return (
     <div className="space-y-4">
 

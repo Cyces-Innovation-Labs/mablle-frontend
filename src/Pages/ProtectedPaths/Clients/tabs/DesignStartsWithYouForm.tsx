@@ -1,8 +1,17 @@
 import AppText from "@/components/Commmon/AppText";
 // import { useOutletContext } from "react-router";
+import SkeletonDesignStartsWithYouForm from "@/components/loaders/skeletonLoaders/SkeletonDesignStartsWithYouForm";
 
-const DesignStartsWithYouForm = () => {
+interface DesignStartsWithYouFormProps {
+  isLoading?: boolean;
+}
+
+const DesignStartsWithYouForm = ({ isLoading = false }: DesignStartsWithYouFormProps) => {
   // const client = useOutletContext<any>();
+
+  if (isLoading) {
+    return <SkeletonDesignStartsWithYouForm />;
+  }
 
   return (
     <div className="space-y-6">

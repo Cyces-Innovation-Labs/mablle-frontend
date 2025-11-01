@@ -1,6 +1,7 @@
 import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import GreenTickCircle from "@/icons/GreenTickCircle";
+import SkeletonExecutionTimeline from "@/components/loaders/skeletonLoaders/SkeletonExecutionTimeline";
 
 interface ExecStep {
   id: string;
@@ -38,7 +39,15 @@ const steps: ExecStep[] = [
 
 const progress = 90;
 
-const ExecutionTimeline = () => {
+interface ExecutionTimelineProps {
+  isLoading?: boolean;
+}
+
+const ExecutionTimeline = ({ isLoading = false }: ExecutionTimelineProps) => {
+  if (isLoading) {
+    return <SkeletonExecutionTimeline />;
+  }
+
   return (
     <div className="space-y-[27px] bg-white shadow-sm rounded-[8px] p-6">
       <Accordion type="single" collapsible defaultValue="open">

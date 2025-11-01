@@ -5,8 +5,13 @@ import AppAvatar from "@/components/Commmon/AppAvatar";
 import { FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import SkeletonProjectNotesList from "@/components/loaders/skeletonLoaders/SkeletonProjectNotesList";
 
-const ProjectNotesPage = () => {
+interface ProjectNotesPageProps {
+  isLoading?: boolean;
+}
+
+const ProjectNotesPage = ({ isLoading = false }: ProjectNotesPageProps) => {
   const [activeFilter, setActiveFilter] = useState<'client' | 'executor'>('client');
 
   const mockNotes = [
@@ -126,8 +131,11 @@ const ProjectNotesPage = () => {
       </div>
 
       {/* Notes List */}
-      <div className="mb-8 rounded-sm">
-        {mockNotes.map((note) => (
+      {isLoading ? (
+        <SkeletonProjectNotesList />
+      ) : (
+        <div className="mb-8 rounded-sm">
+          {mockNotes.map((note) => (
           <div key={note.id} className="bg-white border p-6">
             <div className="flex items-center gap-4">
               {/* Left side - Category and Content */}
@@ -199,8 +207,9 @@ const ProjectNotesPage = () => {
               )}
             </div>
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </AppPageWrapper>
   );
 };

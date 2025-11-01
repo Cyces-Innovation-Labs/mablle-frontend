@@ -1,5 +1,6 @@
 import AppText from "@/components/Commmon/AppText";
 import { ChevronDown } from "lucide-react";
+import SkeletonStatisticsCards from "@/components/loaders/skeletonLoaders/SkeletonStatisticsCards";
 
 interface StatCard {
   label: string;
@@ -11,9 +12,14 @@ interface StatCard {
 interface StatisticsCardsProps {
   stats: StatCard[];
   totalCount: number;
+  isLoading?: boolean;
 }
 
-const StatisticsCards = ({ stats, totalCount = 50 }: StatisticsCardsProps) => {
+const StatisticsCards = ({ stats, totalCount = 50, isLoading = false }: StatisticsCardsProps) => {
+  if (isLoading) {
+    return <SkeletonStatisticsCards />;
+  }
+
   const getVariantStyles = (variant: string = "default") => {
     switch (variant) {
       case "primary":

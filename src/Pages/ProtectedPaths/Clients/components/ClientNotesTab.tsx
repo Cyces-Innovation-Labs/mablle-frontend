@@ -1,4 +1,5 @@
 import Notes, { type NoteItem } from "./Notes";
+import SkeletonClientNotesTab from "@/components/loaders/skeletonLoaders/SkeletonClientNotesTab";
 
 const sampleNotes: NoteItem[] = [
   {
@@ -15,7 +16,15 @@ const sampleNotes: NoteItem[] = [
   },
 ];
 
-const ClientNotesTab = () => {
+interface ClientNotesTabProps {
+  isLoading?: boolean;
+}
+
+const ClientNotesTab = ({ isLoading = false }: ClientNotesTabProps) => {
+  if (isLoading) {
+    return <SkeletonClientNotesTab />;
+  }
+
   return (
     <div className="space-y-6 p-6 bg-white rounded-[8px] shadow-sm">
       <div className="flex items-center gap-2">

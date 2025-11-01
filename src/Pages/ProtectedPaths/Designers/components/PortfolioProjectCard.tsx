@@ -1,6 +1,7 @@
 import AppText from "@/components/Commmon/AppText";
 import { Trash2, PencilLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SkeletonPortfolioProjectCard from "@/components/loaders/skeletonLoaders/SkeletonPortfolioProjectCard";
 
 export interface PortfolioProjectData {
   id: string;
@@ -17,6 +18,7 @@ interface PortfolioProjectCardProps {
   onArchive?: () => void;
   onFeature?: () => void;
   onDelete?: () => void;
+  isLoading?: boolean;
 }
 
 const PortfolioProjectCard = ({
@@ -25,7 +27,12 @@ const PortfolioProjectCard = ({
   onArchive,
   onFeature,
   onDelete,
+  isLoading = false,
 }: PortfolioProjectCardProps) => {
+  if (isLoading) {
+    return <SkeletonPortfolioProjectCard />;
+  }
+
   const getBadgeColor = (badge: string) => {
     switch (badge) {
       case "Closed project":
